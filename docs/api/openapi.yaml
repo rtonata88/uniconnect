@@ -1,0 +1,2240 @@
+openapi: 3.0.3
+info:
+  title: 'UniConnect API Documentation'
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'https://localhost'
+tags:
+  -
+    name: 'Admin: courses'
+    description: ''
+  -
+    name: 'Admin: system'
+    description: ''
+  -
+    name: 'Admin: users'
+    description: ''
+  -
+    name: Announcements
+    description: ''
+  -
+    name: Assignments
+    description: ''
+  -
+    name: Authentication
+    description: ''
+  -
+    name: 'Course materials'
+    description: ''
+  -
+    name: Courses
+    description: ''
+  -
+    name: Dashboard
+    description: ''
+  -
+    name: Endpoints
+    description: ''
+  -
+    name: Files
+    description: ''
+  -
+    name: Gradebook
+    description: ''
+  -
+    name: 'Messaging: conversations'
+    description: ''
+  -
+    name: 'Messaging: messages'
+    description: ''
+  -
+    name: Notifications
+    description: ''
+  -
+    name: Profile
+    description: ''
+  -
+    name: 'Quiz attempts'
+    description: ''
+  -
+    name: Quizzes
+    description: ''
+  -
+    name: Submissions
+    description: ''
+  -
+    name: Sync
+    description: ''
+  -
+    name: System
+    description: ''
+paths:
+  /api/admin/courses:
+    get:
+      summary: 'List courses'
+      operationId: listCourses
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: courses'
+      security: []
+    post:
+      summary: 'Create a course (LMS-1)'
+      operationId: createACourseLMS1
+      description: 'Also creates the course group chat. Optional lecturer_ids enrols lecturers.'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: courses'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: 'Must contain only letters, numbers, dashes and underscores. Must not be greater than 20 characters.'
+                  example: bngzmiyvdljnikhw
+                title:
+                  type: string
+                  description: 'Must not be greater than 200 characters.'
+                  example: a
+                description:
+                  type: string
+                  description: 'Must not be greater than 5000 characters.'
+                  example: 'Perspiciatis quo omnis nostrum aut adipisci quidem nostrum qui.'
+                  nullable: true
+                semester:
+                  type: string
+                  description: 'Must not be greater than 40 characters.'
+                  example: v
+                  nullable: true
+                lecturer_ids:
+                  type: array
+                  description: ''
+                  example:
+                    - 16
+                  items:
+                    type: integer
+              required:
+                - code
+                - title
+      security: []
+  '/api/admin/courses/{course_id}':
+    patch:
+      summary: 'Update a course'
+      operationId: updateACourse
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: courses'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: 'Must contain only letters, numbers, dashes and underscores. Must not be greater than 20 characters.'
+                  example: bngzmiyvdljnikhw
+                title:
+                  type: string
+                  description: 'Must not be greater than 200 characters.'
+                  example: a
+                description:
+                  type: string
+                  description: 'Must not be greater than 5000 characters.'
+                  example: 'Perspiciatis quo omnis nostrum aut adipisci quidem nostrum qui.'
+                  nullable: true
+                semester:
+                  type: string
+                  description: 'Must not be greater than 40 characters.'
+                  example: v
+                  nullable: true
+      security: []
+    delete:
+      summary: 'Delete a course'
+      operationId: deleteACourse
+      description: 'Soft delete: the course disappears for every member on their next sync.'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: courses'
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/admin/courses/{course_id}/enrolments':
+    post:
+      summary: 'Enrol users (LMS-1)'
+      operationId: enrolUsersLMS1
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: courses'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  description: 'Users to enrol.'
+                  example:
+                    - 4
+                    - 5
+                  items:
+                    type: integer
+                role:
+                  type: string
+                  description: 'lecturer or student.'
+                  example: student
+              required:
+                - user_ids
+                - role
+      security: []
+    delete:
+      summary: 'Remove enrolments (LMS-1)'
+      operationId: removeEnrolmentsLMS1
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: courses'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  description: ''
+                  example:
+                    - 4
+                  items:
+                    type: integer
+              required:
+                - user_ids
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/admin/audit-logs:
+    get:
+      summary: 'Audit log (SEC-9)'
+      operationId: auditLogSEC9
+      description: ''
+      parameters:
+        -
+          in: query
+          name: action
+          description: 'Action prefix, e.g. `auth.` or `grade.released`.'
+          example: auth.
+          required: false
+          schema:
+            type: string
+            description: 'Action prefix, e.g. `auth.` or `grade.released`.'
+            example: auth.
+        -
+          in: query
+          name: user_id
+          description: Actor.
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: Actor.
+            example: 1
+        -
+          in: query
+          name: from
+          description: 'date ISO date (inclusive).'
+          example: '2026-10-01'
+          required: false
+          schema:
+            type: string
+            description: 'date ISO date (inclusive).'
+            example: '2026-10-01'
+        -
+          in: query
+          name: to
+          description: 'date ISO date (inclusive).'
+          example: '2026-10-31'
+          required: false
+          schema:
+            type: string
+            description: 'date ISO date (inclusive).'
+            example: '2026-10-31'
+      responses: {}
+      tags:
+        - 'Admin: system'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
+                from:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-10-25T09:13:00'
+                  nullable: true
+                to:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-10-25T09:13:00'
+                  nullable: true
+                per_page:
+                  type: integer
+                  description: 'Must be at least 1. Must not be greater than 200.'
+                  example: 22
+                  nullable: true
+      security: []
+  /api/admin/system:
+    get:
+      summary: 'System status (DIST-6)'
+      operationId: systemStatusDIST6
+      description: "Every registered instance (api, reverb, worker, scheduler) with heartbeat age and uptime,\nwhat the gateway routes to, MySQL primary + replica (replication lag), Redis, MinIO,\nqueue sizes and live WebSocket connections."
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: system'
+      security: []
+  /api/admin/users:
+    get:
+      summary: 'List users'
+      operationId: listUsers
+      description: ''
+      parameters:
+        -
+          in: query
+          name: search
+          description: 'Name, email or student number.'
+          example: student1
+          required: false
+          schema:
+            type: string
+            description: 'Name, email or student number.'
+            example: student1
+        -
+          in: query
+          name: role
+          description: 'admin, lecturer or student.'
+          example: student
+          required: false
+          schema:
+            type: string
+            description: 'admin, lecturer or student.'
+            example: student
+        -
+          in: query
+          name: active
+          description: 'Filter by active flag.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'Filter by active flag.'
+            example: true
+      responses: {}
+      tags:
+        - 'Admin: users'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  description: ''
+                  example: admin
+                  enum:
+                    - admin
+                    - lecturer
+                    - student
+                  nullable: true
+                per_page:
+                  type: integer
+                  description: 'Must be at least 1. Must not be greater than 200.'
+                  example: 1
+                  nullable: true
+      security: []
+    post:
+      summary: 'Create a user (AUTH-6)'
+      operationId: createAUserAUTH6
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must be at least 2 characters. Must not be greater than 120 characters.'
+                  example: b
+                email:
+                  type: string
+                  description: 'Must be a valid email address. Must not be greater than 255 characters.'
+                  example: zbailey@example.net
+                role:
+                  type: string
+                  description: ''
+                  example: admin
+                  enum:
+                    - admin
+                    - lecturer
+                    - student
+                student_number:
+                  type: string
+                  description: 'Must not be greater than 30 characters.'
+                  example: i
+                  nullable: true
+                password:
+                  type: string
+                  description: ''
+                  example: '|]|{+-'
+                is_active:
+                  type: boolean
+                  description: ''
+                  example: false
+              required:
+                - name
+                - email
+                - role
+                - password
+      security: []
+  /api/admin/users/import:
+    post:
+      summary: 'Import users from CSV (AUTH-6)'
+      operationId: importUsersFromCSVAUTH6
+      description: "Columns (header row required): name, email, role, student_number (optional),\npassword (optional; a random one is generated and returned when missing).\nRows are validated individually; valid rows are created, invalid rows reported."
+      parameters: []
+      responses: {}
+      tags:
+        - 'Admin: users'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'CSV file.'
+              required:
+                - file
+      security: []
+  '/api/courses/{course_id}/announcements':
+    get:
+      summary: 'List announcements'
+      operationId: listAnnouncements
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Announcements
+      security: []
+    post:
+      summary: 'Post an announcement (LMS-4)'
+      operationId: postAnAnnouncementLMS4
+      description: "Enrolled users are notified. `client_uuid` makes the call idempotent so drafts\nwritten offline are never posted twice (MOB-5)."
+      parameters: []
+      responses: {}
+      tags:
+        - Announcements
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'Must not be greater than 200 characters.'
+                  example: b
+                body:
+                  type: string
+                  description: 'Must not be greater than 20000 characters.'
+                  example: 'n'
+                publish:
+                  type: boolean
+                  description: ''
+                  example: false
+                client_uuid:
+                  type: string
+                  description: 'Must be a valid UUID.'
+                  example: 6b72fe4a-5b40-307c-bc24-f79acf9a1bb9
+                  nullable: true
+              required:
+                - title
+                - body
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/announcements/{announcement_id}':
+    patch:
+      summary: 'Update an announcement'
+      operationId: updateAnAnnouncement
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Announcements
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'Must not be greater than 200 characters.'
+                  example: b
+                body:
+                  type: string
+                  description: 'Must not be greater than 20000 characters.'
+                  example: 'n'
+                publish:
+                  type: boolean
+                  description: ''
+                  example: true
+                updated_at:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-10-25T09:13:00'
+                  nullable: true
+      security: []
+    delete:
+      summary: 'Delete an announcement'
+      operationId: deleteAnAnnouncement
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Announcements
+      security: []
+    parameters:
+      -
+        in: path
+        name: announcement_id
+        description: 'The ID of the announcement.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/courses/{course_id}/assignments':
+    get:
+      summary: 'List assignments'
+      operationId: listAssignments
+      description: 'Students get their own submission in `my_submission`.'
+      parameters: []
+      responses: {}
+      tags:
+        - Assignments
+      security: []
+    post:
+      summary: 'Create an assignment (LMS-5)'
+      operationId: createAnAssignmentLMS5
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Assignments
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/assignments/{assignment_id}':
+    get:
+      summary: 'Assignment details'
+      operationId: assignmentDetails
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Assignments
+      security: []
+    patch:
+      summary: 'Update an assignment'
+      operationId: updateAnAssignment
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Assignments
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                updated_at:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-10-25T09:13:00'
+                  nullable: true
+      security: []
+    delete:
+      summary: 'Delete an assignment'
+      operationId: deleteAnAssignment
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Assignments
+      security: []
+    parameters:
+      -
+        in: path
+        name: assignment_id
+        description: 'The ID of the assignment.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/auth/login:
+    post:
+      summary: 'Log in (AUTH-1)'
+      operationId: logInAUTH1
+      description: "Returns a Sanctum bearer token (expires after 7 days). Five failed attempts per\nminute for the same email + IP lock the pair for the rest of the minute."
+      parameters: []
+      responses: {}
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address. Must not be greater than 255 characters.'
+                  example: gbailey@example.net
+                password:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: '+-0pBNvYgxwmi/#iw'
+                device_name:
+                  type: string
+                  description: 'Must not be greater than 100 characters.'
+                  example: u
+                  nullable: true
+              required:
+                - email
+                - password
+      security: []
+  /api/auth/forgot-password:
+    post:
+      summary: 'Request a password reset link (AUTH-3)'
+      operationId: requestAPasswordResetLinkAUTH3
+      description: "Always answers with the same message so it cannot be used to discover accounts.\nIn development the link is written to the log (MAIL_MAILER=log)."
+      parameters: []
+      responses: {}
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address. Must not be greater than 255 characters.'
+                  example: gbailey@example.net
+              required:
+                - email
+      security: []
+  /api/auth/reset-password:
+    post:
+      summary: 'Reset the password with the emailed token (AUTH-3)'
+      operationId: resetThePasswordWithTheEmailedTokenAUTH3
+      description: 'Revokes every existing token for the account.'
+      parameters: []
+      responses: {}
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: ''
+                  example: architecto
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: zbailey@example.net
+                password:
+                  type: string
+                  description: ''
+                  example: architecto
+              required:
+                - token
+                - email
+                - password
+      security: []
+  /api/auth/logout:
+    post:
+      summary: 'Log out (AUTH-2)'
+      operationId: logOutAUTH2
+      description: 'Revokes the token used for this request.'
+      parameters: []
+      responses: {}
+      tags:
+        - Authentication
+      security: []
+  /api/auth/logout-all:
+    post:
+      summary: 'Log out all devices (AUTH-2)'
+      operationId: logOutAllDevicesAUTH2
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Authentication
+      security: []
+  '/api/courses/{course_id}/materials':
+    get:
+      summary: 'List materials'
+      operationId: listMaterials
+      description: 'Grouped by week on the client. Students only see published materials.'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Course materials'
+      security: []
+    post:
+      summary: 'Upload a material (LMS-3)'
+      operationId: uploadAMaterialLMS3
+      description: 'Upload the file with POST /attachments first, then send its id here.'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Course materials'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'Must not be greater than 200 characters.'
+                  example: b
+                description:
+                  type: string
+                  description: 'Must not be greater than 5000 characters.'
+                  example: 'Et animi quos velit et fugiat.'
+                  nullable: true
+                week:
+                  type: integer
+                  description: 'Must be at least 0. Must not be greater than 60.'
+                  example: 1
+                attachment_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                publish:
+                  type: boolean
+                  description: ''
+                  example: true
+              required:
+                - title
+                - week
+                - attachment_id
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/materials/{material_id}':
+    patch:
+      summary: 'Update a material'
+      operationId: updateAMaterial
+      description: 'Send the `updated_at` you edited to get 409 if someone changed it meanwhile.'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Course materials'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'Must not be greater than 200 characters.'
+                  example: b
+                description:
+                  type: string
+                  description: 'Must not be greater than 5000 characters.'
+                  example: 'Et animi quos velit et fugiat.'
+                  nullable: true
+                week:
+                  type: integer
+                  description: 'Must be at least 0. Must not be greater than 60.'
+                  example: 1
+                attachment_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                publish:
+                  type: boolean
+                  description: ''
+                  example: false
+                updated_at:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-10-25T09:13:00'
+                  nullable: true
+      security: []
+    delete:
+      summary: 'Delete a material'
+      operationId: deleteAMaterial
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Course materials'
+      security: []
+    parameters:
+      -
+        in: path
+        name: material_id
+        description: 'The ID of the material.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/courses:
+    get:
+      summary: 'My courses'
+      operationId: myCourses
+      description: 'Courses the user is enrolled in (admins: every course).'
+      parameters: []
+      responses: {}
+      tags:
+        - Courses
+      security: []
+  '/api/courses/{course_id}':
+    get:
+      summary: 'Course details'
+      operationId: courseDetails
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Courses
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/courses/{course_id}/people':
+    get:
+      summary: 'People in a course'
+      operationId: peopleInACourse
+      description: 'Lecturers and students enrolled in the course.'
+      parameters: []
+      responses: {}
+      tags:
+        - Courses
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/dashboard:
+    get:
+      summary: 'Role-aware dashboard (PRD 10.1, LMS-11)'
+      operationId: roleAwareDashboardPRD101LMS11
+      description: "Student: upcoming deadlines, recent announcements, unread chats.\nLecturer: submissions to grade and recent activity. Admin: counts and a health summary."
+      parameters: []
+      responses: {}
+      tags:
+        - Dashboard
+      security: []
+  /api/health:
+    get:
+      summary: "Health check (no auth). Used by Traefik, the heartbeat sidecar and the client's\nconnectivity probe. Returns 503 when the database or Redis is unreachable."
+      operationId: healthChecknoAuthUsedByTraefikTheHeartbeatSidecarAndTheClientsConnectivityProbeReturns503WhenTheDatabaseOrRedisIsUnreachable
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      security: []
+  /api/broadcasting/auth:
+    get:
+      summary: 'Authenticate the request for channel access.'
+      operationId: authenticateTheRequestForChannelAccess
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      security: []
+  /api/attachments:
+    post:
+      summary: 'Upload a file (SEC-5)'
+      operationId: uploadAFileSEC5
+      description: "Multipart upload, max 20 MB. Allowed: pdf, doc(x), ppt(x), xlsx, txt, csv, zip and images.\nThe returned id is then sent with the material, submission or message."
+      parameters: []
+      responses: {}
+      tags:
+        - Files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'The file.'
+              required:
+                - file
+      security: []
+  '/api/attachments/{attachment_id}':
+    get:
+      summary: 'Download a file (SEC-4)'
+      operationId: downloadAFileSEC4
+      description: "Checks the policy, then redirects (302) to a presigned URL valid for 5 minutes.\nWith `?json=1` it returns the URL instead (for <img> tags and offline downloads)."
+      parameters:
+        -
+          in: query
+          name: json
+          description: 'Return JSON instead of redirecting.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'Return JSON instead of redirecting.'
+            example: true
+      responses: {}
+      tags:
+        - Files
+      security: []
+    parameters:
+      -
+        in: path
+        name: attachment_id
+        description: 'The ID of the attachment.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/courses/{course_id}/gradebook':
+    get:
+      summary: 'Gradebook grid (LMS-10, lecturer)'
+      operationId: gradebookGridLMS10Lecturer
+      description: 'Students × grade items with the weighted total (percent).'
+      parameters: []
+      responses: {}
+      tags:
+        - Gradebook
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/courses/{course_id}/gradebook/export':
+    get:
+      summary: 'Export the gradebook as CSV (LMS-10)'
+      operationId: exportTheGradebookAsCSVLMS10
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Gradebook
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/courses/{course_id}/grade-items':
+    post:
+      summary: 'Add a manual grade item (e.g. participation)'
+      operationId: addAManualGradeItemegParticipation
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Gradebook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'Must not be greater than 200 characters.'
+                  example: b
+                max_score:
+                  type: number
+                  description: 'Must be at least 1. Must not be greater than 1000.'
+                  example: 22
+                weight_percent:
+                  type: number
+                  description: 'Must be at least 0. Must not be greater than 100.'
+                  example: 7
+              required:
+                - title
+                - max_score
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/grade-items/{item_id}':
+    patch:
+      summary: 'Update a grade item (weight, title of manual items)'
+      operationId: updateAGradeItemweightTitleOfManualItems
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Gradebook
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                weight_percent:
+                  type: number
+                  description: 'Must be at least 0. Must not be greater than 100.'
+                  example: 1
+                title:
+                  type: string
+                  description: 'Must not be greater than 200 characters.'
+                  example: 'n'
+                max_score:
+                  type: number
+                  description: 'Must be at least 1. Must not be greater than 1000.'
+                  example: 7
+                updated_at:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-10-25T09:13:00'
+                  nullable: true
+      security: []
+    parameters:
+      -
+        in: path
+        name: item_id
+        description: 'The ID of the item.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/grade-items/{item_id}/grades':
+    put:
+      summary: 'Set a grade on a manual item'
+      operationId: setAGradeOnAManualItem
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Gradebook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                student_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                score:
+                  type: number
+                  description: 'Must be at least 0.'
+                  example: 39
+                  nullable: true
+                comment:
+                  type: string
+                  description: 'Must not be greater than 2000 characters.'
+                  example: g
+                  nullable: true
+              required:
+                - student_id
+      security: []
+    parameters:
+      -
+        in: path
+        name: item_id
+        description: 'The ID of the item.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/grade-items/{item_id}/release':
+    post:
+      summary: 'Release grades (LMS-10)'
+      operationId: releaseGradesLMS10
+      description: "Makes the item's grades visible to students and notifies them. `release=false` hides them again."
+      parameters: []
+      responses: {}
+      tags:
+        - Gradebook
+      security: []
+    parameters:
+      -
+        in: path
+        name: item_id
+        description: 'The ID of the item.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/courses/{course_id}/my-grades':
+    get:
+      summary: 'My grades (LMS-10, student)'
+      operationId: myGradesLMS10Student
+      description: 'Only released items, with the weighted total over them.'
+      parameters: []
+      responses: {}
+      tags:
+        - Gradebook
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/contacts:
+    get:
+      summary: 'People you can chat with (MSG-2)'
+      operationId: peopleYouCanChatWithMSG2
+      description: 'Users who share a course with you, plus admins. Admins can find everyone.'
+      parameters:
+        -
+          in: query
+          name: search
+          description: 'Name filter.'
+          example: Anna
+          required: false
+          schema:
+            type: string
+            description: 'Name filter.'
+            example: Anna
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      security: []
+  /api/conversations:
+    get:
+      summary: 'Chat list (MSG-1)'
+      operationId: chatListMSG1
+      description: 'Every conversation with the last message preview, unread count and the other user for direct chats.'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      security: []
+    post:
+      summary: 'Start a chat (MSG-2, MSG-3)'
+      operationId: startAChatMSG2MSG3
+      description: "Direct: `{type: \"direct\", user_id}` returns the existing chat with that user if there is one.\nGroup: `{type: \"group\", title, user_ids}`. Members must share a course with you (admins: anyone)."
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: ''
+                  example: group
+                  enum:
+                    - direct
+                    - group
+                user_id:
+                  type: integer
+                  description: 'This field is required when <code>type</code> is <code>direct</code>. Must match an existing stored value.'
+                  example: 16
+                title:
+                  type: string
+                  description: 'This field is required when <code>type</code> is <code>group</code>. Must not be greater than 100 characters.'
+                  example: 'n'
+                  nullable: true
+                user_ids:
+                  type: array
+                  description: 'Must match an existing stored value.'
+                  example:
+                    - 16
+                  items:
+                    type: integer
+              required:
+                - type
+      security: []
+  '/api/conversations/{id}':
+    get:
+      summary: 'Conversation details with participants'
+      operationId: conversationDetailsWithParticipants
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the conversation.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/conversations/{conversation_id}':
+    patch:
+      summary: 'Update a conversation'
+      operationId: updateAConversation
+      description: 'Group admins rename; lecturers switch a course chat to announcements only (MSG-4).'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'Must not be greater than 100 characters.'
+                  example: b
+                announcements_only:
+                  type: boolean
+                  description: ''
+                  example: true
+      security: []
+    parameters:
+      -
+        in: path
+        name: conversation_id
+        description: 'The ID of the conversation.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/conversations/{conversation_id}/participants':
+    post:
+      summary: 'Add members to a group (MSG-3, group admins)'
+      operationId: addMembersToAGroupMSG3GroupAdmins
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  description: 'Must match an existing stored value.'
+                  example:
+                    - 16
+                  items:
+                    type: integer
+      security: []
+    parameters:
+      -
+        in: path
+        name: conversation_id
+        description: 'The ID of the conversation.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/conversations/{conversation_id}/participants/{user_id}':
+    delete:
+      summary: 'Remove a member (group admins)'
+      operationId: removeAMembergroupAdmins
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      security: []
+    parameters:
+      -
+        in: path
+        name: conversation_id
+        description: 'The ID of the conversation.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: user_id
+        description: 'The ID of the user.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/conversations/{conversation_id}/leave':
+    post:
+      summary: 'Leave a group (MSG-3)'
+      operationId: leaveAGroupMSG3
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      security: []
+    parameters:
+      -
+        in: path
+        name: conversation_id
+        description: 'The ID of the conversation.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/conversations/{conversation_id}/mute':
+    post:
+      summary: 'Mute or unmute (MSG-12)'
+      operationId: muteOrUnmuteMSG12
+      description: 'Muted chats still count unread messages but send no push notifications.'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: conversations'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hours:
+                  type: integer
+                  description: 'Mute for this many hours; 0 unmutes; omit for "always" (1 year).'
+                  example: 8
+                  nullable: true
+      security: []
+    parameters:
+      -
+        in: path
+        name: conversation_id
+        description: 'The ID of the conversation.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/conversations/{conversation_id}/messages':
+    get:
+      summary: 'Message history (MSG-11)'
+      operationId: messageHistoryMSG11
+      description: "Cursor pagination by id, newest page first: pass `before` = the smallest id you have.\nMessages are returned in ascending order. Your own messages carry their tick status."
+      parameters:
+        -
+          in: query
+          name: before
+          description: 'Return messages with id < before.'
+          example: 120
+          required: false
+          schema:
+            type: integer
+            description: 'Return messages with id < before.'
+            example: 120
+        -
+          in: query
+          name: limit
+          description: '1–100, default 50.'
+          example: 50
+          required: false
+          schema:
+            type: integer
+            description: '1–100, default 50.'
+            example: 50
+      responses: {}
+      tags:
+        - 'Messaging: messages'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                before:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
+                limit:
+                  type: integer
+                  description: 'Must be at least 1. Must not be greater than 100.'
+                  example: 22
+                  nullable: true
+      security: []
+    post:
+      summary: 'Send a message (MSG-5, MSG-6)'
+      operationId: sendAMessageMSG5MSG6
+      description: "Idempotent on `client_uuid`: a retry returns the stored message with 200 instead of a duplicate.\nFor files, upload with POST /attachments first and send `attachment_id`.\nRate limit: 60 messages per minute."
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: messages'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_uuid:
+                  type: string
+                  description: 'Must be a valid UUID.'
+                  example: 6ff8f7f6-1eb3-3525-be4a-3932c805afed
+                type:
+                  type: string
+                  description: ''
+                  example: image
+                  enum:
+                    - text
+                    - file
+                    - image
+                  nullable: true
+                body:
+                  type: string
+                  description: 'This field is required when <code>attachment_id</code> is not present. Must not be greater than 10000 characters.'
+                  example: g
+                  nullable: true
+                attachment_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
+                reply_to_id:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
+              required:
+                - client_uuid
+      security: []
+    parameters:
+      -
+        in: path
+        name: conversation_id
+        description: 'The ID of the conversation.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/messages/{message_id}':
+    delete:
+      summary: 'Delete for everyone (MSG-10)'
+      operationId: deleteForEveryoneMSG10
+      description: 'Only your own messages, within one hour. The message stays as "This message was deleted".'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: messages'
+      security: []
+    parameters:
+      -
+        in: path
+        name: message_id
+        description: 'The ID of the message.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/messages/receipts:
+    post:
+      summary: 'Delivery and read receipts (MSG-7)'
+      operationId: deliveryAndReadReceiptsMSG7
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: messages'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                delivered:
+                  type: array
+                  description: 'Message ids stored on this device.'
+                  example:
+                    - 101
+                    - 102
+                  items:
+                    type: integer
+                read:
+                  type: array
+                  description: 'Message ids shown on screen.'
+                  example:
+                    - 101
+                  items:
+                    type: integer
+      security: []
+  '/api/messages/{message_id}/info':
+    get:
+      summary: 'Message info (MSG-7)'
+      operationId: messageInfoMSG7
+      description: 'Who received and who read your message, with times.'
+      parameters: []
+      responses: {}
+      tags:
+        - 'Messaging: messages'
+      security: []
+    parameters:
+      -
+        in: path
+        name: message_id
+        description: 'The ID of the message.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/notifications:
+    get:
+      summary: 'Notification centre (NOT-1)'
+      operationId: notificationCentreNOT1
+      description: 'Newest first, 30 per page, with the unread count.'
+      parameters: []
+      responses: {}
+      tags:
+        - Notifications
+      security: []
+  /api/notifications/read:
+    post:
+      summary: 'Mark as read (NOT-1)'
+      operationId: markAsReadNOT1
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Notifications
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  description: 'Notification ids.'
+                  example:
+                    - 9d6c…
+                  items:
+                    type: string
+                all:
+                  type: boolean
+                  description: 'Mark everything read.'
+                  example: true
+      security: []
+  /api/notification-preferences:
+    get:
+      summary: 'Notification preferences (NOT-5)'
+      operationId: notificationPreferencesNOT5
+      description: 'Push on/off per category. In-app notifications are always on.'
+      parameters: []
+      responses: {}
+      tags:
+        - Notifications
+      security: []
+    put:
+      summary: 'Update notification preferences (NOT-5)'
+      operationId: updateNotificationPreferencesNOT5
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                push:
+                  type: object
+                  description: ''
+                  example:
+                    messages: true
+                    announcements: false
+                  properties: {}
+              required:
+                - push
+      security: []
+  /api/push/webpush/subscribe:
+    post:
+      summary: 'Subscribe this browser / installed PWA to Web Push (NOT-3)'
+      operationId: subscribeThisBrowserInstalledPWAToWebPushNOT3
+      description: "Body is the browser's PushSubscription JSON."
+      parameters: []
+      responses: {}
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpoint:
+                  type: string
+                  description: ''
+                  example: 'https://fcm.googleapis.com/fcm/send/abc'
+                keys:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    p256dh:
+                      type: string
+                      description: ''
+                      example: architecto
+                    auth:
+                      type: string
+                      description: ''
+                      example: architecto
+                  required:
+                    - p256dh
+                    - auth
+                contentEncoding:
+                  type: string
+                  description: ''
+                  example: aesgcm
+                  enum:
+                    - aesgcm
+                    - aes128gcm
+                  nullable: true
+              required:
+                - endpoint
+      security: []
+    delete:
+      summary: Unsubscribe
+      operationId: unsubscribe
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpoint:
+                  type: string
+                  description: ''
+                  example: architecto
+              required:
+                - endpoint
+      security: []
+  /api/me:
+    get:
+      summary: 'Current user (AUTH-4)'
+      operationId: currentUserAUTH4
+      description: 'The signed-in user with role and enrolled courses.'
+      parameters: []
+      responses: {}
+      tags:
+        - Profile
+      security: []
+    patch:
+      summary: 'Update profile (AUTH-5)'
+      operationId: updateProfileAUTH5
+      description: "Change name and/or password. Changing the password needs the current password\nand revokes the user's other tokens."
+      parameters: []
+      responses: {}
+      tags:
+        - Profile
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must be at least 2 characters. Must not be greater than 120 characters.'
+                  example: b
+                current_password:
+                  type: string
+                  description: 'This field is required when <code>password</code> is present.'
+                  example: null
+                password:
+                  type: string
+                  description: ''
+                  example: null
+      security: []
+  /api/me/avatar:
+    post:
+      summary: 'Upload avatar (AUTH-5)'
+      operationId: uploadAvatarAUTH5
+      description: 'JPEG, PNG or WebP up to 2 MB. Stored in the private bucket under a random name.'
+      parameters: []
+      responses: {}
+      tags:
+        - Profile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: 'Must be a file. Must not be greater than 2048 kilobytes.'
+              required:
+                - avatar
+      security: []
+  '/api/quizzes/{quiz_id}/attempts':
+    post:
+      summary: 'Start (or resume) an attempt (LMS-9)'
+      operationId: startorResumeAnAttemptLMS9
+      description: "Returns the questions (without answers), the server-side deadline and the server time\nso the client timer is not affected by a wrong device clock. Resumes an attempt that is\nstill in progress."
+      parameters: []
+      responses: {}
+      tags:
+        - 'Quiz attempts'
+      security: []
+    get:
+      summary: 'All attempts of a quiz (lecturer)'
+      operationId: allAttemptsOfAQuizlecturer
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Quiz attempts'
+      security: []
+    parameters:
+      -
+        in: path
+        name: quiz_id
+        description: 'The ID of the quiz.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/attempts/{attempt_id}':
+    get:
+      summary: 'Attempt details'
+      operationId: attemptDetails
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Quiz attempts'
+      security: []
+    parameters:
+      -
+        in: path
+        name: attempt_id
+        description: 'The ID of the attempt.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/attempts/{attempt_id}/answers':
+    put:
+      summary: 'Autosave answers'
+      operationId: autosaveAnswers
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Quiz attempts'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answers:
+                  type: array
+                  description: ''
+                  example:
+                    -
+                      question_id: 1
+                      option_id: 3
+                    -
+                      question_id: 2
+                      text_answer: TCP
+                  items:
+                    type: object
+                    properties:
+                      question_id:
+                        type: integer
+                        description: ''
+                        example: 16
+                      option_id:
+                        type: integer
+                        description: ''
+                        example: 16
+                        nullable: true
+                      text_answer:
+                        type: string
+                        description: 'Must not be greater than 2000 characters.'
+                        example: 'n'
+                        nullable: true
+                    required:
+                      - question_id
+              required:
+                - answers
+      security: []
+    parameters:
+      -
+        in: path
+        name: attempt_id
+        description: 'The ID of the attempt.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/attempts/{attempt_id}/submit':
+    post:
+      summary: 'Submit an attempt (LMS-9)'
+      operationId: submitAnAttemptLMS9
+      description: "Optional final answers are saved first (if still in time), then MCQ/true-false and\nexact-match short answers are graded automatically."
+      parameters: []
+      responses: {}
+      tags:
+        - 'Quiz attempts'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answers:
+                  type: array
+                  description: 'Must not have more than 200 items.'
+                  example: null
+                  items:
+                    type: object
+                    properties:
+                      question_id:
+                        type: integer
+                        description: ''
+                        example: 16
+                      option_id:
+                        type: integer
+                        description: ''
+                        example: 16
+                        nullable: true
+                      text_answer:
+                        type: string
+                        description: 'Must not be greater than 2000 characters.'
+                        example: 'n'
+                        nullable: true
+                    required:
+                      - question_id
+      security: []
+    parameters:
+      -
+        in: path
+        name: attempt_id
+        description: 'The ID of the attempt.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/attempts/{attempt_id}/grade':
+    patch:
+      summary: 'Grade short answers manually (lecturer)'
+      operationId: gradeShortAnswersManuallylecturer
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - 'Quiz attempts'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                points:
+                  type: object
+                  description: 'question_id => points.'
+                  example:
+                    12: 2
+                  properties: {}
+              required:
+                - points
+      security: []
+    parameters:
+      -
+        in: path
+        name: attempt_id
+        description: 'The ID of the attempt.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/courses/{course_id}/quizzes':
+    get:
+      summary: 'List quizzes'
+      operationId: listQuizzes
+      description: 'Students see published quizzes with their own attempts.'
+      parameters: []
+      responses: {}
+      tags:
+        - Quizzes
+      security: []
+    post:
+      summary: 'Create a quiz (LMS-8)'
+      operationId: createAQuizLMS8
+      description: "Questions are sent in the same payload. True/false questions can omit options\n(`correct_text` \"true\" or \"false\" decides the right answer)."
+      parameters: []
+      responses: {}
+      tags:
+        - Quizzes
+      security: []
+    parameters:
+      -
+        in: path
+        name: course_id
+        description: 'The ID of the course.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/quizzes/{quiz_id}':
+    get:
+      summary: 'Quiz details'
+      operationId: quizDetails
+      description: 'Lecturers get the questions with answers; students get the summary and their attempts.'
+      parameters: []
+      responses: {}
+      tags:
+        - Quizzes
+      security: []
+    patch:
+      summary: 'Update a quiz'
+      operationId: updateAQuiz
+      description: 'Questions can only be replaced while nobody has started the quiz.'
+      parameters: []
+      responses: {}
+      tags:
+        - Quizzes
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                updated_at:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-10-25T09:13:00'
+                  nullable: true
+      security: []
+    delete:
+      summary: 'Delete a quiz'
+      operationId: deleteAQuiz
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Quizzes
+      security: []
+    parameters:
+      -
+        in: path
+        name: quiz_id
+        description: 'The ID of the quiz.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/assignments/{assignment_id}/submissions':
+    get:
+      summary: 'All submissions (LMS-7, lecturer)'
+      operationId: allSubmissionsLMS7Lecturer
+      description: 'One row per enrolled student with status on_time, late or missing.'
+      parameters: []
+      responses: {}
+      tags:
+        - Submissions
+      security: []
+    post:
+      summary: 'Submit or resubmit (LMS-6, student)'
+      operationId: submitOrResubmitLMS6Student
+      description: "Idempotent on `client_uuid`: a retried request returns the stored submission with 200.\nResubmission replaces the previous one until the due date. After the due date it is\naccepted only if the assignment allows late work, and is marked late. Lateness uses the\nserver receive time; `client_submitted_at` (offline) is kept in the audit log."
+      parameters: []
+      responses: {}
+      tags:
+        - Submissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_uuid:
+                  type: string
+                  description: 'Must be a valid UUID.'
+                  example: 6ff8f7f6-1eb3-3525-be4a-3932c805afed
+                text:
+                  type: string
+                  description: 'This field is required when <code>attachment_id</code> is not present. Must not be greater than 50000 characters.'
+                  example: g
+                  nullable: true
+                attachment_id:
+                  type: integer
+                  description: 'This field is required when <code>text</code> is not present.'
+                  example: 16
+                  nullable: true
+                client_submitted_at:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-10-25T09:13:00'
+                  nullable: true
+              required:
+                - client_uuid
+      security: []
+    parameters:
+      -
+        in: path
+        name: assignment_id
+        description: 'The ID of the assignment.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/assignments/{assignment_id}/my-submission':
+    get:
+      summary: 'My submission (student)'
+      operationId: mySubmissionstudent
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Submissions
+      security: []
+    parameters:
+      -
+        in: path
+        name: assignment_id
+        description: 'The ID of the assignment.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/submissions/{submission_id}/grade':
+    patch:
+      summary: 'Grade a submission (LMS-7, lecturer)'
+      operationId: gradeASubmissionLMS7Lecturer
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Submissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                score:
+                  type: number
+                  description: 'Must be at least 0.'
+                  example: 27
+                feedback:
+                  type: string
+                  description: 'Must not be greater than 20000 characters.'
+                  example: 'n'
+                  nullable: true
+              required:
+                - score
+      security: []
+    parameters:
+      -
+        in: path
+        name: submission_id
+        description: 'The ID of the submission.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/sync:
+    get:
+      summary: 'Delta sync (PRD 9.3)'
+      operationId: deltaSyncPRD93
+      description: "Everything the user can see that changed after `since`. Start without `since`; then pass\nthe returned `cursor` and loop while `has_more`. Clients upsert by id, so the small\noverlap between rounds never creates duplicates. `memberships` lists every course and\nconversation the user still belongs to so clients can drop the rest."
+      parameters:
+        -
+          in: query
+          name: since
+          description: 'Cursor from the previous response.'
+          example: '2026-10-25T10:15:03Z|981'
+          required: false
+          schema:
+            type: string
+            description: 'Cursor from the previous response.'
+            example: '2026-10-25T10:15:03Z|981'
+      responses: {}
+      tags:
+        - Sync
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                since:
+                  type: string
+                  description: 'Must not be greater than 64 characters.'
+                  example: b
+                  nullable: true
+      security: []
+  /api/config:
+    get:
+      summary: 'Client configuration'
+      operationId: clientConfiguration
+      description: "Public values the web app needs at runtime: Reverb app key and the VAPID public key.\nRead at runtime so the same build works on any host."
+      parameters: []
+      responses: {}
+      tags:
+        - System
+      security: []

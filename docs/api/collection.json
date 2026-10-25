@@ -1,0 +1,3138 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "https:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "UniConnect API Documentation",
+        "_postman_id": "b7f70dec-832e-47dc-b795-a684913941bd",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Admin: courses",
+            "description": "",
+            "item": [
+                {
+                    "name": "List courses",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/courses",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/courses"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a course (LMS-1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/courses",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/courses"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"code\":\"bngzmiyvdljnikhw\",\"title\":\"a\",\"description\":\"Perspiciatis quo omnis nostrum aut adipisci quidem nostrum qui.\",\"semester\":\"v\",\"lecturer_ids\":[16]}"
+                        },
+                        "description": "Also creates the course group chat. Optional lecturer_ids enrols lecturers.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update a course",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/courses\/:course_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/courses\/:course_id",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"code\":\"bngzmiyvdljnikhw\",\"title\":\"a\",\"description\":\"Perspiciatis quo omnis nostrum aut adipisci quidem nostrum qui.\",\"semester\":\"v\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a course",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/courses\/:course_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/courses\/:course_id",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Soft delete: the course disappears for every member on their next sync.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Enrol users (LMS-1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/courses\/:course_id\/enrolments",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/courses\/:course_id\/enrolments",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_ids\":[4,5],\"role\":\"student\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove enrolments (LMS-1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/courses\/:course_id\/enrolments",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/courses\/:course_id\/enrolments",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_ids\":[4]}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Admin: system",
+            "description": "",
+            "item": [
+                {
+                    "name": "Audit log (SEC-9)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/audit-logs",
+                            "query": [
+                                {
+                                    "key": "action",
+                                    "value": "auth.",
+                                    "description": "Action prefix, e.g. `auth.` or `grade.released`.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "user_id",
+                                    "value": "1",
+                                    "description": "Actor.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "from",
+                                    "value": "2026-10-01",
+                                    "description": "date ISO date (inclusive).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "to",
+                                    "value": "2026-10-31",
+                                    "description": "date ISO date (inclusive).",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/admin\/audit-logs?action=auth.&user_id=1&from=2026-10-01&to=2026-10-31"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_id\":16,\"from\":\"2026-10-25T09:13:00\",\"to\":\"2026-10-25T09:13:00\",\"per_page\":22}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "System status (DIST-6)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/system",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/system"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Every registered instance (api, reverb, worker, scheduler) with heartbeat age and uptime,\nwhat the gateway routes to, MySQL primary + replica (replication lag), Redis, MinIO,\nqueue sizes and live WebSocket connections.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Admin: users",
+            "description": "",
+            "item": [
+                {
+                    "name": "List users",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/users",
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "student1",
+                                    "description": "Name, email or student number.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "student",
+                                    "description": "admin, lecturer or student.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "active",
+                                    "value": "1",
+                                    "description": "Filter by active flag.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/admin\/users?search=student1&role=student&active=1"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"role\":\"admin\",\"per_page\":1}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a user (AUTH-6)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/users",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/users"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"b\",\"email\":\"zbailey@example.net\",\"role\":\"admin\",\"student_number\":\"i\",\"password\":\"|]|{+-\",\"is_active\":false}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Import users from CSV (AUTH-6)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/admin\/users\/import",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/admin\/users\/import"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Columns (header row required): name, email, role, student_number (optional),\npassword (optional; a random one is generated and returned when missing).\nRows are validated individually; valid rows are created, invalid rows reported.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Announcements",
+            "description": "",
+            "item": [
+                {
+                    "name": "List announcements",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/announcements",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/announcements",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post an announcement (LMS-4)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/announcements",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/announcements",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"b\",\"body\":\"n\",\"publish\":false,\"client_uuid\":\"6b72fe4a-5b40-307c-bc24-f79acf9a1bb9\"}"
+                        },
+                        "description": "Enrolled users are notified. `client_uuid` makes the call idempotent so drafts\nwritten offline are never posted twice (MOB-5).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an announcement",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/announcements\/:announcement_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/announcements\/:announcement_id",
+                            "variable": [
+                                {
+                                    "id": "announcement_id",
+                                    "key": "announcement_id",
+                                    "value": 1,
+                                    "description": "The ID of the announcement."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"b\",\"body\":\"n\",\"publish\":true,\"updated_at\":\"2026-10-25T09:13:00\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete an announcement",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/announcements\/:announcement_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/announcements\/:announcement_id",
+                            "variable": [
+                                {
+                                    "id": "announcement_id",
+                                    "key": "announcement_id",
+                                    "value": 1,
+                                    "description": "The ID of the announcement."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Assignments",
+            "description": "",
+            "item": [
+                {
+                    "name": "List assignments",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/assignments",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/assignments",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Students get their own submission in `my_submission`.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create an assignment (LMS-5)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/assignments",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/assignments",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Assignment details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/assignments\/:assignment_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/assignments\/:assignment_id",
+                            "variable": [
+                                {
+                                    "id": "assignment_id",
+                                    "key": "assignment_id",
+                                    "value": 1,
+                                    "description": "The ID of the assignment."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an assignment",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/assignments\/:assignment_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/assignments\/:assignment_id",
+                            "variable": [
+                                {
+                                    "id": "assignment_id",
+                                    "key": "assignment_id",
+                                    "value": 1,
+                                    "description": "The ID of the assignment."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"updated_at\":\"2026-10-25T09:13:00\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete an assignment",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/assignments\/:assignment_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/assignments\/:assignment_id",
+                            "variable": [
+                                {
+                                    "id": "assignment_id",
+                                    "key": "assignment_id",
+                                    "value": 1,
+                                    "description": "The ID of the assignment."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Authentication",
+            "description": "",
+            "item": [
+                {
+                    "name": "Log in (AUTH-1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/auth\/login",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/auth\/login"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"gbailey@example.net\",\"password\":\"+-0pBNvYgxwmi\\\/#iw\",\"device_name\":\"u\"}"
+                        },
+                        "description": "Returns a Sanctum bearer token (expires after 7 days). Five failed attempts per\nminute for the same email + IP lock the pair for the rest of the minute.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Request a password reset link (AUTH-3)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/auth\/forgot-password",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/auth\/forgot-password"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"gbailey@example.net\"}"
+                        },
+                        "description": "Always answers with the same message so it cannot be used to discover accounts.\nIn development the link is written to the log (MAIL_MAILER=log).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Reset the password with the emailed token (AUTH-3)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/auth\/reset-password",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/auth\/reset-password"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"token\":\"architecto\",\"email\":\"zbailey@example.net\",\"password\":\"architecto\"}"
+                        },
+                        "description": "Revokes every existing token for the account.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Log out (AUTH-2)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/auth\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/auth\/logout"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Revokes the token used for this request.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Log out all devices (AUTH-2)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/auth\/logout-all",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/auth\/logout-all"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Course materials",
+            "description": "",
+            "item": [
+                {
+                    "name": "List materials",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/materials",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/materials",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Grouped by week on the client. Students only see published materials.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Upload a material (LMS-3)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/materials",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/materials",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"b\",\"description\":\"Et animi quos velit et fugiat.\",\"week\":1,\"attachment_id\":16,\"publish\":true}"
+                        },
+                        "description": "Upload the file with POST \/attachments first, then send its id here.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update a material",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/materials\/:material_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/materials\/:material_id",
+                            "variable": [
+                                {
+                                    "id": "material_id",
+                                    "key": "material_id",
+                                    "value": 1,
+                                    "description": "The ID of the material."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"b\",\"description\":\"Et animi quos velit et fugiat.\",\"week\":1,\"attachment_id\":16,\"publish\":false,\"updated_at\":\"2026-10-25T09:13:00\"}"
+                        },
+                        "description": "Send the `updated_at` you edited to get 409 if someone changed it meanwhile.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a material",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/materials\/:material_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/materials\/:material_id",
+                            "variable": [
+                                {
+                                    "id": "material_id",
+                                    "key": "material_id",
+                                    "value": 1,
+                                    "description": "The ID of the material."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Courses",
+            "description": "",
+            "item": [
+                {
+                    "name": "My courses",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Courses the user is enrolled in (admins: every course).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Course details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "People in a course",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/people",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/people",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Lecturers and students enrolled in the course.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Dashboard",
+            "description": "",
+            "item": [
+                {
+                    "name": "Role-aware dashboard (PRD 10.1, LMS-11)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/dashboard",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/dashboard"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Student: upcoming deadlines, recent announcements, unread chats.\nLecturer: submissions to grade and recent activity. Admin: counts and a health summary.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Endpoints",
+            "description": "",
+            "item": [
+                {
+                    "name": "Health check (no auth). Used by Traefik, the heartbeat sidecar and the client's\nconnectivity probe. Returns 503 when the database or Redis is unreachable.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/health",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/health"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Authenticate the request for channel access.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/broadcasting\/auth",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/broadcasting\/auth"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Files",
+            "description": "",
+            "item": [
+                {
+                    "name": "Upload a file (SEC-5)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/attachments",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/attachments"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Multipart upload, max 20 MB. Allowed: pdf, doc(x), ppt(x), xlsx, txt, csv, zip and images.\nThe returned id is then sent with the material, submission or message.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Download a file (SEC-4)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/attachments\/:attachment_id",
+                            "query": [
+                                {
+                                    "key": "json",
+                                    "value": "1",
+                                    "description": "Return JSON instead of redirecting.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/attachments\/:attachment_id?json=1",
+                            "variable": [
+                                {
+                                    "id": "attachment_id",
+                                    "key": "attachment_id",
+                                    "value": 1,
+                                    "description": "The ID of the attachment."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Checks the policy, then redirects (302) to a presigned URL valid for 5 minutes.\nWith `?json=1` it returns the URL instead (for <img> tags and offline downloads).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Gradebook",
+            "description": "",
+            "item": [
+                {
+                    "name": "Gradebook grid (LMS-10, lecturer)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/gradebook",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/gradebook",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Students \u00d7 grade items with the weighted total (percent).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Export the gradebook as CSV (LMS-10)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/gradebook\/export",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/gradebook\/export",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add a manual grade item (e.g. participation)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/grade-items",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/grade-items",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"b\",\"max_score\":22,\"weight_percent\":7}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update a grade item (weight, title of manual items)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/grade-items\/:item_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/grade-items\/:item_id",
+                            "variable": [
+                                {
+                                    "id": "item_id",
+                                    "key": "item_id",
+                                    "value": 1,
+                                    "description": "The ID of the item."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"weight_percent\":1,\"title\":\"n\",\"max_score\":7,\"updated_at\":\"2026-10-25T09:13:00\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Set a grade on a manual item",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/grade-items\/:item_id\/grades",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/grade-items\/:item_id\/grades",
+                            "variable": [
+                                {
+                                    "id": "item_id",
+                                    "key": "item_id",
+                                    "value": 1,
+                                    "description": "The ID of the item."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"student_id\":16,\"score\":39,\"comment\":\"g\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Release grades (LMS-10)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/grade-items\/:item_id\/release",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/grade-items\/:item_id\/release",
+                            "variable": [
+                                {
+                                    "id": "item_id",
+                                    "key": "item_id",
+                                    "value": 1,
+                                    "description": "The ID of the item."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Makes the item's grades visible to students and notifies them. `release=false` hides them again.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "My grades (LMS-10, student)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/my-grades",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/my-grades",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Only released items, with the weighted total over them.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Messaging: conversations",
+            "description": "",
+            "item": [
+                {
+                    "name": "People you can chat with (MSG-2)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/contacts",
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "Anna",
+                                    "description": "Name filter.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/contacts?search=Anna"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Users who share a course with you, plus admins. Admins can find everyone.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Chat list (MSG-1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Every conversation with the last message preview, unread count and the other user for direct chats.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Start a chat (MSG-2, MSG-3)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"type\":\"group\",\"user_id\":16,\"title\":\"n\",\"user_ids\":[16]}"
+                        },
+                        "description": "Direct: `{type: \"direct\", user_id}` returns the existing chat with that user if there is one.\nGroup: `{type: \"group\", title, user_ids}`. Members must share a course with you (admins: anyone).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Conversation details with participants",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": 1,
+                                    "description": "The ID of the conversation."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update a conversation",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations\/:conversation_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations\/:conversation_id",
+                            "variable": [
+                                {
+                                    "id": "conversation_id",
+                                    "key": "conversation_id",
+                                    "value": 1,
+                                    "description": "The ID of the conversation."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"b\",\"announcements_only\":true}"
+                        },
+                        "description": "Group admins rename; lecturers switch a course chat to announcements only (MSG-4).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add members to a group (MSG-3, group admins)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations\/:conversation_id\/participants",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations\/:conversation_id\/participants",
+                            "variable": [
+                                {
+                                    "id": "conversation_id",
+                                    "key": "conversation_id",
+                                    "value": 1,
+                                    "description": "The ID of the conversation."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_ids\":[16]}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove a member (group admins)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations\/:conversation_id\/participants\/:user_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations\/:conversation_id\/participants\/:user_id",
+                            "variable": [
+                                {
+                                    "id": "conversation_id",
+                                    "key": "conversation_id",
+                                    "value": 1,
+                                    "description": "The ID of the conversation."
+                                },
+                                {
+                                    "id": "user_id",
+                                    "key": "user_id",
+                                    "value": 1,
+                                    "description": "The ID of the user."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Leave a group (MSG-3)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations\/:conversation_id\/leave",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations\/:conversation_id\/leave",
+                            "variable": [
+                                {
+                                    "id": "conversation_id",
+                                    "key": "conversation_id",
+                                    "value": 1,
+                                    "description": "The ID of the conversation."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Mute or unmute (MSG-12)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations\/:conversation_id\/mute",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations\/:conversation_id\/mute",
+                            "variable": [
+                                {
+                                    "id": "conversation_id",
+                                    "key": "conversation_id",
+                                    "value": 1,
+                                    "description": "The ID of the conversation."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"hours\":8}"
+                        },
+                        "description": "Muted chats still count unread messages but send no push notifications.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Messaging: messages",
+            "description": "",
+            "item": [
+                {
+                    "name": "Message history (MSG-11)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations\/:conversation_id\/messages",
+                            "query": [
+                                {
+                                    "key": "before",
+                                    "value": "120",
+                                    "description": "Return messages with id < before.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "50",
+                                    "description": "1\u2013100, default 50.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/conversations\/:conversation_id\/messages?before=120&limit=50",
+                            "variable": [
+                                {
+                                    "id": "conversation_id",
+                                    "key": "conversation_id",
+                                    "value": 1,
+                                    "description": "The ID of the conversation."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"before\":16,\"limit\":22}"
+                        },
+                        "description": "Cursor pagination by id, newest page first: pass `before` = the smallest id you have.\nMessages are returned in ascending order. Your own messages carry their tick status.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Send a message (MSG-5, MSG-6)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/conversations\/:conversation_id\/messages",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/conversations\/:conversation_id\/messages",
+                            "variable": [
+                                {
+                                    "id": "conversation_id",
+                                    "key": "conversation_id",
+                                    "value": 1,
+                                    "description": "The ID of the conversation."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"client_uuid\":\"6ff8f7f6-1eb3-3525-be4a-3932c805afed\",\"type\":\"image\",\"body\":\"g\",\"attachment_id\":16,\"reply_to_id\":16}"
+                        },
+                        "description": "Idempotent on `client_uuid`: a retry returns the stored message with 200 instead of a duplicate.\nFor files, upload with POST \/attachments first and send `attachment_id`.\nRate limit: 60 messages per minute.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete for everyone (MSG-10)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/messages\/:message_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/messages\/:message_id",
+                            "variable": [
+                                {
+                                    "id": "message_id",
+                                    "key": "message_id",
+                                    "value": 1,
+                                    "description": "The ID of the message."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Only your own messages, within one hour. The message stays as \"This message was deleted\".",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delivery and read receipts (MSG-7)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/messages\/receipts",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/messages\/receipts"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"delivered\":[101,102],\"read\":[101]}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Message info (MSG-7)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/messages\/:message_id\/info",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/messages\/:message_id\/info",
+                            "variable": [
+                                {
+                                    "id": "message_id",
+                                    "key": "message_id",
+                                    "value": 1,
+                                    "description": "The ID of the message."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Who received and who read your message, with times.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Notifications",
+            "description": "",
+            "item": [
+                {
+                    "name": "Notification centre (NOT-1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/notifications",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/notifications"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Newest first, 30 per page, with the unread count.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Mark as read (NOT-1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/notifications\/read",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/notifications\/read"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"ids\":[\"9d6c\u2026\"],\"all\":true}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Notification preferences (NOT-5)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/notification-preferences",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/notification-preferences"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Push on\/off per category. In-app notifications are always on.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update notification preferences (NOT-5)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/notification-preferences",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/notification-preferences"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"push\":{\"messages\":true,\"announcements\":false}}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Subscribe this browser \/ installed PWA to Web Push (NOT-3)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/push\/webpush\/subscribe",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/push\/webpush\/subscribe"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"endpoint\":\"https:\\\/\\\/fcm.googleapis.com\\\/fcm\\\/send\\\/abc\",\"keys\":{\"p256dh\":\"architecto\",\"auth\":\"architecto\"},\"contentEncoding\":\"aesgcm\"}"
+                        },
+                        "description": "Body is the browser's PushSubscription JSON.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Unsubscribe",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/push\/webpush\/subscribe",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/push\/webpush\/subscribe"
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"endpoint\":\"architecto\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Profile",
+            "description": "",
+            "item": [
+                {
+                    "name": "Current user (AUTH-4)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/me",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/me"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "The signed-in user with role and enrolled courses.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update profile (AUTH-5)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/me",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/me"
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"b\"}"
+                        },
+                        "description": "Change name and\/or password. Changing the password needs the current password\nand revokes the user's other tokens.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Upload avatar (AUTH-5)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/me\/avatar",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/me\/avatar"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "avatar",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "JPEG, PNG or WebP up to 2 MB. Stored in the private bucket under a random name.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Quiz attempts",
+            "description": "",
+            "item": [
+                {
+                    "name": "Start (or resume) an attempt (LMS-9)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/quizzes\/:quiz_id\/attempts",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/quizzes\/:quiz_id\/attempts",
+                            "variable": [
+                                {
+                                    "id": "quiz_id",
+                                    "key": "quiz_id",
+                                    "value": 1,
+                                    "description": "The ID of the quiz."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns the questions (without answers), the server-side deadline and the server time\nso the client timer is not affected by a wrong device clock. Resumes an attempt that is\nstill in progress.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "All attempts of a quiz (lecturer)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/quizzes\/:quiz_id\/attempts",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/quizzes\/:quiz_id\/attempts",
+                            "variable": [
+                                {
+                                    "id": "quiz_id",
+                                    "key": "quiz_id",
+                                    "value": 1,
+                                    "description": "The ID of the quiz."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Attempt details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/attempts\/:attempt_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/attempts\/:attempt_id",
+                            "variable": [
+                                {
+                                    "id": "attempt_id",
+                                    "key": "attempt_id",
+                                    "value": 16,
+                                    "description": "The ID of the attempt."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Autosave answers",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/attempts\/:attempt_id\/answers",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/attempts\/:attempt_id\/answers",
+                            "variable": [
+                                {
+                                    "id": "attempt_id",
+                                    "key": "attempt_id",
+                                    "value": 16,
+                                    "description": "The ID of the attempt."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"answers\":[{\"question_id\":1,\"option_id\":3},{\"question_id\":2,\"text_answer\":\"TCP\"}]}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Submit an attempt (LMS-9)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/attempts\/:attempt_id\/submit",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/attempts\/:attempt_id\/submit",
+                            "variable": [
+                                {
+                                    "id": "attempt_id",
+                                    "key": "attempt_id",
+                                    "value": 16,
+                                    "description": "The ID of the attempt."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"answers\":[{\"question_id\":16,\"option_id\":16,\"text_answer\":\"n\"}]}"
+                        },
+                        "description": "Optional final answers are saved first (if still in time), then MCQ\/true-false and\nexact-match short answers are graded automatically.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Grade short answers manually (lecturer)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/attempts\/:attempt_id\/grade",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/attempts\/:attempt_id\/grade",
+                            "variable": [
+                                {
+                                    "id": "attempt_id",
+                                    "key": "attempt_id",
+                                    "value": 16,
+                                    "description": "The ID of the attempt."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"points\":{\"12\":2}}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Quizzes",
+            "description": "",
+            "item": [
+                {
+                    "name": "List quizzes",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/quizzes",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/quizzes",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Students see published quizzes with their own attempts.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a quiz (LMS-8)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/courses\/:course_id\/quizzes",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/courses\/:course_id\/quizzes",
+                            "variable": [
+                                {
+                                    "id": "course_id",
+                                    "key": "course_id",
+                                    "value": 1,
+                                    "description": "The ID of the course."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Questions are sent in the same payload. True\/false questions can omit options\n(`correct_text` \"true\" or \"false\" decides the right answer).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Quiz details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/quizzes\/:quiz_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/quizzes\/:quiz_id",
+                            "variable": [
+                                {
+                                    "id": "quiz_id",
+                                    "key": "quiz_id",
+                                    "value": 1,
+                                    "description": "The ID of the quiz."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Lecturers get the questions with answers; students get the summary and their attempts.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update a quiz",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/quizzes\/:quiz_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/quizzes\/:quiz_id",
+                            "variable": [
+                                {
+                                    "id": "quiz_id",
+                                    "key": "quiz_id",
+                                    "value": 1,
+                                    "description": "The ID of the quiz."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"updated_at\":\"2026-10-25T09:13:00\"}"
+                        },
+                        "description": "Questions can only be replaced while nobody has started the quiz.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a quiz",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/quizzes\/:quiz_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/quizzes\/:quiz_id",
+                            "variable": [
+                                {
+                                    "id": "quiz_id",
+                                    "key": "quiz_id",
+                                    "value": 1,
+                                    "description": "The ID of the quiz."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Submissions",
+            "description": "",
+            "item": [
+                {
+                    "name": "All submissions (LMS-7, lecturer)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/assignments\/:assignment_id\/submissions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/assignments\/:assignment_id\/submissions",
+                            "variable": [
+                                {
+                                    "id": "assignment_id",
+                                    "key": "assignment_id",
+                                    "value": 1,
+                                    "description": "The ID of the assignment."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "One row per enrolled student with status on_time, late or missing.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Submit or resubmit (LMS-6, student)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/assignments\/:assignment_id\/submissions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/assignments\/:assignment_id\/submissions",
+                            "variable": [
+                                {
+                                    "id": "assignment_id",
+                                    "key": "assignment_id",
+                                    "value": 1,
+                                    "description": "The ID of the assignment."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"client_uuid\":\"6ff8f7f6-1eb3-3525-be4a-3932c805afed\",\"text\":\"g\",\"attachment_id\":16,\"client_submitted_at\":\"2026-10-25T09:13:00\"}"
+                        },
+                        "description": "Idempotent on `client_uuid`: a retried request returns the stored submission with 200.\nResubmission replaces the previous one until the due date. After the due date it is\naccepted only if the assignment allows late work, and is marked late. Lateness uses the\nserver receive time; `client_submitted_at` (offline) is kept in the audit log.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "My submission (student)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/assignments\/:assignment_id\/my-submission",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/assignments\/:assignment_id\/my-submission",
+                            "variable": [
+                                {
+                                    "id": "assignment_id",
+                                    "key": "assignment_id",
+                                    "value": 1,
+                                    "description": "The ID of the assignment."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Grade a submission (LMS-7, lecturer)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/submissions\/:submission_id\/grade",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/submissions\/:submission_id\/grade",
+                            "variable": [
+                                {
+                                    "id": "submission_id",
+                                    "key": "submission_id",
+                                    "value": 1,
+                                    "description": "The ID of the submission."
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"score\":27,\"feedback\":\"n\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Sync",
+            "description": "",
+            "item": [
+                {
+                    "name": "Delta sync (PRD 9.3)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/sync",
+                            "query": [
+                                {
+                                    "key": "since",
+                                    "value": "2026-10-25T10:15:03Z|981",
+                                    "description": "Cursor from the previous response.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/sync?since=2026-10-25T10%3A15%3A03Z%7C981"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"since\":\"b\"}"
+                        },
+                        "description": "Everything the user can see that changed after `since`. Start without `since`; then pass\nthe returned `cursor` and loop while `has_more`. Clients upsert by id, so the small\noverlap between rounds never creates duplicates. `memberships` lists every course and\nconversation the user still belongs to so clients can drop the rest.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "System",
+            "description": "",
+            "item": [
+                {
+                    "name": "Client configuration",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/config",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/config"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Public values the web app needs at runtime: Reverb app key and the VAPID public key.\nRead at runtime so the same build works on any host.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}
