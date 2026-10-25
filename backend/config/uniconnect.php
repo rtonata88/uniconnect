@@ -14,6 +14,9 @@ return [
         'version' => env('APP_VERSION', '1.0.0'),
     ],
 
+    // Traefik API (dashboard entrypoint) used by the System Status page
+    'gateway_api' => 'http://127.0.0.1:'.env('GATEWAY_DASHBOARD_PORT', 8090),
+
     'registry' => [
         'connection' => 'registry',
         'heartbeat_seconds' => 5,

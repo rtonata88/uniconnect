@@ -72,6 +72,21 @@ return [
             ]) : [],
         ],
 
+        // Direct connection to the read replica for monitoring (DIST-4). The app's `mysql`
+        // connection is sticky, so after a write in the same request its reads go to the primary.
+        'mysql_replica' => [
+            'driver' => 'mysql',
+            'host' => env('DB_REPLICA_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('DB_REPLICA_PORT', env('DB_PORT', '3306')),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'strict' => true,
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

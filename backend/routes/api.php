@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
+use App\Http\Controllers\Admin\SystemController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssignmentController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GradebookController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\MaterialController;
@@ -41,6 +43,7 @@ Route::middleware(['auth:sanctum', 'activity', 'throttle:api'])->group(function 
     Route::post('/auth/logout-all', [AuthController::class, 'logoutAll']);
 
     Route::get('/me', [MeController::class, 'show']);
+    Route::get('/dashboard', DashboardController::class);
     Route::patch('/me', [MeController::class, 'update']);
     Route::post('/me/avatar', [MeController::class, 'avatar'])->middleware('throttle:uploads');
 
@@ -133,5 +136,6 @@ Route::middleware(['auth:sanctum', 'activity', 'throttle:api'])->group(function 
         Route::post('/courses/{course}/enrolments', [AdminCourseController::class, 'enrol']);
         Route::delete('/courses/{course}/enrolments', [AdminCourseController::class, 'unenrol']);
         Route::get('/audit-logs', [AuditLogController::class, 'index']);
+        Route::get('/system', SystemController::class);
     });
 });

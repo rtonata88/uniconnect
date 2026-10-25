@@ -7,7 +7,7 @@ API    ?= 3
 REVERB ?= 2
 RESULTS := docs/testing/results
 
-.PHONY: help setup deps env certs db bucket migrate build up down restart status logs seed \
+.PHONY: verify-realtime help setup deps env certs db bucket migrate build up down restart status logs seed \
         scale kill-api test test-backend test-frontend test-e2e loadtest report docs
 
 help:
@@ -70,6 +70,9 @@ scale: ## pm2 errors when the count is unchanged, so ignore that
 kill-api: ## stops one API instance (failover demo)
 	@ID=$$(pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=JSON.parse(s).filter(p=>p.name==="api"&&p.pm2_env.status==="online");if(!a.length)process.exit(1);console.log(a[a.length-1].pm_id)})') \
 	  && echo "stopping api pm_id $$ID" && pm2 stop $$ID
+
+verify-realtime: ## DIST-3: two users on different Reverb instances chat in real time
+	NODE_EXTRA_CA_CERTS="$$(mkcert -CAROOT)/rootCA.pem" node scripts/verify-realtime.mjs
 
 test: test-backend test-frontend test-e2e report
 

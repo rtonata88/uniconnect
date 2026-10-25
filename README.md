@@ -35,5 +35,6 @@ Open `https://localhost` (or the `APP_URL` in `backend/.env`).
 | `make status` | `pm2 ls` + System Status |
 | `make scale API=3 REVERB=3` | scale API / Reverb instances (discovered automatically) |
 | `make kill-api` | stop one API instance (failover demo) |
+| `make verify-realtime` | two users on different Reverb instances chat in real time (DIST-3) |
 | `make seed` | demo data |
 | `make test` / `make loadtest` | automated tests / k6 load tests |

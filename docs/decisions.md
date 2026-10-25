@@ -330,3 +330,30 @@ ran before the outer assignment and left a resolved promise as a permanent lock.
 then never left the device after reconnecting. Found in the browser end-to-end test. Fixed by
 clearing the lock after assignment (same pattern in the sync engine), and covered by a regression test.
 `localStorage.setItem('uc-debug','1')` exposes the sync internals as `window.__uc` for troubleshooting.
+
+## Phase 8 — distributed demo features
+
+### D50. Replication lag is measured, not just reported
+`Seconds_Behind_Source` is an integer and usually reads 0 on a LAN. The System Status page also
+measures the real delay: the API writes a random token to `replication_probes` on the primary and
+polls the replica (20 ms steps, up to 2 s) until it appears. Typical value on the build machine: 20–30
+ms. Monitoring uses a dedicated `mysql_replica` connection. The application's `mysql` connection is
+sticky (read-your-writes), so after any write in the same request (e.g. `last_seen_at`) its "read"
+PDO is the primary, which made the replica look stopped.
+
+### D51. System Status sources
+Instances come straight from the Redis registry (status *healthy* when the last heartbeat is under
+2 intervals old, *stale* until the TTL, then the key is gone). The gateway section shows both the
+server lists `registry:sync` wrote to Redis KV and Traefik's own health-checked view from its API on
+the dashboard port. WebSocket connections are the sum of the per-instance counts Reverb reports in
+its heartbeat. Queue sizes are the Redis list lengths of `broadcasts`, `default` and `push`.
+
+### D52. Dashboard endpoint
+`GET /api/dashboard` (not in the PRD's API list) returns the role-aware summary for PRD 10.1 /
+LMS-11 in one request instead of N per-course calls. The client keeps the last response in
+IndexedDB so the dashboard still renders offline.
+
+### D53. Verifying cross-instance chat (DIST-3)
+`make verify-realtime` connects two users through the gateway until their sockets land on different
+Reverb instances (each instance logs `socket <id> subscribed to <channel>`), then sends five messages
+over REST and reports delivery latency. Measured on the build machine: 5/5 delivered, 12–37 ms.

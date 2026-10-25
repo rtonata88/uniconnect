@@ -11,6 +11,7 @@ import { LoginPage } from '@/features/auth/LoginPage'
 import { ForgotPasswordPage, ResetPasswordPage } from '@/features/auth/PasswordPages'
 import { ChatsPage } from '@/features/chat/ChatsPage'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
+import { SystemStatusPage } from '@/features/system/SystemStatusPage'
 import { NotificationsPage } from '@/features/notifications/NotificationsPage'
 import { QuizBuilderPage } from '@/features/quizzes/QuizBuilderPage'
 import { QuizPage } from '@/features/quizzes/QuizPage'
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'users', element: <UsersPage /> },
               { path: 'courses', element: <CoursesAdminPage /> },
-              { path: 'system', element: <Placeholder title="System status" /> },
+              { path: 'system', element: <SystemStatusPage /> },
               { path: 'audit-logs', element: <Placeholder title="Audit log" /> },
             ],
           },
