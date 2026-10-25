@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { Bell, CheckCheck } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { EmptyState, Page, PageHeader } from '@/components/common'
+import { PullToRefresh } from '@/components/PullToRefresh'
 import { Button } from '@/components/ui/button'
 import { db } from '@/lib/db'
 import { fmtDateTime } from '@/lib/format'
@@ -12,7 +13,7 @@ import { categoryIcon } from './icons'
 
 export function NotificationsPage() {
   const navigate = useNavigate()
-  useQuery({ queryKey: ['notifications'], queryFn: refreshNotifications })
+  const refresh = useQuery({ queryKey: ['notifications'], queryFn: refreshNotifications })
   const items = (useLiveQuery(() => db.notifications.orderBy('created_at').reverse().toArray(), []) ?? []) as AppNotification[]
   const unread = items.filter((n) => !n.read_at).length
   return (
@@ -28,6 +29,7 @@ export function NotificationsPage() {
           )
         }
       />
+      <PullToRefresh onRefresh={() => refresh.refetch()}>
       {items.length === 0 ? (
         <EmptyState icon={Bell} title="No notifications" hint="Announcements, new assignments, grades and reminders will appear here." />
       ) : (
@@ -59,6 +61,7 @@ export function NotificationsPage() {
           })}
         </ul>
       )}
+      </PullToRefresh>
     </Page>
   )
 }

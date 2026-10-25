@@ -84,9 +84,10 @@ export async function setMeta(key: string, value: unknown) {
   await db.meta.put({ key, value })
 }
 
-/** Wipe every local table (logout). */
+/** Wipe every local table and cached private images (logout). */
 export async function clearLocalData() {
   await db.transaction('rw', db.tables, async () => {
     await Promise.all(db.tables.map((t) => t.clear()))
   })
+  navigator.serviceWorker?.controller?.postMessage({ type: 'CLEAR_PRIVATE_CACHES' })
 }

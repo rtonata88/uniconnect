@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import type { Attachment } from '@/features/courses/types'
 import { errorMessage } from '@/lib/api'
 import { fileKind, formatBytes, openAttachment } from '@/lib/files'
+import { openOffline } from '@/lib/offlineFiles'
 import { cn } from '@/lib/utils'
 
 const icons = { pdf: FileText, image: FileImage, doc: FileText, slides: Presentation, sheet: FileSpreadsheet, file: FileIcon }
@@ -27,7 +28,8 @@ export function FileCard({
   const open = async () => {
     setBusy(true)
     try {
-      await (onOpen ? onOpen() : openAttachment(attachment))
+      if (onOpen) await onOpen()
+      else if (!(await openOffline(attachment.id))) await openAttachment(attachment)
     } catch (e) {
       toast.error(errorMessage(e, 'Could not open the file'))
     } finally {

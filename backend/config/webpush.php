@@ -35,7 +35,8 @@ return [
     /**
      * The HTTP client options used to deliver push notifications.
      */
-    'client_options' => [],
+    // no redirects: the push client must only ever talk to the allow-listed push service
+    'client_options' => ['allow_redirects' => false, 'timeout' => 10],
 
     /**
      * The automatic padding in bytes used by Minishlink\WebPush.

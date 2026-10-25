@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
-import type { Announcement, Assignment, Course, Material, People, SubmissionRow } from './types'
+import { repo } from '@/lib/repo'
+import type { People, SubmissionRow } from './types'
 
 export const courseKeys = {
   all: ['courses'] as const,
@@ -13,18 +14,14 @@ export const courseKeys = {
   submissions: (id: number) => ['assignments', id, 'submissions'] as const,
 }
 
-type Loader<T> = () => Promise<T>
-/**
- * Read path indirection (PRD 9.5): phase 7 swaps these loaders for the offline
- * repository, which falls back to IndexedDB. Components only use the hooks below.
- */
+/** Read path (PRD 9.5): the repository fetches online and falls back to IndexedDB offline. */
 export const loaders = {
-  courses: (async () => (await api.get<{ data: Course[] }>('/courses')).data.data) as Loader<Course[]>,
-  course: async (id: number) => (await api.get<{ data: Course }>(`/courses/${id}`)).data.data,
-  materials: async (id: number) => (await api.get<{ data: Material[] }>(`/courses/${id}/materials`)).data.data,
-  announcements: async (id: number) => (await api.get<{ data: Announcement[] }>(`/courses/${id}/announcements`)).data.data,
-  assignments: async (id: number) => (await api.get<{ data: Assignment[] }>(`/courses/${id}/assignments`)).data.data,
-  assignment: async (id: number) => (await api.get<{ data: Assignment }>(`/assignments/${id}`)).data.data,
+  courses: () => repo.getCourses(),
+  course: (id: number) => repo.getCourse(id),
+  materials: (id: number) => repo.getMaterials(id),
+  announcements: (id: number) => repo.getAnnouncements(id),
+  assignments: (id: number) => repo.getAssignments(id),
+  assignment: (id: number) => repo.getAssignment(id),
 }
 
 export const useCourses = () => useQuery({ queryKey: courseKeys.all, queryFn: () => loaders.courses() })

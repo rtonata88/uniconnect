@@ -19,6 +19,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { OfflineBanner } from '@/lib/sync/StatusPill'
 import { cn } from '@/lib/utils'
 
 export interface LayoutSlots {
@@ -120,6 +121,7 @@ export function AppLayout({ role, badges, header, footer }: LayoutSlots) {
           <div className="flex min-w-0 flex-1 items-center gap-2">{header}</div>
           <ThemeToggle />
         </header>
+        <OfflineBanner />
         <main className="flex min-w-0 flex-1 flex-col pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
           <Outlet />
         </main>

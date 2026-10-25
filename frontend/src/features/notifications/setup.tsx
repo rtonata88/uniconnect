@@ -8,6 +8,7 @@ import { disablePush, refreshPushRegistration } from '@/lib/push/push'
 import { refreshNotifications, storeNotification, type AppNotification } from './data'
 import { NotificationBell, useUnreadNotifications } from './NotificationBell'
 import { PushSettingsCard } from './PushSettingsCard'
+import { InstallCard } from '@/features/pwa/InstallCard'
 
 /** NOT-2: live notifications on private-user.{id} → bell + Sonner toast. */
 onUserEvent('NotificationCreated', (payload) => {
@@ -29,4 +30,4 @@ beforeLogout(disablePush)
 shellSlots.headerWidgets.push(NotificationBell)
 const previous = shellSlots.useBadges
 shellSlots.useBadges = () => ({ ...previous(), notifications: useUnreadNotifications() })
-profileExtras.push(PushSettingsCard)
+profileExtras.push(PushSettingsCard, InstallCard)

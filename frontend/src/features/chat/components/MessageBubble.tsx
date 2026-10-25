@@ -170,7 +170,7 @@ export function DateSeparator({ date }: { date: string }) {
         ? 'Yesterday'
         : d.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: d.getFullYear() === today.getFullYear() ? undefined : 'numeric' })
   return (
-    <div className="sticky top-1 z-10 my-2 flex justify-center">
+    <div className="my-2 flex justify-center">
       <span className="rounded-md bg-muted/90 px-2 py-0.5 text-xs text-muted-foreground shadow-xs backdrop-blur">{label}</span>
     </div>
   )

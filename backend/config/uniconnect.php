@@ -28,6 +28,12 @@ return [
         'health_timeout' => '3s',
     ],
 
+    // Web Push endpoints the server may call (SSRF guard): browser vendors' push services only
+    'push' => [
+        'allowed_hosts' => array_filter(explode(',', (string) env('PUSH_ALLOWED_HOSTS',
+            'fcm.googleapis.com,*.push.services.mozilla.com,updates.push.services.mozilla.com,*.notify.windows.com,web.push.apple.com,*.push.apple.com'))),
+    ],
+
     'uploads' => [
         'max_kb' => 20 * 1024,
         // extension => allowed MIME types (SEC-5)

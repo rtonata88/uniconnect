@@ -22,6 +22,7 @@ use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\QuizAttemptController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\SyncController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -108,6 +109,9 @@ Route::middleware(['auth:sanctum', 'activity', 'throttle:api'])->group(function 
     Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
     Route::post('/messages/receipts', [MessageController::class, 'receipts']);
     Route::get('/messages/{message}/info', [MessageController::class, 'info']);
+
+    // Offline sync (PRD 9.3)
+    Route::get('/sync', SyncController::class);
 
     // Notifications and push
     Route::get('/notifications', [NotificationController::class, 'index']);

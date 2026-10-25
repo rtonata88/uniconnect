@@ -153,10 +153,16 @@ it('NOT-2 notifications are broadcast on private-user.{id} as NotificationCreate
 
 it('NOT-3 stores and removes Web Push subscriptions', function () {
     $user = User::factory()->create();
-    $sub = ['endpoint' => 'https://push.example/abc', 'keys' => ['p256dh' => 'key', 'auth' => 'auth'], 'contentEncoding' => 'aes128gcm'];
+    $sub = ['endpoint' => 'https://fcm.googleapis.com/fcm/send/abc', 'keys' => ['p256dh' => 'key', 'auth' => 'auth'], 'contentEncoding' => 'aes128gcm'];
     $this->actingAs($user)->postJson('/api/push/webpush/subscribe', $sub)->assertCreated();
     expect($user->pushSubscriptions()->count())->toBe(1);
     $this->actingAs($user)->postJson('/api/push/webpush/subscribe', ['endpoint' => 'http://insecure/x', 'keys' => $sub['keys']])->assertStatus(422);
+    // SSRF guard: only vendor push services
+    foreach (['https://127.0.0.1/x', 'https://169.254.169.254/latest', 'https://localhost:9000/x', 'https://evil.example/fcm.googleapis.com', 'https://fcm.googleapis.com.evil.example/x'] as $bad) {
+        $this->actingAs($user)->postJson('/api/push/webpush/subscribe', ['endpoint' => $bad, 'keys' => $sub['keys']])->assertStatus(422);
+    }
+    $this->actingAs($user)->postJson('/api/push/webpush/subscribe', ['endpoint' => 'https://updates.push.services.mozilla.com/wpush/v2/abc', 'keys' => $sub['keys']])->assertCreated();
+    $user->deletePushSubscription('https://updates.push.services.mozilla.com/wpush/v2/abc');
     $this->actingAs($user)->deleteJson('/api/push/webpush/subscribe', ['endpoint' => $sub['endpoint']])->assertOk();
     expect($user->pushSubscriptions()->count())->toBe(0);
 });

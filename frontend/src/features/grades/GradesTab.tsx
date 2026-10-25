@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import type { User } from '@/features/auth/types'
 import type { CourseTabProps } from '@/features/courses/CoursePage'
 import { api, errorMessage } from '@/lib/api'
+import { repo } from '@/lib/repo'
 import { fmtDateTime } from '@/lib/format'
 
 export interface GradeItem {
@@ -259,7 +260,7 @@ export interface MyGrades {
   weighted_total: number | null
 }
 
-export const myGradesLoader = { load: async (courseId: number) => (await api.get<MyGrades>(`/courses/${courseId}/my-grades`)).data }
+export const myGradesLoader = { load: (courseId: number) => repo.getMyGrades(courseId) }
 
 function StudentGrades({ courseId }: { courseId: number }) {
   const grades = useQuery({ queryKey: gradeKeys.mine(courseId), queryFn: () => myGradesLoader.load(courseId) })

@@ -64,7 +64,7 @@ function schedule(ms: number) {
 /** Process pending entries in order. Safe to call often; runs one loop at a time. */
 export function processOutbox(): Promise<void> {
   if (running) return running
-  running = (async () => {
+  const run = (async () => {
     try {
       while (isOnline()) {
         // FIFO by insertion order; a failed entry is skipped so later ones are not blocked forever
@@ -109,11 +109,16 @@ export function processOutbox(): Promise<void> {
         listeners.forEach((l) => l())
       }
     } finally {
-      running = null
       listeners.forEach((l) => l())
     }
   })()
-  return running
+  // Clear the lock only after it was set: when offline the body finishes synchronously and a
+  // `finally { running = null }` inside it would run before this assignment, leaving the lock stuck.
+  running = run
+  void run.finally(() => {
+    if (running === run) running = null
+  })
+  return run
 }
 
 let failedHook: ((entry: OutboxRow, message: string) => Promise<void>) | null = null

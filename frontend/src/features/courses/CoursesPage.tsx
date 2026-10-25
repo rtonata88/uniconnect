@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { EmptyState, ErrorState, ListSkeleton, Page, PageHeader } from '@/components/common'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { PullToRefresh } from '@/components/PullToRefresh'
 import { useCourses } from './api'
 
 export function CoursesPage() {
@@ -10,6 +11,7 @@ export function CoursesPage() {
   return (
     <Page>
       <PageHeader title="Courses" description="Your enrolled courses this semester." />
+      <PullToRefresh onRefresh={() => courses.refetch()}>
       {courses.isPending ? (
         <ListSkeleton rows={3} />
       ) : courses.isError ? (
@@ -46,6 +48,7 @@ export function CoursesPage() {
           ))}
         </div>
       )}
+      </PullToRefresh>
     </Page>
   )
 }

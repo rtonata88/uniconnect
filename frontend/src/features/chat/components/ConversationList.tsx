@@ -1,6 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { BellOff, Megaphone, MessageSquarePlus, Search, Users } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import { PullToRefresh } from '@/components/PullToRefresh'
 import { NavLink } from 'react-router'
 import { UserAvatar } from '@/components/common'
 import { Badge } from '@/components/ui/badge'
@@ -11,6 +12,7 @@ import { useAuth } from '@/features/auth/store'
 import { db } from '@/lib/db'
 import { fmtShort } from '@/lib/format'
 import { cn } from '@/lib/utils'
+import { refreshConversations } from '../data'
 import { typingLabel, useChatStore } from '../store'
 import type { Conversation } from '../types'
 
@@ -54,6 +56,7 @@ function Row({ c }: { c: Conversation }) {
 /** MSG-1: all conversations, newest activity first, search by name. */
 export function ConversationList({ onNewChat }: { onNewChat: () => void }) {
   const [search, setSearch] = useState('')
+  const scroller = useRef<HTMLDivElement>(null)
   const all = useLiveQuery(() => db.conversations.toArray()) as Conversation[] | undefined
   const list = useMemo(
     () =>
@@ -73,7 +76,8 @@ export function ConversationList({ onNewChat }: { onNewChat: () => void }) {
           <MessageSquarePlus />
         </Button>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto">
+        <PullToRefresh scrollRef={scroller} onRefresh={() => refreshConversations()}>
         {!all && Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="m-3 h-14" />)}
         {all && list.length === 0 && (
           <p className="p-6 text-center text-sm text-muted-foreground">{search ? 'No chats match your search.' : 'No chats yet. Start one with the + button.'}</p>
@@ -81,6 +85,7 @@ export function ConversationList({ onNewChat }: { onNewChat: () => void }) {
         {list.map((c) => (
           <Row key={c.id} c={c} />
         ))}
+        </PullToRefresh>
       </div>
     </div>
   )

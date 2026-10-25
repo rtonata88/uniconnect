@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { DataTable } from '@/components/DataTable'
 import { ErrorState, ListSkeleton, Page, UserAvatar } from '@/components/common'
 import { FileCard } from '@/components/FileCard'
+import { ShareButton } from '@/components/ShareButton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -320,11 +321,14 @@ export function AssignmentPage() {
               <span>{a.allow_late ? `Late accepted (−${a.late_penalty_percent}%)` : 'No late submissions'}</span>
             </CardDescription>
           </div>
-          {isLecturer && (
-            <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-              <Pencil /> Edit
-            </Button>
-          )}
+          <div className="flex gap-2">
+            <ShareButton title={a.title} text={`Due ${fmtDateTime(a.due_at)}`} path={`/assignments/${a.id}`} />
+            {isLecturer && (
+              <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+                <Pencil /> Edit
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="space-y-3">
           {a.instructions && <p className="text-sm whitespace-pre-wrap">{a.instructions}</p>}

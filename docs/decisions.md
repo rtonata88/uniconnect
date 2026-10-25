@@ -289,3 +289,44 @@ user of a shared device does not receive the previous user's pushes.
 `assignments:remind` runs every five minutes (scheduler, `onOneServer`). For each published
 assignment entering the 24 h or 1 h window, it atomically claims the window (`reminded_*_at`) and notifies
 enrolled students without a submission. A deadline change clears both markers, so the reminders are sent again.
+
+### D45. Web Push endpoints are allow-listed (SSRF)
+The server sends HTTP requests to the endpoint inside a browser's push subscription, so a malicious
+client could point it at an internal address. Endpoints must be HTTPS on a known push service
+(FCM, Mozilla autopush, Windows WNS, Apple; configurable via `PUSH_ALLOWED_HOSTS`), with no
+port or credentials in the URL, and the push HTTP client does not follow redirects. Raised by the automated review.
+
+## Phase 7 — offline and PWA
+
+### D46. Sync cursor and overlap
+Timestamps stay at second precision. Microsecond columns were tried, but MySQL rounds fractional
+seconds in other datetime columns and Laravel binds dates without them, which made freshly published
+items briefly invisible. The cursor is `updated_at|id` (PRD 9.3). Each round re-reads a 2-second
+overlap so a row committed late by a concurrent transaction is never missed, and clients upsert by
+id, so the overlap causes no duplicates. Messages are keyset-paginated by `(updated_at, id)`, 500 per
+page; continuation cursors (`…|more`) carry no overlap, so the loop always advances (tested with 1,100
+messages sharing one timestamp). A first sync sends the newest 50 messages per conversation; older history
+comes from the paginated messages endpoint on scroll. `memberships` (course and conversation ids)
+lets clients drop data the user lost access to. Drafts and deleted items appear in `deleted`.
+
+### D47. Offline read path and writes
+Screens read through a repository: online it fetches and stores in IndexedDB, offline (or when a
+request fails without a response) it answers from IndexedDB and the banner says "Offline – showing
+saved data". TanStack Query runs with `networkMode: 'always'` so queries are not paused offline.
+Submissions and announcement drafts are sent directly while online (so validation errors appear
+at once) and through the outbox otherwise. A queued submission keeps its file blob in IndexedDB and
+shows as "Waiting to send". Lecturer-only views (gradebook, submissions table) need a connection.
+
+### D48. What the service worker caches
+The service worker precaches the app shell (MOB-2) and caches private images by path (presigned query
+strings change on every request), so chats show their photos offline. API data is never cached by
+the service worker: it lives in IndexedDB. On logout every local table and the image cache are wiped.
+Materials marked "available offline" are stored as blobs in IndexedDB and opened from there,
+both offline and online.
+
+### D49. Outbox lock bug
+`processOutbox()` called while offline finished synchronously, so its internal `finally { running = null }`
+ran before the outer assignment and left a resolved promise as a permanent lock. Queued writes
+then never left the device after reconnecting. Found in the browser end-to-end test. Fixed by
+clearing the lock after assignment (same pattern in the sync engine), and covered by a regression test.
+`localStorage.setItem('uc-debug','1')` exposes the sync internals as `window.__uc` for troubleshooting.
