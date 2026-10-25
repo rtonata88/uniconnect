@@ -48,7 +48,7 @@ export class UniDb extends Dexie {
   mySubmissions!: EntityTable<Row, 'id'>
   grades!: EntityTable<Row, 'id'>
   conversations!: EntityTable<Row, 'id'>
-  messages!: EntityTable<Row, 'id'>
+  messages!: EntityTable<Record<string, any> & { client_uuid: string }, 'client_uuid'>
   notifications!: EntityTable<Row & { id: string }, 'id'>
   files!: EntityTable<FileRow, 'id'>
   outbox!: EntityTable<OutboxRow, 'id'>
@@ -64,7 +64,8 @@ export class UniDb extends Dexie {
       mySubmissions: 'id, assignment_id, client_uuid',
       grades: 'id, course_id, grade_item_id',
       conversations: 'id, type, course_id, last_message_at',
-      messages: 'id, conversation_id, client_uuid, [conversation_id+id]',
+      // keyed by client_uuid so messages still waiting in the outbox (no server id yet) can be stored
+      messages: 'client_uuid, id, conversation_id, [conversation_id+id], [conversation_id+created_at]',
       notifications: 'id, created_at, read_at',
       files: '++id, &key',
       outbox: '++id, &client_uuid, status, type, scope',

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/features/auth/store'
+import { useRealtime } from '@/features/chat/setup'
 import { shellSlots } from './shellSlots'
 
 function UserMenu() {
@@ -43,6 +44,7 @@ function UserMenu() {
 /** Authenticated app chrome: layout + header widgets contributed by features. */
 export function Shell() {
   const user = useAuth((s) => s.user)
+  useRealtime()
   const badges = shellSlots.useBadges()
   return (
     <AppLayout

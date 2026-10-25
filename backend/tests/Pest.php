@@ -23,7 +23,9 @@ function courseWithMembers(): array
     $course = \App\Models\Course::factory()->create();
     $lecturer = \App\Models\User::factory()->lecturer()->create();
     $student = \App\Models\User::factory()->student()->create();
-    $course->members()->attach([$lecturer->id => ['role' => 'lecturer'], $student->id => ['role' => 'student']]);
+    // through the enrolment service so the course chat membership follows (PRD §6)
+    app(\App\Support\Enrolment::class)->enrol($course, [$lecturer->id], 'lecturer');
+    app(\App\Support\Enrolment::class)->enrol($course, [$student->id], 'student');
 
     return [$course, $lecturer, $student];
 }

@@ -149,3 +149,19 @@ it('the quiz grade item max score follows the questions', function () {
     $quiz = quizFor($course);
     expect($quiz->gradeItem->max_score)->toBe(8.0);
 });
+
+it('does not reveal per-answer correctness while the student can still retake the quiz', function () {
+    [$course, $lecturer, $student] = courseWithMembers();
+    $quiz = quizFor($course, ['max_attempts' => 2]);
+    $attempt = $this->actingAs($student)->postJson("/api/quizzes/{$quiz->id}/attempts")->json('data.id');
+    $this->actingAs($student)->postJson("/api/attempts/{$attempt}/submit", ['answers' => goodAnswers($quiz)]);
+    $this->actingAs($lecturer)->postJson("/api/grade-items/{$quiz->gradeItem->id}/release");
+
+    $res = $this->actingAs($student)->getJson("/api/attempts/{$attempt}")
+        ->assertJsonPath('data.score', 5)->assertJsonPath('data.answers_visible', false);
+    expect(collect($res->json('data.answers'))->pluck('is_correct')->filter()->all())->toBe([]);
+
+    $second = $this->actingAs($student)->postJson("/api/quizzes/{$quiz->id}/attempts")->json('data.id');
+    $this->actingAs($student)->postJson("/api/attempts/{$second}/submit");
+    $this->actingAs($student)->getJson("/api/attempts/{$attempt}")->assertJsonPath('data.answers_visible', true);
+});

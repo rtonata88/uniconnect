@@ -42,6 +42,17 @@ class QuizAttempt extends Model
         return $this->hasMany(QuizAnswer::class, 'attempt_id');
     }
 
+    /** The student can no longer start an attempt (quiz closed or all attempts used). */
+    public function noAttemptsLeft(): bool
+    {
+        $quiz = $this->quiz;
+        if (! $quiz || ! $quiz->isOpen()) {
+            return true;
+        }
+
+        return QuizAttempt::where('quiz_id', $quiz->id)->where('student_id', $this->student_id)->count() >= $quiz->max_attempts;
+    }
+
     public function isSubmitted(): bool
     {
         return $this->submitted_at !== null;

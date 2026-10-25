@@ -134,3 +134,19 @@ it('ignores spoofed X-Forwarded-For from untrusted clients', function () {
         ->getJson('/api/health');
     expect(request()->ip())->toBe('203.0.113.5');
 });
+
+it('AUTH-1 slows (not locks) an account attacked from many networks', function () {
+    User::factory()->create(['email' => 'anna@uniconnect.test']);
+    foreach (range(1, 20) as $i) {
+        $this->withServerVariables(['REMOTE_ADDR' => "10.{$i}.0.1"])
+            ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'wrong'])->assertStatus(422);
+    }
+    // one attempt per 15 s: the first goes through, the next is throttled
+    $this->withServerVariables(['REMOTE_ADDR' => '10.99.0.1'])
+        ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'wrong'])->assertStatus(422);
+    $this->withServerVariables(['REMOTE_ADDR' => '10.98.0.1'])
+        ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])->assertStatus(429);
+    $this->travel(16)->seconds();
+    $this->withServerVariables(['REMOTE_ADDR' => '10.98.0.1'])
+        ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])->assertOk();
+});

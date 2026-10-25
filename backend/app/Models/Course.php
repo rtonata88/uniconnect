@@ -45,6 +45,28 @@ class Course extends Model
         return $this->hasMany(Assignment::class);
     }
 
+    /** The course group chat (MSG-4), created with the course. */
+    public function conversation(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Conversation::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::created(fn (Course $course) => Conversation::create([
+            'type' => 'course',
+            'course_id' => $course->id,
+            'title' => "{$course->code} {$course->title}",
+            'created_by' => $course->created_by,
+        ]));
+        static::updated(function (Course $course) {
+            if ($course->wasChanged(['code', 'title'])) {
+                $course->conversation?->update(['title' => "{$course->code} {$course->title}"]);
+            }
+        });
+        static::deleted(fn (Course $course) => $course->conversation?->delete());
+    }
+
     public function quizzes(): HasMany
     {
         return $this->hasMany(Quiz::class);

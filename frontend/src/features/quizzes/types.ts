@@ -37,6 +37,8 @@ export interface Attempt {
   score: number | null
   max_score: number | null
   grade_released: boolean
+  /** per-answer correctness is shown once no retake is possible */
+  answers_visible?: boolean
   server_now: string
   questions?: Question[]
   answers?: Answer[]

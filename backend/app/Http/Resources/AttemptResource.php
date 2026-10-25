@@ -13,8 +13,10 @@ class AttemptResource extends JsonResource
         $viewer = $request->user();
         $isLecturer = $viewer && $viewer->id !== $this->student_id;
         $released = (bool) $this->quiz?->gradeItem?->isReleased();
-        // students see scores and correctness only after release (LMS-10)
+        // students see scores only after release (LMS-10), and per-answer correctness only once
+        // they cannot attempt again (quiz closed or attempts used up) so the key cannot be reused
         $showResult = $this->isSubmitted() && ($isLecturer || $released);
+        $showKey = $this->isSubmitted() && ($isLecturer || ($released && $this->noAttemptsLeft()));
 
         return [
             'id' => $this->id,
@@ -28,6 +30,7 @@ class AttemptResource extends JsonResource
             'score' => $showResult ? $this->score : null,
             'max_score' => $this->max_score ?: null,
             'grade_released' => $released,
+            'answers_visible' => $showKey,
             'server_now' => now()->toIso8601ZuluString('millisecond'),
             'questions' => $this->when($this->relationLoaded('quiz') && $this->quiz->relationLoaded('questions'), function () use ($isLecturer) {
                 $byId = $this->quiz->questions->keyBy('id');
@@ -40,8 +43,8 @@ class AttemptResource extends JsonResource
                 'question_id' => $a->question_id,
                 'option_id' => $a->option_id,
                 'text_answer' => $a->text_answer,
-                'is_correct' => $this->isSubmitted() && ($isLecturer || $released) ? $a->is_correct : null,
-                'points_awarded' => $this->isSubmitted() && ($isLecturer || $released) ? $a->points_awarded : null,
+                'is_correct' => $showKey ? $a->is_correct : null,
+                'points_awarded' => $showKey ? $a->points_awarded : null,
             ])->values()),
         ];
     }

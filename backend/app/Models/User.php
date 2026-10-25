@@ -36,6 +36,23 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class)->withPivot('role')->withTimestamps();
     }
 
+    public function conversations(): BelongsToMany
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_participants')
+            ->withPivot(['role', 'joined_at', 'last_delivered_message_id', 'last_read_message_id', 'muted_until'])
+            ->withTimestamps();
+    }
+
+    /** Users share a course (direct chats are only allowed then, MSG-2). */
+    public function sharesCourseWith(User $other): bool
+    {
+        return \Illuminate\Support\Facades\DB::table('course_user as a')
+            ->join('course_user as b', 'a.course_id', '=', 'b.course_id')
+            ->join('courses', 'courses.id', '=', 'a.course_id')
+            ->whereNull('courses.deleted_at')
+            ->where('a.user_id', $this->id)->where('b.user_id', $other->id)->exists();
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === Role::Admin;

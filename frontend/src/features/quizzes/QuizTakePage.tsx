@@ -206,7 +206,11 @@ function Result({ attempt }: { attempt: Attempt }) {
           {attempt.needs_manual_grading && attempt.grade_released && <p className="mt-1 text-sm text-muted-foreground">Some answers are still being marked.</p>}
         </CardContent>
       </Card>
-      {attempt.grade_released && <AnswerReview attempt={attempt} />}
+      {attempt.answers_visible ? (
+        <AnswerReview attempt={attempt} />
+      ) : (
+        attempt.grade_released && <p className="text-sm text-muted-foreground">Correct answers are shown once the quiz closes or you have used all your attempts.</p>
+      )}
     </div>
   )
 }

@@ -203,3 +203,46 @@ manual items. Weighted total = Σ(percentage × weight) / Σ(weights of graded i
 items do not drag a student down mid-semester. With no weights set, graded items count equally.
 Assignment grades use the final score after the late penalty. CSV export neutralises spreadsheet
 formula prefixes.
+
+## Phase 5 — messaging
+
+### D33. Receipts: rows for exact ticks, watermarks for unread counts
+`message_receipts` rows are written only when a recipient reports a message as delivered or read
+(no pre-created rows for every recipient), with insert-or-ignore so repeated reports are cheap. Tick
+status for the sender is exact: *delivered* when every participant who was in the chat when the
+message was sent has a receipt, *read* when all of them have `read_at`. "Message info" lists the same
+rows. Per-participant `last_read_message_id` / `last_delivered_message_id` watermarks give unread
+counts with one sub-query. A `ReceiptsUpdated` event goes to the sender only when a message's status
+or read count actually changed.
+
+### D34. Clients subscribe to every conversation's presence channel
+The PRD puts `MessageSent` on `presence-conversation.{id}`, so a client joins the presence channel of
+every conversation it has, not only the open one. That is how it receives (and acknowledges) messages
+for chats it is not looking at, which WhatsApp-style "delivered" ticks need. Course chats are small at
+this scale. Conversation membership changes arrive on `private-user.{id}` as
+`ConversationCreated`/`ConversationUpdated` with a minimal payload, and the client re-fetches what it
+is allowed to see.
+
+### D35. Broadcasts have their own Horizon queue
+All broadcast events use the `broadcasts` queue, served by a dedicated Horizon supervisor (2–4
+processes), and the Redis queue uses blocking pops (`block_for`). Measured end to end: REST send →
+socket frame on another Reverb instance in 20–30 ms, UI to UI about 80 ms. With the default polling
+(sleep 3 s) it was 1–2 s. Several broadcast workers can deliver two quick messages out of order, so
+the client always orders by server id (PRD §6).
+
+### D36. Chat UI reads from IndexedDB
+The chat list and message list render from Dexie (`useLiveQuery`). API responses and socket events
+are written into Dexie. A sent message is stored locally first (`client_uuid` key, clock icon) and
+delivered by the outbox (PRD 5.3, 9.2), so the same code path works online and offline. Receipts are
+batched into a single outbox entry. Pending messages sort after server messages in creation order.
+
+### D37. Direct chats need a shared course; contacts endpoint
+MSG-2 is enforced on the server (`assertCanChat`). Admins can chat with anyone, and anyone can message
+an admin. `GET /api/contacts` (not in the PRD's API list) returns the people a user may start a chat
+with, for the "New chat" dialog. `GET /api/config` (also added) hands the web app the Reverb key and
+VAPID public key at runtime.
+
+### D38. Deleting a message clears its content
+"Delete for everyone" (sender, within 1 hour) soft-deletes the row and wipes the encrypted body, so
+the content is gone from the database, not just hidden. Clients keep the row and show "This message
+was deleted".

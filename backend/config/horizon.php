@@ -197,9 +197,23 @@ return [
     */
 
     'defaults' => [
+        // real-time broadcasts get their own workers so push/notification fan-out never delays chat
+        'broadcasts' => [
+            'connection' => 'redis',
+            'queue' => ['broadcasts'],
+            'balance' => 'simple',
+            'minProcesses' => 2,
+            'maxProcesses' => 4,
+            'maxTime' => 0,
+            'maxJobs' => 0,
+            'memory' => 128,
+            'tries' => 3,
+            'timeout' => 30,
+            'nice' => 0,
+        ],
         'supervisor-1' => [
             'connection' => 'redis',
-            'queue' => ['default'],
+            'queue' => ['default', 'push'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 1,
@@ -214,6 +228,7 @@ return [
 
     'environments' => [
         'production' => [
+            'broadcasts' => ['maxProcesses' => 8],
             'supervisor-1' => [
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
@@ -225,6 +240,7 @@ return [
             'supervisor-1' => [
                 'maxProcesses' => 3,
             ],
+            'broadcasts' => [],
         ],
     ],
 

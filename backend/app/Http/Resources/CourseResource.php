@@ -19,7 +19,7 @@ class CourseResource extends JsonResource
             'my_role' => $this->pivot?->role ?? ($request->user() ? $this->roleOf($request->user()) : null),
             'lecturers' => $this->whenLoaded('lecturers', fn () => $this->lecturers->map(fn ($u) => ['id' => $u->id, 'name' => $u->name])),
             'students_count' => $this->whenCounted('students'),
-            'conversation_id' => $this->conversation_id ?? null,
+            'conversation_id' => $this->conversation?->id,
             'updated_at' => $this->updated_at?->toIso8601ZuluString('microsecond'),
             'deleted_at' => $this->deleted_at?->toIso8601ZuluString(),
         ];

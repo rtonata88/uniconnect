@@ -5,7 +5,11 @@ use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\ConfigController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\GradebookController;
 use App\Http\Controllers\QuizAttemptController;
 use App\Http\Controllers\QuizController;
@@ -22,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 | Public endpoints (SEC-1: everything else requires a Sanctum token)
 */
 Route::get('/health', HealthController::class)->name('health');
+Route::get('/config', ConfigController::class);
 Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login-ip')->name('auth.login');
 Route::middleware('throttle:guest')->group(function () {
     Route::post('/auth/forgot-password', [PasswordResetController::class, 'forgot'])->name('password.email');
@@ -85,6 +90,22 @@ Route::middleware(['auth:sanctum', 'activity', 'throttle:api'])->group(function 
     Route::put('/grade-items/{item}/grades', [GradebookController::class, 'setGrade']);
     Route::post('/grade-items/{item}/release', [GradebookController::class, 'release']);
     Route::get('/courses/{course}/my-grades', [GradebookController::class, 'mine']);
+
+    // Messaging
+    Route::get('/contacts', [ContactController::class, 'index']);
+    Route::get('/conversations', [ConversationController::class, 'index']);
+    Route::post('/conversations', [ConversationController::class, 'store']);
+    Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
+    Route::patch('/conversations/{conversation}', [ConversationController::class, 'update']);
+    Route::post('/conversations/{conversation}/participants', [ConversationController::class, 'addParticipants']);
+    Route::delete('/conversations/{conversation}/participants/{user}', [ConversationController::class, 'removeParticipant']);
+    Route::post('/conversations/{conversation}/leave', [ConversationController::class, 'leave']);
+    Route::post('/conversations/{conversation}/mute', [ConversationController::class, 'mute']);
+    Route::get('/conversations/{conversation}/messages', [MessageController::class, 'index']);
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])->middleware('throttle:messages');
+    Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
+    Route::post('/messages/receipts', [MessageController::class, 'receipts']);
+    Route::get('/messages/{message}/info', [MessageController::class, 'info']);
 
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/users', [AdminUserController::class, 'index']);

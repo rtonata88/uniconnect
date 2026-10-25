@@ -30,6 +30,12 @@ class LoginRequest extends FormRequest
         return 'login-account:'.mb_strtolower((string) $this->input('email')).'|'.self::network((string) $this->ip());
     }
 
+    /** Failed attempts per account from anywhere; past the threshold logins are slowed, not blocked. */
+    public function globalAccountKey(): string
+    {
+        return 'login-account-global:'.mb_strtolower((string) $this->input('email'));
+    }
+
     public static function network(string $ip): string
     {
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {

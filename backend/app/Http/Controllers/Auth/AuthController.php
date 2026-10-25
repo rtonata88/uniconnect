@@ -30,12 +30,19 @@ class AuthController extends Controller
     {
         $key = $request->throttleKey();
         $accountKey = $request->accountThrottleKey();
+        $globalKey = $request->globalAccountKey();
         if (RateLimiter::tooManyAttempts($key, 5) || RateLimiter::tooManyAttempts($accountKey, 20)) {
             $seconds = max(RateLimiter::availableIn($key), RateLimiter::tooManyAttempts($accountKey, 20) ? RateLimiter::availableIn($accountKey) : 0);
 
-            return response()->json([
-                'message' => "Too many login attempts. Try again in {$seconds} seconds.",
-            ], 429)->header('Retry-After', (string) $seconds);
+            return $this->throttled($seconds);
+        }
+        // account under attack from many networks: allow one attempt per 15 s (slowdown, not lockout)
+        if (RateLimiter::attempts($globalKey) >= 20) {
+            $slowKey = 'login-account-slow:'.mb_strtolower((string) $request->input('email'));
+            if (RateLimiter::tooManyAttempts($slowKey, 1)) {
+                return $this->throttled(RateLimiter::availableIn($slowKey));
+            }
+            RateLimiter::hit($slowKey, 15);
         }
 
         $user = User::where('email', mb_strtolower($request->string('email')))->first();
@@ -43,6 +50,7 @@ class AuthController extends Controller
         if (! $user || ! Hash::check($request->string('password'), $user->password)) {
             RateLimiter::hit($key, 60);
             RateLimiter::hit($accountKey, 3600);
+            RateLimiter::hit($globalKey, 3600);
             Audit::log('auth.login_failed', $user, ['email' => $request->input('email'), 'reason' => 'invalid_credentials'], $user?->id);
 
             throw ValidationException::withMessages(['email' => 'These credentials do not match our records.']);
@@ -57,6 +65,7 @@ class AuthController extends Controller
 
         RateLimiter::clear($key);
         RateLimiter::clear($accountKey);
+        RateLimiter::clear($globalKey);
         $device = $request->input('device_name') ?: substr((string) $request->userAgent(), 0, 100) ?: 'web';
         $token = $user->createToken($device, ['*'], now()->addMinutes((int) config('sanctum.expiration')));
         $user->forceFill(['last_seen_at' => now()])->save();
@@ -67,6 +76,13 @@ class AuthController extends Controller
             'expires_at' => $token->accessToken->expires_at?->toIso8601ZuluString(),
             'user' => new MeResource($user),
         ]);
+    }
+
+    private function throttled(int $seconds): JsonResponse
+    {
+        return response()->json([
+            'message' => "Too many login attempts. Try again in {$seconds} seconds.",
+        ], 429)->header('Retry-After', (string) $seconds);
     }
 
     /**
