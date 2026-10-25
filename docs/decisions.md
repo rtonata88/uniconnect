@@ -170,3 +170,36 @@ extension, and must match the allow-list entry for the extension. Office files d
 URL. Traefik strips the `Authorization` header on the bucket route, because MinIO rejects a request
 that carries both a bearer token and a signature. A same-origin XHR redirect would otherwise forward
 the token.
+
+### D28. The per-account login limit is keyed on email + network (/24, /48)
+The automated review pointed out that a per-account lock across *all* IPs lets an attacker lock the real
+user out. The account limiter is therefore keyed on the email plus the client's /24 (IPv4) or /48
+(IPv6) network: rotating addresses inside one network is still blocked, while the owner signing in
+from another network is unaffected. The per-IP limiter (30/min) still caps every address.
+
+### D29. A graded submission is final
+Resubmitting after the lecturer graded returns 409, so a grade (and the audit trail behind it) is
+never silently wiped (raised by the automated review). The lecturer can still change the grade.
+
+## Phase 4 — quizzes and gradebook
+
+### D30. Quiz timing is enforced by the server
+Starting an attempt stores `deadline_at = min(start + time limit, closes_at)` and returns the
+server time, so the client countdown is independent of the device clock (tested). Autosaves and the
+final submit are accepted up to 15 s after the deadline (network grace). Later answers are rejected
+with 409. `php artisan quizzes:close-expired` (scheduler, every minute) auto-submits attempts whose
+client went away, using only the answers saved in time.
+
+### D31. Quiz grading and visibility
+MCQ and true/false questions are auto-graded. Short answers with an expected answer are compared
+case-insensitively after trimming and collapsing spaces; without one they wait for manual grading.
+The gradebook keeps the student's best submitted attempt. In line with LMS-10, students see quiz
+scores and correct answers only after the lecturer releases that grade column. Questions are locked
+once any student has started.
+
+### D32. Gradebook weighting
+Each assignment and quiz owns a grade item (kept in sync through model events). Lecturers can add
+manual items. Weighted total = Σ(percentage × weight) / Σ(weights of graded items), so ungraded
+items do not drag a student down mid-semester. With no weights set, graded items count equally.
+Assignment grades use the final score after the late penalty. CSV export neutralises spreadsheet
+formula prefixes.

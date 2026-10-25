@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasGradeItem;
 use App\Models\Concerns\Publishable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[Fillable(['course_id', 'created_by', 'title', 'instructions', 'due_at', 'max_score', 'allow_late', 'late_penalty_percent', 'attachment_id', 'published_at'])]
 class Assignment extends Model
 {
-    use HasFactory, Publishable, SoftDeletes;
+    use HasFactory, HasGradeItem, Publishable, SoftDeletes;
 
     protected function casts(): array
     {

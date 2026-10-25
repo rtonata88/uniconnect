@@ -44,10 +44,10 @@ class Submission extends Model
         return $this->belongsTo(User::class, 'graded_by');
     }
 
-    /** Grades become visible to the student when the grade item is released (phase 4). */
+    /** Grades become visible to the student when the assignment's grade item is released (LMS-10). */
     public function gradeReleased(): bool
     {
-        return false;
+        return (bool) $this->assignment?->gradeItem?->isReleased();
     }
 
     /** Score after the late penalty (LMS-5 late policy). */

@@ -95,6 +95,8 @@ class CourseSeeder extends Seeder
                 'late_penalty_percent' => 10,
                 'published_at' => now()->subDays(20),
             ]);
+            $this->seedQuiz($course, $lecturer);
+
             $course->assignments()->create([
                 'created_by' => $lecturer->id,
                 'title' => 'Assignment 2: Design report',
@@ -105,7 +107,46 @@ class CourseSeeder extends Seeder
                 'late_penalty_percent' => 0,
                 'published_at' => now()->subDays(7),
             ]);
+
+            // gradebook weights: assignment 1 30%, quiz 30%, assignment 2 40%
+            foreach ($course->gradeItems as $item) {
+                $item->update(['weight_percent' => match (true) {
+                    $item->source_type === 'quiz' => 30,
+                    str_starts_with($item->title, 'Assignment 1') => 30,
+                    default => 40,
+                }]);
+            }
         }
+    }
+
+    private function seedQuiz(Course $course, User $lecturer): void
+    {
+        $quiz = $course->quizzes()->create([
+            'created_by' => $lecturer->id,
+            'title' => "{$course->code} Quiz 1",
+            'instructions' => 'Ten minutes, one attempt. Multiple choice and true/false are marked automatically.',
+            'opens_at' => now()->subDay(),
+            'closes_at' => now()->addDays(14),
+            'time_limit_minutes' => 10,
+            'max_attempts' => 2,
+            'shuffle_questions' => true,
+            'published_at' => now()->subDay(),
+        ]);
+        $q = $quiz->questions()->create(['type' => 'mcq', 'prompt' => 'Which component routes requests to the API replicas?', 'points' => 2, 'position' => 0]);
+        $q->options()->createMany([
+            ['text' => 'Traefik', 'is_correct' => true, 'position' => 0],
+            ['text' => 'MinIO', 'is_correct' => false, 'position' => 1],
+            ['text' => 'Horizon', 'is_correct' => false, 'position' => 2],
+            ['text' => 'Dexie', 'is_correct' => false, 'position' => 3],
+        ]);
+        $q = $quiz->questions()->create(['type' => 'true_false', 'prompt' => 'A read replica accepts writes from the application.', 'points' => 1, 'position' => 1]);
+        $q->options()->createMany([
+            ['text' => 'True', 'is_correct' => false, 'position' => 0],
+            ['text' => 'False', 'is_correct' => true, 'position' => 1],
+        ]);
+        $quiz->questions()->create(['type' => 'short_answer', 'prompt' => 'Name the protocol the browser uses for real-time messages (one word).', 'points' => 1, 'position' => 2, 'correct_text' => 'WebSocket']);
+        $quiz->questions()->create(['type' => 'short_answer', 'prompt' => 'In one sentence, why must message sending be idempotent?', 'points' => 2, 'position' => 3]);
+        $quiz->syncGradeItem();
     }
 
     private function storeFile(User $owner, string $name, string $contents): Attachment

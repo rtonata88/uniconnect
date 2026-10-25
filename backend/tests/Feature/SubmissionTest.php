@@ -119,3 +119,11 @@ it('applies the late penalty to the final score', function () {
     $sub = Submission::factory()->for(Assignment::factory()->pastDue(true, 20))->create(['is_late' => true, 'score' => 50]);
     expect($sub->fresh()->finalScore())->toBe(40.0);
 });
+
+it('rejects resubmission once the submission has been graded', function () {
+    [$course, , $student] = courseWithMembers();
+    $a = Assignment::factory()->for($course)->create();
+    $sub = Submission::factory()->for($a)->create(['student_id' => $student->id, 'score' => 70, 'graded_at' => now()]);
+    submit($this, $student, $a, ['text' => 'new'])->assertStatus(409);
+    expect($sub->fresh()->score)->toBe(70.0);
+});

@@ -10,6 +10,9 @@ import { RequireAuth, RequireRole } from '@/features/auth/guards'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { ForgotPasswordPage, ResetPasswordPage } from '@/features/auth/PasswordPages'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
+import { QuizBuilderPage } from '@/features/quizzes/QuizBuilderPage'
+import { QuizPage } from '@/features/quizzes/QuizPage'
+import { QuizTakePage } from '@/features/quizzes/QuizTakePage'
 import { ProfilePage } from '@/features/profile/ProfilePage'
 
 export const router = createBrowserRouter([
@@ -26,6 +29,10 @@ export const router = createBrowserRouter([
           { path: 'courses', element: <CoursesPage /> },
           { path: 'courses/:courseId/:tab?', element: <CoursePage /> },
           { path: 'assignments/:assignmentId', element: <AssignmentPage /> },
+          { path: 'courses/:courseId/quizzes/new', element: <QuizBuilderPage /> },
+          { path: 'quizzes/:quizId', element: <QuizPage /> },
+          { path: 'quizzes/:quizId/edit', element: <QuizBuilderPage /> },
+          { path: 'attempts/:attemptId', element: <QuizTakePage /> },
           { path: 'chats', element: <Placeholder title="Chats" /> },
           { path: 'notifications', element: <Placeholder title="Notifications" /> },
           { path: 'profile', element: <ProfilePage /> },

@@ -6,6 +6,9 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\GradebookController;
+use App\Http\Controllers\QuizAttemptController;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -62,6 +65,26 @@ Route::middleware(['auth:sanctum', 'activity', 'throttle:api'])->group(function 
     Route::post('/assignments/{assignment}/submissions', [SubmissionController::class, 'store']);
     Route::get('/assignments/{assignment}/my-submission', [SubmissionController::class, 'mine']);
     Route::patch('/submissions/{submission}/grade', [SubmissionController::class, 'grade']);
+
+    Route::get('/courses/{course}/quizzes', [QuizController::class, 'index']);
+    Route::post('/courses/{course}/quizzes', [QuizController::class, 'store']);
+    Route::get('/quizzes/{quiz}', [QuizController::class, 'show']);
+    Route::patch('/quizzes/{quiz}', [QuizController::class, 'update']);
+    Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
+    Route::post('/quizzes/{quiz}/attempts', [QuizAttemptController::class, 'start']);
+    Route::get('/quizzes/{quiz}/attempts', [QuizAttemptController::class, 'index']);
+    Route::get('/attempts/{attempt}', [QuizAttemptController::class, 'show']);
+    Route::put('/attempts/{attempt}/answers', [QuizAttemptController::class, 'saveAnswers']);
+    Route::post('/attempts/{attempt}/submit', [QuizAttemptController::class, 'submit']);
+    Route::patch('/attempts/{attempt}/grade', [QuizAttemptController::class, 'grade']);
+
+    Route::get('/courses/{course}/gradebook', [GradebookController::class, 'show']);
+    Route::get('/courses/{course}/gradebook/export', [GradebookController::class, 'export']);
+    Route::post('/courses/{course}/grade-items', [GradebookController::class, 'storeItem']);
+    Route::patch('/grade-items/{item}', [GradebookController::class, 'updateItem']);
+    Route::put('/grade-items/{item}/grades', [GradebookController::class, 'setGrade']);
+    Route::post('/grade-items/{item}/release', [GradebookController::class, 'release']);
+    Route::get('/courses/{course}/my-grades', [GradebookController::class, 'mine']);
 
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/users', [AdminUserController::class, 'index']);

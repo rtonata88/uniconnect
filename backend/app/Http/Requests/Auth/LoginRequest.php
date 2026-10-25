@@ -21,9 +21,22 @@ class LoginRequest extends FormRequest
         return 'login:'.mb_strtolower((string) $this->input('email')).'|'.$this->ip();
     }
 
-    /** Failed attempts per account from any IP (stops IP rotation against one account). */
+    /**
+     * Failed attempts per account from one network (/24 IPv4, /48 IPv6). Slows IP rotation
+     * against an account without letting an attacker lock the owner out from their own network.
+     */
     public function accountThrottleKey(): string
     {
-        return 'login-account:'.mb_strtolower((string) $this->input('email'));
+        return 'login-account:'.mb_strtolower((string) $this->input('email')).'|'.self::network((string) $this->ip());
+    }
+
+    public static function network(string $ip): string
+    {
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            return implode(':', array_slice(explode(':', inet_ntop(inet_pton($ip))), 0, 3)).'::/48';
+        }
+        $parts = explode('.', $ip);
+
+        return count($parts) === 4 ? "{$parts[0]}.{$parts[1]}.{$parts[2]}.0/24" : $ip;
     }
 }

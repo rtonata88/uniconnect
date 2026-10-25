@@ -105,15 +105,20 @@ it('AUTH-6 deactivated users cannot log in', function () {
         ->assertJsonPath('errors.email.0', 'This account has been deactivated.');
 });
 
-it('AUTH-1 limits failed attempts per account across IPs', function () {
+it('AUTH-1 limits failed attempts per account across IPs of one network without locking out the owner elsewhere', function () {
     User::factory()->create(['email' => 'anna@uniconnect.test']);
     foreach (range(1, 20) as $i) {
         $this->withServerVariables(['REMOTE_ADDR' => "10.1.0.{$i}"])
             ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'wrong'])->assertStatus(422);
     }
-    $this->withServerVariables(['REMOTE_ADDR' => '10.2.0.1'])
+    // rotating addresses inside the attacker's network is blocked
+    $this->withServerVariables(['REMOTE_ADDR' => '10.1.0.200'])
         ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])
         ->assertStatus(429);
+    // the owner on another network can still sign in
+    $this->withServerVariables(['REMOTE_ADDR' => '10.2.0.1'])
+        ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])
+        ->assertOk();
 });
 
 it('AUTH-1 limits login attempts per IP across all emails', function () {

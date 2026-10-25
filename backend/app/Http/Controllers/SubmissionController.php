@@ -92,6 +92,9 @@ class SubmissionController extends Controller
                     'submitted_at' => now(),
                     'is_late' => $late,
                 ];
+                if ($current?->graded_at) {
+                    abort(409, 'This submission has already been graded and can no longer be changed.');
+                }
                 if ($current) {
                     // resubmission: last write wins; any earlier grade no longer applies
                     $current->fill([...$values, 'attempt' => $current->attempt + 1, 'score' => null, 'feedback' => null, 'graded_by' => null, 'graded_at' => null])->save();
@@ -106,6 +109,10 @@ class SubmissionController extends Controller
             $submission = Submission::where('client_uuid', $data['client_uuid'])->firstOrFail();
         }
 
+        if ($submission->attempt > 1) {
+            // a resubmission voids the previous grade in the gradebook too
+            app(\App\Support\Lms\Gradebook::class)->syncSubmission($submission);
+        }
         Audit::log('submission.submitted', $submission, array_filter([
             'assignment_id' => $assignment->id,
             'is_late' => $late,

@@ -45,6 +45,16 @@ class Course extends Model
         return $this->hasMany(Assignment::class);
     }
 
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
+    public function gradeItems(): HasMany
+    {
+        return $this->hasMany(GradeItem::class);
+    }
+
     /** @var array<int, string|null> per-instance memo (models do not outlive a request under Octane) */
     private array $roleMemo = [];
 
