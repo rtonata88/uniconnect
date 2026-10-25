@@ -18,6 +18,11 @@ class LoadTestTokens extends Command
 
     public function handle(): int
     {
+        if (! app()->environment(['local', 'testing'])) {
+            $this->error('loadtest:tokens only runs when APP_ENV is local or testing.');
+
+            return self::FAILURE;
+        }
         $users = User::where('email', 'like', 'lt_student%')->orderBy('email')->limit((int) $this->option('count'))->get();
         if ($users->isEmpty()) {
             $this->error('No load-test users. Run: php artisan db:seed --class=LoadTestSeeder');

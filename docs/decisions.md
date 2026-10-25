@@ -442,3 +442,9 @@ The first NFR-5 runs lost 2–12 requests (HTTP 502) right at the moment of `pm2
 then stops Octane. The api app sets `treekill: false` and `kill_timeout: 12000` so PM2 lets the script
 do this. A planned stop now loses no requests (re-measured: 0 of 7,031 failed). A crash (`kill -9`) is
 still covered by Traefik's health check and the `retry` middleware, as before.
+
+### D65. Load-test accounts cannot be used outside development
+`LoadTestSeeder` and `loadtest:tokens` refuse to run unless `APP_ENV` is `local` or `testing`. The 505
+load-test users get a random 40-character password, because nobody signs in as them: k6 uses the
+tokens from `loadtest:tokens`. Without this, running the seeder on a real deployment would have created
+accounts with a known password and tokens that skip rate limits.

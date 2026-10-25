@@ -19,8 +19,12 @@ class LoadTestSeeder extends Seeder
 {
     public function run(): void
     {
+        if (! app()->environment(['local', 'testing'])) {
+            throw new \RuntimeException('LoadTestSeeder only runs when APP_ENV is local or testing.');
+        }
         config(['broadcasting.default' => 'null']);
-        $password = Hash::make('Password123!');
+        // nobody signs in as a load-test user: k6 uses tokens from loadtest:tokens
+        $password = Hash::make(Str::random(40));
         $now = now();
 
         $lecturers = collect(range(1, 5))->map(fn ($i) => User::firstOrCreate(

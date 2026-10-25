@@ -11,7 +11,7 @@ export BASE_URL="${BASE_URL:-$APP_URL}"
 step() { printf '\n\033[1m== %s\033[0m\n' "$1"; }
 
 step "load-test data (500 students, 10 courses, 1000 messages) and tokens"
-(cd "$UC_ROOT/backend" && "$PHP" artisan db:seed --class=LoadTestSeeder --force && "$PHP" artisan loadtest:tokens) || exit 1
+(cd "$UC_ROOT/backend" && "$PHP" artisan db:seed --class=LoadTestSeeder && "$PHP" artisan loadtest:tokens) || exit 1
 
 cd "$HERE"
 step "NFR-1 rest-mixed (100 VUs)"
