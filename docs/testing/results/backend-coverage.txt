@@ -1,0 +1,252 @@
+
+
+Code Coverage Report:
+  2026-10-25 09:02:35
+
+ Summary:
+  Classes:   60.00% (75/125)
+  Methods:   81.44% (373/458)
+  Lines:     90.09% (2329/2585)
+
+App\Console\Commands\CloseExpiredAttempts
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 10/ 10)
+App\Console\Commands\SendDeadlineReminders
+  Methods:   0.00% ( 0/ 1)   Lines:  90.00% ( 18/ 20)
+App\Events\AddedToGroup
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+App\Events\AnnouncementPosted
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  5/  5)
+App\Events\AssignmentPublished
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  5/  5)
+App\Events\ChatMessageCreated
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+App\Events\ConversationChanged
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  5/  5)
+App\Events\EnrolmentChanged
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+App\Events\GradesReleased
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+App\Events\MaterialPublished
+  Methods:  20.00% ( 1/ 5)   Lines:  20.00% (  1/  5)
+App\Events\MessageDeleted
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  6/  6)
+App\Events\MessageSent
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  7/  7)
+App\Events\NotificationCreated
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  5/  5)
+App\Events\QuizPublished
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  5/  5)
+App\Events\ReceiptsUpdated
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  5/  5)
+App\Events\SubmissionGraded
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+App\Http\Controllers\Admin\AuditLogController
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 15/ 15)
+App\Http\Controllers\Admin\CourseController
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% ( 52/ 52)
+App\Http\Controllers\Admin\SystemController
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  9/  9)
+App\Http\Controllers\Admin\UserController
+  Methods:  50.00% ( 2/ 4)   Lines:  97.36% ( 74/ 76)
+App\Http\Controllers\AnnouncementController
+  Methods: 100.00% ( 4/ 4)   Lines: 100.00% ( 43/ 43)
+App\Http\Controllers\AssignmentController
+  Methods:  66.66% ( 4/ 6)   Lines:  86.79% ( 46/ 53)
+App\Http\Controllers\AttachmentController
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 12/ 12)
+App\Http\Controllers\Auth\AuthController
+  Methods: 100.00% ( 4/ 4)   Lines: 100.00% ( 46/ 46)
+App\Http\Controllers\Auth\PasswordResetController
+  Methods:  50.00% ( 1/ 2)   Lines:  93.75% ( 15/ 16)
+App\Http\Controllers\ConfigController
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  5/  5)
+App\Http\Controllers\ContactController
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 11/ 11)
+App\Http\Controllers\ConversationController
+  Methods:  75.00% ( 9/12)   Lines:  96.00% ( 96/100)
+App\Http\Controllers\CourseController
+  Methods:  66.66% ( 2/ 3)   Lines:  92.85% ( 13/ 14)
+App\Http\Controllers\DashboardController
+  Methods:   0.00% ( 0/ 1)   Lines:  78.26% ( 36/ 46)
+App\Http\Controllers\GradebookController
+  Methods: 100.00% ( 9/ 9)   Lines: 100.00% ( 82/ 82)
+App\Http\Controllers\HealthController
+  Methods:  50.00% ( 1/ 2)   Lines:  85.71% ( 12/ 14)
+App\Http\Controllers\MaterialController
+  Methods:  50.00% ( 2/ 4)   Lines:  91.30% ( 42/ 46)
+App\Http\Controllers\MeController
+  Methods:  66.66% ( 2/ 3)   Lines:  96.15% ( 25/ 26)
+App\Http\Controllers\MessageController
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% ( 62/ 62)
+App\Http\Controllers\NotificationController
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% ( 29/ 29)
+App\Http\Controllers\PushSubscriptionController
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% ( 23/ 23)
+App\Http\Controllers\QuizAttemptController
+  Methods:  62.50% ( 5/ 8)   Lines:  88.46% ( 69/ 78)
+App\Http\Controllers\QuizController
+  Methods:  87.50% ( 7/ 8)   Lines:  99.00% ( 99/100)
+App\Http\Controllers\SubmissionController
+  Methods:  75.00% ( 3/ 4)   Lines:  98.68% ( 75/ 76)
+App\Http\Controllers\SyncController
+  Methods:  75.00% ( 6/ 8)   Lines:  96.61% (114/118)
+App\Http\Middleware\AddServedBy
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  6/  6)
+App\Http\Middleware\EnsureRole
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+App\Http\Middleware\SecurityHeaders
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 12/ 12)
+App\Http\Middleware\TrackActivity
+  Methods:   0.00% ( 0/ 1)   Lines:  71.42% (  5/  7)
+App\Http\Requests\Admin\StoreUserRequest
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% ( 11/ 11)
+App\Http\Requests\Admin\UpdateUserRequest
+  Methods:  66.66% ( 2/ 3)   Lines:  91.66% ( 11/ 12)
+App\Http\Requests\Auth\LoginRequest
+  Methods:  80.00% ( 4/ 5)   Lines:  91.66% ( 11/ 12)
+App\Http\Resources\AnnouncementResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 11/ 11)
+App\Http\Resources\AssignmentResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 16/ 16)
+App\Http\Resources\AttachmentResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  9/  9)
+App\Http\Resources\AttemptResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 33/ 33)
+App\Http\Resources\AuditLogResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 11/ 11)
+App\Http\Resources\ConversationResource
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 41/ 41)
+App\Http\Resources\CourseResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 13/ 13)
+App\Http\Resources\GradeItemResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 12/ 12)
+App\Http\Resources\MaterialResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 12/ 12)
+App\Http\Resources\MeResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  9/  9)
+App\Http\Resources\MessageResource
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% ( 30/ 30)
+App\Http\Resources\QuestionResource
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 16/ 16)
+App\Http\Resources\QuizResource
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 23/ 23)
+App\Http\Resources\SubmissionResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 20/ 20)
+App\Http\Resources\UserResource
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 14/ 14)
+App\Listeners\SendChatNotifications
+  Methods:  50.00% ( 1/ 2)   Lines:  92.30% ( 12/ 13)
+App\Listeners\SendCourseNotifications
+  Methods: 100.00% ( 4/ 4)   Lines: 100.00% (  7/  7)
+App\Listeners\SyncCourseChatMembers
+  Methods:  50.00% ( 1/ 2)   Lines:  85.71% (  6/  7)
+App\Listeners\SyncSubmissionGrade
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  2/  2)
+App\Models\Announcement
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% (  3/  3)
+App\Models\Assignment
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% ( 14/ 14)
+App\Models\Attachment
+  Methods:  80.00% ( 4/ 5)   Lines:  80.00% (  4/  5)
+App\Models\AuditLog
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  2/  2)
+App\Models\Concerns\HasGradeItem
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% ( 13/ 13)
+App\Models\Concerns\Publishable
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  2/  2)
+App\Models\Conversation
+  Methods:  72.72% ( 8/11)   Lines:  68.75% ( 11/ 16)
+App\Models\ConversationParticipant
+  Methods:  50.00% ( 2/ 4)   Lines:  50.00% (  2/  4)
+App\Models\Course
+  Methods:  92.30% (12/13)   Lines:  96.42% ( 27/ 28)
+App\Models\CourseMaterial
+  Methods:  75.00% ( 3/ 4)   Lines:  75.00% (  3/  4)
+App\Models\Grade
+  Methods:  33.33% ( 1/ 3)   Lines:  33.33% (  1/  3)
+App\Models\GradeItem
+  Methods: 100.00% ( 4/ 4)   Lines: 100.00% (  4/  4)
+App\Models\Message
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% (  9/  9)
+App\Models\MessageReceipt
+  Methods:  50.00% ( 1/ 2)   Lines:  50.00% (  1/  2)
+App\Models\Quiz
+  Methods: 100.00% ( 8/ 8)   Lines: 100.00% ( 17/ 17)
+App\Models\QuizAnswer
+  Methods:  50.00% ( 1/ 2)   Lines:  50.00% (  1/  2)
+App\Models\QuizAttempt
+  Methods:  75.00% ( 6/ 8)   Lines:  90.47% ( 19/ 21)
+App\Models\QuizOption
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+App\Models\QuizQuestion
+  Methods:  66.66% ( 2/ 3)   Lines:  66.66% (  2/  3)
+App\Models\Submission
+  Methods:  85.71% ( 6/ 7)   Lines:  93.75% ( 15/ 16)
+App\Models\User
+  Methods:  62.50% ( 5/ 8)   Lines:  76.19% ( 16/ 21)
+App\Notifications\AddedToGroupNotification
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  5/  5)
+App\Notifications\AnnouncementPostedNotification
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% (  6/  6)
+App\Notifications\AppNotification
+  Methods: 100.00% ( 7/ 7)   Lines: 100.00% ( 25/ 25)
+App\Notifications\AssignmentPublishedNotification
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% (  6/  6)
+App\Notifications\Channels\RealtimeChannel
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  6/  6)
+App\Notifications\DeadlineReminderNotification
+  Methods:  33.33% ( 2/ 6)   Lines:  33.33% (  2/  6)
+App\Notifications\GradesReleasedNotification
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% (  9/  9)
+App\Notifications\NewMessagePush
+  Methods:  83.33% ( 5/ 6)   Lines:  81.81% (  9/ 11)
+App\Notifications\QuizPublishedNotification
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% (  6/  6)
+App\Policies\AttachmentPolicy
+  Methods:  50.00% ( 1/ 2)   Lines:  66.66% ( 10/ 15)
+App\Policies\Concerns\CourseContentPolicy
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% (  6/  6)
+App\Policies\ConversationPolicy
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% (  4/  4)
+App\Policies\CoursePolicy
+  Methods: 100.00% ( 7/ 7)   Lines: 100.00% (  7/  7)
+App\Policies\GradeItemPolicy
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+App\Policies\QuizAttemptPolicy
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% (  3/  3)
+App\Policies\SubmissionPolicy
+  Methods:  50.00% ( 1/ 2)   Lines:  50.00% (  1/  2)
+App\Policies\UserPolicy
+  Methods: 100.00% ( 4/ 4)   Lines: 100.00% (  4/  4)
+App\Providers\AppServiceProvider
+  Methods:  66.66% ( 2/ 3)   Lines:  87.50% ( 14/ 16)
+App\Providers\HorizonServiceProvider
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  3/  3)
+App\Support\Audit
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 10/ 10)
+App\Support\Chat\ChatService
+  Methods:  55.55% ( 5/ 9)   Lines:  91.60% (131/143)
+App\Support\Enrolment
+  Methods:   0.00% ( 0/ 2)   Lines:  90.47% ( 19/ 21)
+App\Support\Files\AttachmentService
+  Methods:  66.66% ( 2/ 3)   Lines:  96.55% ( 28/ 29)
+App\Support\Files\FileUrlSigner
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 23/ 23)
+App\Support\Lms\Gradebook
+  Methods:  71.42% ( 5/ 7)   Lines:  96.61% ( 57/ 59)
+App\Support\Lms\QuizGrader
+  Methods:  66.66% ( 4/ 6)   Lines:  95.65% ( 44/ 46)
+App\Support\Notify\Preferences
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  3/  3)
+App\Support\Notify\Presence
+  Methods:  50.00% ( 1/ 2)   Lines:  54.54% (  6/ 11)
+App\Support\Registry\ServiceRegistry
+  Methods: 100.00% ( 7/ 7)   Lines: 100.00% ( 38/ 38)
+App\Support\Registry\TraefikKvWriter
+  Methods:  66.66% ( 2/ 3)   Lines:  83.87% ( 26/ 31)
+App\Support\SamplePdf
+  Methods:   0.00% ( 0/ 1)   Lines:  96.55% ( 28/ 29)
+App\Support\StaleWrite
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  8/  8)
+App\Support\System\SystemStatus
+  Methods:  63.63% ( 7/11)   Lines:  70.37% ( 76/108)

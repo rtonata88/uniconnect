@@ -200,7 +200,9 @@ export function QuizPage() {
       <Card>
         <CardHeader className="flex flex-row items-start gap-3">
           <div className="min-w-0 flex-1">
-            <CardTitle className="text-xl">{q.title}</CardTitle>
+            <CardTitle className="text-xl">
+              <h1>{q.title}</h1>
+            </CardTitle>
             <CardDescription className="mt-1">
               {q.question_count} questions · {q.max_score} points · {q.time_limit_minutes ? `${q.time_limit_minutes} minutes` : 'no time limit'} · {quizWindow(q)}
             </CardDescription>

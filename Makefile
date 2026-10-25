@@ -77,13 +77,11 @@ verify-realtime: ## DIST-3: two users on different Reverb instances chat in real
 test: test-backend test-frontend test-e2e report
 
 test-backend:
-	mkdir -p $(RESULTS)
-	cd backend && XDEBUG_MODE=coverage $(PHP) -d memory_limit=1G vendor/bin/pest \
-	  --log-junit ../$(RESULTS)/backend-junit.xml $(if $(NO_COVERAGE),,--coverage-clover ../$(RESULTS)/backend-coverage.xml --coverage-text=../$(RESULTS)/backend-coverage.txt)
+	./scripts/test-backend.sh
 
 test-frontend:
 	mkdir -p $(RESULTS)
-	cd frontend && npx vitest run --reporter=default --reporter=junit --outputFile.junit=../$(RESULTS)/frontend-junit.xml
+	cd frontend && npx vitest run --coverage --reporter=default --reporter=junit --outputFile.junit=../$(RESULTS)/frontend-junit.xml
 
 test-e2e:
 	mkdir -p $(RESULTS)

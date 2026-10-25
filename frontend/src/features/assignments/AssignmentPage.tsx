@@ -314,7 +314,9 @@ export function AssignmentPage() {
       <Card>
         <CardHeader className="flex flex-row items-start gap-3">
           <div className="min-w-0 flex-1">
-            <CardTitle className="text-xl">{a.title}</CardTitle>
+            <CardTitle className="text-xl">
+              <h1>{a.title}</h1>
+            </CardTitle>
             <CardDescription className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
               <span>{dueLabel(a.due_at)} ({fmtDateTime(a.due_at)})</span>
               <span>{a.max_score} points</span>

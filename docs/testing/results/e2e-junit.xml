@@ -1,0 +1,18 @@
+<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="10.570512999999998">
+<testsuite name="01-assignment-flow.spec.ts" timestamp="2026-10-25T09:07:09.861Z" hostname="desktop-chrome" tests="1" failures="0" skipped="0" time="2.509" errors="0">
+<testcase name="assignment from creation to released grade" classname="01-assignment-flow.spec.ts" time="2.509">
+</testcase>
+</testsuite>
+<testsuite name="02-realtime-chat.spec.ts" timestamp="2026-10-25T09:07:09.861Z" hostname="desktop-chrome" tests="1" failures="0" skipped="0" time="1.922" errors="0">
+<testcase name="real-time chat with typing indicator and read ticks" classname="02-realtime-chat.spec.ts" time="1.922">
+</testcase>
+</testsuite>
+<testsuite name="03-offline-sync.spec.ts" timestamp="2026-10-25T09:07:09.861Z" hostname="desktop-chrome" tests="1" failures="0" skipped="0" time="3.646" errors="0">
+<testcase name="offline messages and submission sync when back online" classname="03-offline-sync.spec.ts" time="3.646">
+</testcase>
+</testsuite>
+<testsuite name="04-access-control.spec.ts" timestamp="2026-10-25T09:07:09.861Z" hostname="desktop-chrome" tests="1" failures="0" skipped="0" time="2.111" errors="0">
+<testcase name="student cannot open a course they are not enrolled in" classname="04-access-control.spec.ts" time="2.111">
+</testcase>
+</testsuite>
+</testsuites>
