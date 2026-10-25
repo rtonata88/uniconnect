@@ -65,7 +65,7 @@ it('MSG-5 / PRD 9.2 sends in real time and is idempotent on client_uuid', functi
 
     expect(Message::where('client_uuid', $uuid)->count())->toBe(1);
     Event::assertDispatchedTimes(MessageSent::class, 1);
-    Event::assertDispatched(MessageSent::class, fn ($e) => $e->broadcastOn()[0]->name === "presence-conversation.{$c->id}");
+    Event::assertDispatched(MessageSent::class, fn ($e) => $e->broadcastOn()[0]->name === "presence-conversation.{$c->id}.1");
 });
 
 it('SEC-2 non-participants cannot read or post', function () {

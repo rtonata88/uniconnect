@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GradesReleased;
 use App\Http\Resources\GradeItemResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
@@ -151,7 +152,7 @@ class GradebookController extends Controller
         $item->grades()->touch();
         Audit::log($release ? 'grade.released' : 'grade.unreleased', $item, ['course_id' => $item->course_id, 'title' => $item->title]);
         if ($release) {
-            event(new \App\Events\GradesReleased($item));
+            event(new GradesReleased($item));
         }
 
         return new GradeItemResource($item);

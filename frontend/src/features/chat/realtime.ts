@@ -6,8 +6,7 @@ import { applyReceipts, markDeleted, receiveMessage, refreshConversation, refres
 import { useChatStore } from './store'
 import type { Message } from './types'
 
-type Unsub = () => void
-const joined = new Map<number, Unsub>()
+const joined = new Map<number, { channel: string; leave: () => void }>()
 let userId: number | null = null
 const reconnectListeners = new Set<() => void>()
 const userEventListeners = new Map<string, Set<(payload: unknown) => void>>()
@@ -39,10 +38,12 @@ function isVisible(conversationId: number) {
   return useChatStore.getState().activeConversationId === conversationId && document.visibilityState === 'visible'
 }
 
-/** presence-conversation.{id}: MessageSent, MessageDeleted, typing whispers (MSG-5, MSG-8). */
-function joinConversation(echo: Echo<'reverb'>, id: number) {
-  if (joined.has(id)) return
-  const channel = echo.join(`conversation.${id}`)
+/** presence-conversation.{id}.{version}: MessageSent, MessageDeleted, typing whispers (MSG-5, MSG-8). */
+function joinConversation(echo: Echo<'reverb'>, id: number, name: string) {
+  const current = joined.get(id)
+  if (current?.channel === name) return
+  current?.leave()
+  const channel = echo.join(name)
   channel
     .listen('.MessageSent', (e: { message: Message }) => void receiveMessage(e.message, { visible: isVisible(id) }))
     .listen('.MessageDeleted', (e: { id: number }) => void markDeleted(e.id))
@@ -50,20 +51,22 @@ function joinConversation(echo: Echo<'reverb'>, id: number) {
       if (e.typing) useChatStore.getState().setTyping(id, e.id, e.name)
       else useChatStore.getState().clearTyping(id, e.id)
     })
-  joined.set(id, () => echo.leave(`conversation.${id}`))
+  joined.set(id, { channel: name, leave: () => echo.leave(name) })
 }
 
 export function whisperTyping(conversationId: number, me: { id: number; name: string }, typing: boolean) {
-  getEcho()?.join(`conversation.${conversationId}`).whisper('typing', { id: me.id, name: me.name, typing })
+  const name = joined.get(conversationId)?.channel
+  if (name) getEcho()?.join(name).whisper('typing', { id: me.id, name: me.name, typing })
 }
 
 /** Keep one presence subscription per conversation in the local database. */
 async function syncSubscriptions(echo: Echo<'reverb'>) {
-  const ids = new Set((await db.conversations.toCollection().primaryKeys()) as number[])
-  ids.forEach((id) => joinConversation(echo, id))
-  for (const [id, leave] of joined) {
+  const conversations = (await db.conversations.toArray()) as { id: number; channel?: string }[]
+  const ids = new Set(conversations.map((c) => c.id))
+  conversations.forEach((c) => joinConversation(echo, c.id, c.channel ?? `conversation.${c.id}.1`))
+  for (const [id, sub] of joined) {
     if (!ids.has(id)) {
-      leave()
+      sub.leave()
       joined.delete(id)
     }
   }

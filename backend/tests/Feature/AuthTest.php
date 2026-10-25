@@ -150,3 +150,19 @@ it('AUTH-1 slows (not locks) an account attacked from many networks', function (
     $this->withServerVariables(['REMOTE_ADDR' => '10.98.0.1'])
         ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])->assertOk();
 });
+
+it('AUTH-1 slow mode does not apply on networks the owner signed in from before', function () {
+    User::factory()->create(['email' => 'anna@uniconnect.test']);
+    $this->withServerVariables(['REMOTE_ADDR' => '10.50.0.7'])
+        ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])->assertOk();
+    foreach (range(1, 21) as $i) {
+        $this->withServerVariables(['REMOTE_ADDR' => "10.{$i}.0.1"])
+            ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'wrong']);
+    }
+    // attacker holds the slow slot from an unknown network…
+    $this->withServerVariables(['REMOTE_ADDR' => '10.200.0.1'])
+        ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])->assertStatus(429);
+    // …but the owner's known network is not slowed down
+    $this->withServerVariables(['REMOTE_ADDR' => '10.50.0.9'])
+        ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])->assertOk();
+});

@@ -6,6 +6,7 @@ use App\Http\Resources\AttemptResource;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizAttempt;
+use App\Support\Audit;
 use App\Support\Lms\QuizGrader;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -149,7 +150,7 @@ class QuizAttemptController extends Controller
         abort_unless($attempt->isSubmitted(), 409, 'The attempt has not been submitted yet.');
         $old = $attempt->score;
         $grader->gradeManually($attempt, $data['points']);
-        \App\Support\Audit::log('grade.changed', $attempt, ['from' => $old, 'to' => $attempt->score, 'quiz_id' => $attempt->quiz_id]);
+        Audit::log('grade.changed', $attempt, ['from' => $old, 'to' => $attempt->score, 'quiz_id' => $attempt->quiz_id]);
 
         return $this->present($attempt->refresh());
     }

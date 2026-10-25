@@ -246,3 +246,46 @@ VAPID public key at runtime.
 "Delete for everyone" (sender, within 1 hour) soft-deletes the row and wipes the encrypted body, so
 the content is gone from the database, not just hidden. Clients keep the row and show "This message
 was deleted".
+
+### D39. Removing a chat member rotates the conversation channel
+Channel names are versioned: `presence-conversation.{id}.{version}`. When a member is removed or
+leaves (including un-enrolment from a course), `channel_version` is incremented. Remaining members get
+`ConversationUpdated`, re-fetch the conversation (whose `channel` field carries the new name) and
+re-subscribe. The removed user's existing socket subscription stops receiving events, and the
+authoriser rejects both their new subscription and any stale version. The plain
+`presence-conversation.{id}` name in the PRD gained the version suffix for this reason (raised by the
+automated review).
+
+### D40. `presence-online` shares only ids
+The PRD's global presence channel lets every signed-in user see who is online. Member info is reduced to
+`{id}` (no names) to limit what can be enumerated. The channel stays because online dots and NOT-3's
+"not active in the app" check depend on it.
+
+### D41. Known networks skip login slow mode
+Slow mode (D28/D22) uses one slot per account, which an attacker could keep busy. Networks the account
+has signed in from successfully in the last 90 days bypass slow mode (they are still limited by
+the per-network limiter), so the owner can still get in while unknown networks share the slow slot.
+
+## Phase 6 — notifications
+
+### D42. Notification channels
+Every notification is stored (`database`) and pushed live through a small custom channel that
+dispatches a `NotificationCreated` broadcast on `private-user.{id}`. Laravel's built-in broadcast
+channel would name the event `BroadcastNotificationCreated`; the PRD names it `NotificationCreated`.
+Web Push is added only when the category is enabled (NOT-5) and the user is not active in the app,
+meaning not a member of `presence-online` on any Reverb instance (Reverb HTTP API, cached 5 s).
+If presence is unknown, the push is sent rather than lost. Chat messages are push-only (they have their own
+unread counts) and skip muted conversations (MSG-12). Fan-out runs on the `push` queue so a
+course-wide announcement never slows the request.
+
+### D43. The service worker decides about in-focus pushes
+A push that arrives while an app window is focused and visible is not shown as a system
+notification (the in-app toast already told the user). Notification clicks focus an existing window
+and ask it to navigate to the target screen (`NAVIGATE` message), or open a new window (MOB-7).
+On logout the device's push subscription is removed while the token is still valid, so the next
+user of a shared device does not receive the previous user's pushes.
+
+### D44. Deadline reminders
+`assignments:remind` runs every five minutes (scheduler, `onOneServer`). For each published
+assignment entering the 24 h or 1 h window, it atomically claims the window (`reminded_*_at`) and notifies
+enrolled students without a submission. A deadline change clears both markers, so the reminders are sent again.

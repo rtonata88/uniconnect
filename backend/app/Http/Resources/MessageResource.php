@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 
-/** @mixin \App\Models\Message */
+/** @mixin Message */
 class MessageResource extends JsonResource
 {
     /** @var array{status:string, delivered:int, read:int, recipients:int}|null tick status (sender's own messages) */
@@ -20,7 +21,7 @@ class MessageResource extends JsonResource
     }
 
     /**
-     * @param  iterable<\App\Models\Message>  $messages
+     * @param  iterable<Message>  $messages
      * @param  array<int, array>  $statuses
      */
     public static function list(iterable $messages, array $statuses): array

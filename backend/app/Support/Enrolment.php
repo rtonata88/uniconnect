@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Events\EnrolmentChanged;
 use App\Models\Course;
 use App\Models\User;
 
@@ -26,7 +27,7 @@ class Enrolment
             $course->members()->syncWithoutDetaching([$user->id => ['role' => $role]]);
             $changed[] = $user->id;
             Audit::log('enrolment.added', $course, ['user_id' => $user->id, 'role' => $role]);
-            event(new \App\Events\EnrolmentChanged($course, $user, $role));
+            event(new EnrolmentChanged($course, $user, $role));
         }
         if ($changed) {
             $course->touch();
@@ -48,7 +49,7 @@ class Enrolment
         $course->members()->detach($removed);
         foreach (User::whereIn('id', $removed)->get() as $user) {
             Audit::log('enrolment.removed', $course, ['user_id' => $user->id]);
-            event(new \App\Events\EnrolmentChanged($course, $user, null));
+            event(new EnrolmentChanged($course, $user, null));
         }
         $course->touch();
 

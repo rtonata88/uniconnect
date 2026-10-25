@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
@@ -46,7 +47,7 @@ class Course extends Model
     }
 
     /** The course group chat (MSG-4), created with the course. */
-    public function conversation(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function conversation(): HasOne
     {
         return $this->hasOne(Conversation::class);
     }

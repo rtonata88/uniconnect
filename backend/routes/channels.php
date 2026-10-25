@@ -11,13 +11,15 @@ use Illuminate\Support\Facades\Broadcast;
 // private-user.{id}: only that user
 Broadcast::channel('user.{id}', fn ($user, $id) => (int) $user->id === (int) $id);
 
-// presence-conversation.{id}: participants only
-Broadcast::channel('conversation.{conversation}', function ($user, Conversation $conversation) {
-    return $conversation->hasParticipant($user) ? ['id' => $user->id, 'name' => $user->name] : false;
+// presence-conversation.{id}.{version}: current participants of the current membership version only
+Broadcast::channel('conversation.{conversation}.{version}', function ($user, Conversation $conversation, $version) {
+    return (int) $version === $conversation->channel_version && $conversation->hasParticipant($user)
+        ? ['id' => $user->id, 'name' => $user->name]
+        : false;
 });
 
 // private-course.{id}: enrolled users
 Broadcast::channel('course.{course}', fn ($user, Course $course) => $course->isMember($user));
 
-// presence-online: everyone signed in (online dots)
-Broadcast::channel('online', fn ($user) => ['id' => $user->id, 'name' => $user->name]);
+// presence-online: everyone signed in (online dots, push suppression). Only ids are shared.
+Broadcast::channel('online', fn ($user) => ['id' => $user->id]);

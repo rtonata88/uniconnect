@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\Quiz */
+/** @mixin Quiz */
 class QuizResource extends JsonResource
 {
     /** Include questions with correct answers (lecturers only). */

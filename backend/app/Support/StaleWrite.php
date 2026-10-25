@@ -4,6 +4,7 @@ namespace App\Support;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Carbon;
 
 /**
  * Optimistic concurrency for lecturer-edited records (PRD 9.4): the client sends the
@@ -16,7 +17,7 @@ class StaleWrite
         if ($clientUpdatedAt === null || $model->updated_at === null) {
             return;
         }
-        $client = \Illuminate\Support\Carbon::parse($clientUpdatedAt);
+        $client = Carbon::parse($clientUpdatedAt);
         if ($model->updated_at->toIso8601ZuluString() !== $client->toIso8601ZuluString()) {
             throw new HttpResponseException(response()->json([
                 'message' => 'This item was changed by someone else. Reload and try again.',

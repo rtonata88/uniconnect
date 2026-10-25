@@ -3,6 +3,8 @@
 use App\Models\Attachment;
 use App\Models\CourseMaterial;
 use App\Models\User;
+use App\Support\Files\FileUrlSigner;
+use Aws\S3\S3Client;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -63,8 +65,8 @@ it('SEC-4 the S3 signer produces an expiring URL on the request host', function 
     config(['filesystems.disks.s3' => array_merge(config('filesystems.disks.s3'), ['key' => 'k', 'secret' => 's', 'region' => 'us-east-1', 'bucket' => 'uc-private'])]);
     Storage::forgetDisk('s3');
     $this->app['request']->headers->set('HOST', 'uni.example');
-    $url = app(\App\Support\Files\FileUrlSigner::class)->temporaryUrl('attachments/a.pdf', 'a.pdf', 'application/pdf');
+    $url = app(FileUrlSigner::class)->temporaryUrl('attachments/a.pdf', 'a.pdf', 'application/pdf');
     expect($url)->toMatch('~^https?://uni\.example/uc-private/attachments/a\.pdf\?~')
         ->toContain('X-Amz-Expires=300')
         ->toContain('X-Amz-Signature=');
-})->skip(fn () => ! class_exists(\Aws\S3\S3Client::class));
+})->skip(fn () => ! class_exists(S3Client::class));

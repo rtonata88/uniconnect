@@ -49,7 +49,8 @@ export class UniDb extends Dexie {
   grades!: EntityTable<Row, 'id'>
   conversations!: EntityTable<Row, 'id'>
   messages!: EntityTable<Record<string, any> & { client_uuid: string }, 'client_uuid'>
-  notifications!: EntityTable<Row & { id: string }, 'id'>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  notifications!: EntityTable<Record<string, any> & { id: string }, 'id'>
   files!: EntityTable<FileRow, 'id'>
   outbox!: EntityTable<OutboxRow, 'id'>
 

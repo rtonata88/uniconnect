@@ -17,7 +17,13 @@ class Conversation extends Model
 
     protected function casts(): array
     {
-        return ['last_message_at' => 'datetime', 'announcements_only' => 'boolean'];
+        return ['last_message_at' => 'datetime', 'announcements_only' => 'boolean', 'channel_version' => 'integer'];
+    }
+
+    /** Realtime channel (without the presence- prefix); versioned so removed members lose access. */
+    public function channelName(): string
+    {
+        return "conversation.{$this->id}.{$this->channel_version}";
     }
 
     public static function directKey(int $a, int $b): string

@@ -2,12 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Conversation;
 use App\Support\Files\FileUrlSigner;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 
-/** @mixin \App\Models\Conversation */
+/** @mixin Conversation */
 class ConversationResource extends JsonResource
 {
     public bool $withParticipants = false;
@@ -34,6 +35,7 @@ class ConversationResource extends JsonResource
             'title' => $this->type === 'direct' ? ($other?->name ?? 'Deleted user') : $this->title,
             'course_id' => $this->course_id,
             'announcements_only' => $this->announcements_only,
+            'channel' => $this->channelName(),
             'avatar_url' => $other?->avatar_path ? $signer->temporaryUrl($other->avatar_path, minutes: 60) : null,
             'other_user' => $other ? ['id' => $other->id, 'name' => $other->name, 'last_seen_at' => $other->last_seen_at?->toIso8601ZuluString()] : null,
             'my_role' => $mine?->role,

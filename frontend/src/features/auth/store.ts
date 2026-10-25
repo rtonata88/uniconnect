@@ -19,6 +19,12 @@ interface AuthState {
 }
 
 const listeners = new Set<(user: Me | null) => void>()
+const beforeLogoutHooks = new Set<() => Promise<void>>()
+/** Runs while the token is still valid (e.g. remove this device's push subscription). */
+export const beforeLogout = (fn: () => Promise<void>) => {
+  beforeLogoutHooks.add(fn)
+  return () => beforeLogoutHooks.delete(fn)
+}
 export const onAuthChange = (fn: (user: Me | null) => void) => {
   listeners.add(fn)
   return () => listeners.delete(fn)
@@ -72,6 +78,7 @@ export const useAuth = create<AuthState>((set, get) => ({
 
   logout: async ({ remote = true, all = false } = {}) => {
     if (remote && get().token) {
+      await Promise.allSettled([...beforeLogoutHooks].map((fn) => fn()))
       try {
         await api.post(all ? '/auth/logout-all' : '/auth/logout')
       } catch {

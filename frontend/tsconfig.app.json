@@ -4,12 +4,15 @@
     "target": "es2023",
     "lib": [
       "ES2023",
-      "DOM"
+      "DOM",
+      "DOM.Iterable",
+      "WebWorker"
     ],
     "module": "esnext",
     "types": [
       "vite/client",
-      "vitest/globals"
+      "vitest/globals",
+      "vite-plugin-pwa/client"
     ],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
@@ -31,5 +34,9 @@
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "src/sw.ts",
+    "src/sw-runtime.ts"
   ]
 }

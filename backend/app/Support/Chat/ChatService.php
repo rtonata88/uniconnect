@@ -67,7 +67,8 @@ class ChatService
         if (! $deleted) {
             return false;
         }
-        $conversation->touch();
+        // rotate the channel: the removed user's existing subscription stops receiving (SEC-3)
+        $conversation->increment('channel_version');
         if ($conversation->type === 'group') {
             $this->systemMessage($conversation, $actor && $actor->id !== $user->id ? "{$actor->name} removed {$user->name}" : "{$user->name} left");
             // the group keeps working without admins: promote the oldest member

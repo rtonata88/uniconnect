@@ -2,24 +2,26 @@
 
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\MessageController;
 use App\Http\Controllers\GradebookController;
+use App\Http\Controllers\HealthController;
+use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\MeController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\QuizAttemptController;
 use App\Http\Controllers\QuizController;
-use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\SubmissionController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\PasswordResetController;
-use App\Http\Controllers\HealthController;
-use App\Http\Controllers\MeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -106,6 +108,14 @@ Route::middleware(['auth:sanctum', 'activity', 'throttle:api'])->group(function 
     Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
     Route::post('/messages/receipts', [MessageController::class, 'receipts']);
     Route::get('/messages/{message}/info', [MessageController::class, 'info']);
+
+    // Notifications and push
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/read', [NotificationController::class, 'read']);
+    Route::get('/notification-preferences', [NotificationController::class, 'preferences']);
+    Route::put('/notification-preferences', [NotificationController::class, 'updatePreferences']);
+    Route::post('/push/webpush/subscribe', [PushSubscriptionController::class, 'store']);
+    Route::delete('/push/webpush/subscribe', [PushSubscriptionController::class, 'destroy']);
 
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/users', [AdminUserController::class, 'index']);

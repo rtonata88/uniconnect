@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SubmissionGraded;
 use App\Http\Resources\SubmissionResource;
 use App\Http\Resources\UserResource;
 use App\Models\Assignment;
 use App\Models\Submission;
 use App\Support\Audit;
 use App\Support\Files\AttachmentService;
+use App\Support\Lms\Gradebook;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -111,7 +113,7 @@ class SubmissionController extends Controller
 
         if ($submission->attempt > 1) {
             // a resubmission voids the previous grade in the gradebook too
-            app(\App\Support\Lms\Gradebook::class)->syncSubmission($submission);
+            app(Gradebook::class)->syncSubmission($submission);
         }
         Audit::log('submission.submitted', $submission, array_filter([
             'assignment_id' => $assignment->id,
@@ -148,7 +150,7 @@ class SubmissionController extends Controller
         $old = $submission->score;
         $submission->fill([...$data, 'graded_by' => $request->user()->id, 'graded_at' => now()])->save();
         Audit::log('grade.changed', $submission, ['from' => $old, 'to' => (float) $data['score'], 'assignment_id' => $submission->assignment_id]);
-        event(new \App\Events\SubmissionGraded($submission));
+        event(new SubmissionGraded($submission));
 
         return new SubmissionResource($submission->load('attachment', 'assignment', 'student'));
     }

@@ -43,6 +43,8 @@ export interface Conversation {
   title: string
   course_id: number | null
   announcements_only: boolean
+  /** versioned realtime channel, e.g. conversation.12.3 (rotates when a member is removed) */
+  channel: string
   avatar_url: string | null
   other_user: { id: number; name: string; last_seen_at: string | null } | null
   my_role: 'admin' | 'member' | null

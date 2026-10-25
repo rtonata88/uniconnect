@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AddedToGroup;
 use App\Http\Resources\ConversationResource;
 use App\Models\Conversation;
 use App\Models\Message;
@@ -105,7 +106,7 @@ class ConversationController extends Controller
             return $c;
         });
         foreach ($members as $member) {
-            event(new \App\Events\AddedToGroup($conversation, $member, $me));
+            event(new AddedToGroup($conversation, $member, $me));
         }
 
         return $this->present($conversation, $me)->response()->setStatusCode(201);
@@ -164,7 +165,7 @@ class ConversationController extends Controller
         }
         $added = $this->chat->addParticipants($conversation, $users, 'member', $me);
         foreach ($added as $u) {
-            event(new \App\Events\AddedToGroup($conversation, $u, $me));
+            event(new AddedToGroup($conversation, $u, $me));
         }
 
         return $this->present($conversation->refresh(), $me);

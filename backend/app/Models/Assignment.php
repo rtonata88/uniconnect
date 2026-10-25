@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['course_id', 'created_by', 'title', 'instructions', 'due_at', 'max_score', 'allow_late', 'late_penalty_percent', 'attachment_id', 'published_at'])]
@@ -45,7 +46,7 @@ class Assignment extends Model
     }
 
     /** Submission of the current user (eager-loaded for students). */
-    public function mySubmission(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function mySubmission(): HasOne
     {
         return $this->hasOne(Submission::class)->where('student_id', auth()->id());
     }

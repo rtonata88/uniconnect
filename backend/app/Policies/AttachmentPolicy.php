@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Attachment;
+use App\Models\ConversationParticipant;
+use App\Models\Message;
 use App\Models\User;
 
 /**
@@ -38,8 +40,8 @@ class AttachmentPolicy
 
     protected function visibleThroughMessages(User $user, Attachment $attachment): bool
     {
-        return \App\Models\Message::where('attachment_id', $attachment->id)
-            ->whereIn('conversation_id', \App\Models\ConversationParticipant::where('user_id', $user->id)->select('conversation_id'))
+        return Message::where('attachment_id', $attachment->id)
+            ->whereIn('conversation_id', ConversationParticipant::where('user_id', $user->id)->select('conversation_id'))
             ->exists();
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\QuizQuestion */
+/** @mixin QuizQuestion */
 class QuestionResource extends JsonResource
 {
     public bool $answers = false;

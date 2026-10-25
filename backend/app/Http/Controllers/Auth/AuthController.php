@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Support\Audit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -36,8 +37,12 @@ class AuthController extends Controller
 
             return $this->throttled($seconds);
         }
-        // account under attack from many networks: allow one attempt per 15 s (slowdown, not lockout)
-        if (RateLimiter::attempts($globalKey) >= 20) {
+        // account under attack from many networks: allow one attempt per 15 s (slowdown, not lockout).
+        // Networks the owner signed in from before are exempt, so an attacker cannot hog the slot.
+        $knownKey = 'login-known:'.mb_strtolower((string) $request->input('email'));
+        $network = LoginRequest::network((string) $request->ip());
+        $known = in_array($network, Cache::get($knownKey, []), true);
+        if (! $known && RateLimiter::attempts($globalKey) >= 20) {
             $slowKey = 'login-account-slow:'.mb_strtolower((string) $request->input('email'));
             if (RateLimiter::tooManyAttempts($slowKey, 1)) {
                 return $this->throttled(RateLimiter::availableIn($slowKey));
@@ -66,6 +71,7 @@ class AuthController extends Controller
         RateLimiter::clear($key);
         RateLimiter::clear($accountKey);
         RateLimiter::clear($globalKey);
+        Cache::put($knownKey, array_values(array_unique([...Cache::get($knownKey, []), $network])), now()->addDays(90));
         $device = $request->input('device_name') ?: substr((string) $request->userAgent(), 0, 100) ?: 'web';
         $token = $user->createToken($device, ['*'], now()->addMinutes((int) config('sanctum.expiration')));
         $user->forceFill(['last_seen_at' => now()])->save();

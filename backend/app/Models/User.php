@@ -10,14 +10,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 
 #[Fillable(['name', 'email', 'password', 'role', 'student_number', 'avatar_path', 'is_active', 'notification_preferences'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasPushSubscriptions, Notifiable;
 
     protected function casts(): array
     {
@@ -29,6 +31,12 @@ class User extends Authenticatable
             'is_active' => 'boolean',
             'notification_preferences' => 'array',
         ];
+    }
+
+    /** NOT-2: notifications are broadcast on private-user.{id}. */
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return "user.{$this->id}";
     }
 
     public function courses(): BelongsToMany
@@ -46,7 +54,7 @@ class User extends Authenticatable
     /** Users share a course (direct chats are only allowed then, MSG-2). */
     public function sharesCourseWith(User $other): bool
     {
-        return \Illuminate\Support\Facades\DB::table('course_user as a')
+        return DB::table('course_user as a')
             ->join('course_user as b', 'a.course_id', '=', 'b.course_id')
             ->join('courses', 'courses.id', '=', 'a.course_id')
             ->whereNull('courses.deleted_at')

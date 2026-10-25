@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatMessageCreated;
 use App\Events\MessageDeleted;
 use App\Events\MessageSent;
 use App\Http\Resources\MessageResource;
@@ -74,7 +75,7 @@ class MessageController extends Controller
         $message->load('sender:id,name', 'attachment', 'replyTo.sender:id,name');
         if ($created) {
             MessageSent::dispatch($message);
-            event(new \App\Events\ChatMessageCreated($message));
+            event(new ChatMessageCreated($message));
         }
         $status = $this->chat->statuses(collect([$message]))[$message->id] ?? null;
 

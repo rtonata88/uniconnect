@@ -11,6 +11,7 @@ import { LoginPage } from '@/features/auth/LoginPage'
 import { ForgotPasswordPage, ResetPasswordPage } from '@/features/auth/PasswordPages'
 import { ChatsPage } from '@/features/chat/ChatsPage'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
+import { NotificationsPage } from '@/features/notifications/NotificationsPage'
 import { QuizBuilderPage } from '@/features/quizzes/QuizBuilderPage'
 import { QuizPage } from '@/features/quizzes/QuizPage'
 import { QuizTakePage } from '@/features/quizzes/QuizTakePage'
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
           { path: 'attempts/:attemptId', element: <QuizTakePage /> },
           { path: 'chats', element: <ChatsPage /> },
           { path: 'chats/:conversationId', element: <ChatsPage /> },
-          { path: 'notifications', element: <Placeholder title="Notifications" /> },
+          { path: 'notifications', element: <NotificationsPage /> },
           { path: 'profile', element: <ProfilePage /> },
           {
             path: 'admin',

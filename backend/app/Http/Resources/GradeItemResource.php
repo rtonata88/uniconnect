@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\GradeItem;
 use App\Support\Lms\Gradebook;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\GradeItem */
+/** @mixin GradeItem */
 class GradeItemResource extends JsonResource
 {
     public function toArray(Request $request): array

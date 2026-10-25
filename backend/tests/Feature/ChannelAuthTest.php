@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Support\Enrolment;
 
 function authChannel($test, User $user, string $channel)
 {
@@ -27,9 +28,29 @@ it('SEC-3 private-user.{id} is only for that user', function () {
 
 it('SEC-3 presence-conversation.{id} is only for participants', function () {
     [$course, , $student] = courseWithMembers();
-    $chat = $course->conversation;
-    authChannel($this, $student, "presence-conversation.{$chat->id}")->assertOk()->assertJsonStructure(['auth', 'channel_data']);
-    authChannel($this, User::factory()->create(), "presence-conversation.{$chat->id}")->assertForbidden();
+    $chat = $course->conversation->fresh();
+    authChannel($this, $student, "presence-{$chat->channelName()}")->assertOk()->assertJsonStructure(['auth', 'channel_data']);
+    authChannel($this, User::factory()->create(), "presence-{$chat->channelName()}")->assertForbidden();
+});
+
+it('SEC-3 removing a member rotates the channel so the old subscription stops receiving', function () {
+    [$course, , $student] = courseWithMembers();
+    $old = $course->conversation->fresh()->channelName();
+    app(Enrolment::class)->unenrol($course, [$student->id]);
+    $new = $course->conversation->fresh()->channelName();
+
+    expect($new)->not->toBe($old);
+    authChannel($this, $student, "presence-{$new}")->assertForbidden();
+    // a stale version cannot be authorised by anyone
+    [, $lecturer] = [null, $course->lecturers()->first()];
+    authChannel($this, $lecturer, "presence-{$old}")->assertForbidden();
+    authChannel($this, $lecturer, "presence-{$new}")->assertOk();
+});
+
+it('presence-online shares only user ids', function () {
+    $u = User::factory()->create();
+    $data = json_decode(authChannel($this, $u, 'presence-online')->assertOk()->json('channel_data'), true);
+    expect($data['user_info'])->toBe(['id' => $u->id]);
 });
 
 it('SEC-3 private-course.{id} is only for enrolled users', function () {

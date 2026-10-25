@@ -20,11 +20,11 @@ class MessageSent implements ShouldBroadcast
     /** Serialised now so the queued job never needs to decrypt or reload the message. */
     public array $payload;
 
-    public int $conversationId;
+    public string $channel;
 
     public function __construct(Message $message)
     {
-        $this->conversationId = $message->conversation_id;
+        $this->channel = $message->conversation->fresh()->channelName();
         $this->payload = (new MessageResource($message->loadMissing('sender', 'attachment', 'replyTo.sender')))->resolve(request());
         $this->dontBroadcastToCurrentUser();
     }
@@ -36,7 +36,7 @@ class MessageSent implements ShouldBroadcast
 
     public function broadcastOn(): array
     {
-        return [new PresenceChannel("conversation.{$this->conversationId}")];
+        return [new PresenceChannel($this->channel)];
     }
 
     public function broadcastAs(): string
