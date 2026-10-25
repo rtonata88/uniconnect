@@ -89,3 +89,11 @@ it('SEC-9 admin can filter the audit log', function () {
         ->assertJsonPath('data.0.action', 'user.created')
         ->assertJsonPath('data.0.user.id', $this->admin->id);
 });
+
+it('setting a password as admin revokes the user tokens and is audited', function () {
+    $user = User::factory()->student()->create();
+    $user->createToken('phone');
+    $this->actingAs($this->admin)->patchJson("/api/admin/users/{$user->id}", ['password' => 'Fresh1password'])->assertOk();
+    expect($user->tokens()->count())->toBe(0)
+        ->and(AuditLog::where('action', 'user.password_reset')->exists())->toBeTrue();
+});

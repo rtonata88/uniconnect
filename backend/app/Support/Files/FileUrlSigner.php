@@ -51,11 +51,10 @@ class FileUrlSigner
 
     private function publicBase(): string
     {
+        // behind Traefik (trusted proxy) this is the scheme + host the browser used;
+        // in the console Laravel builds the request from APP_URL
         $request = request();
-        if ($request && $request->getHost() && ! app()->runningInConsole()) {
-            return $request->getSchemeAndHttpHost();
-        }
 
-        return rtrim((string) config('app.url'), '/');
+        return $request?->getHost() ? $request->getSchemeAndHttpHost() : rtrim((string) config('app.url'), '/');
     }
 }

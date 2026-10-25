@@ -46,6 +46,8 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api', fn (Request $r) => Limit::perMinute(120)->by($by($r))->response($json(120)));
         RateLimiter::for('messages', fn (Request $r) => Limit::perMinute(60)->by($by($r))->response($json(60)));
         RateLimiter::for('uploads', fn (Request $r) => Limit::perMinute(20)->by($by($r))->response($json(20)));
+        // all login attempts from one IP, across every email (credential stuffing)
+        RateLimiter::for('login-ip', fn (Request $r) => Limit::perMinute(30)->by('ip'.$r->ip())->response($json(30)));
         // unauthenticated endpoints other than login (which has its own failed-attempt limiter)
         RateLimiter::for('guest', fn (Request $r) => Limit::perMinute(10)->by('ip'.$r->ip())->response($json(10)));
     }

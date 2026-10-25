@@ -9,3 +9,4 @@
 /loadtests/.out
 .DS_Store
 *.log
+*.tmp.mjs

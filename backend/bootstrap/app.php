@@ -15,8 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(\App\Http\Middleware\AddServedBy::class);
-        // Traefik is the only entry point; trust its X-Forwarded-* headers.
-        $middleware->trustProxies(at: '*');
+        // Only the gateway may set X-Forwarded-* (client IP drives rate limits and the audit log).
+        // Multi-machine: add the gateway host's LAN IP to TRUSTED_PROXIES.
+        $middleware->trustProxies(at: array_filter(explode(',', (string) env('TRUSTED_PROXIES', '127.0.0.1,::1'))));
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
             'activity' => \App\Http\Middleware\TrackActivity::class,

@@ -8,3 +8,27 @@ pest()->extend(TestCase::class)
     ->in('Feature');
 
 pest()->extend(TestCase::class)->in('Unit');
+
+/*
+| Helpers
+*/
+function fakeStorage(): void
+{
+    \Illuminate\Support\Facades\Storage::fake('s3', ['serve' => true]);
+}
+
+/** A course with one lecturer and one student. @return array{0:\App\Models\Course,1:\App\Models\User,2:\App\Models\User} */
+function courseWithMembers(): array
+{
+    $course = \App\Models\Course::factory()->create();
+    $lecturer = \App\Models\User::factory()->lecturer()->create();
+    $student = \App\Models\User::factory()->student()->create();
+    $course->members()->attach([$lecturer->id => ['role' => 'lecturer'], $student->id => ['role' => 'student']]);
+
+    return [$course, $lecturer, $student];
+}
+
+function pdfUpload(string $name = 'notes.pdf'): \Illuminate\Http\UploadedFile
+{
+    return \Illuminate\Http\UploadedFile::fake()->createWithContent($name, "%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF");
+}

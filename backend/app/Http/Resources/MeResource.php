@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 
-/** The signed-in user (AUTH-4). Enrolled courses are added once courses exist. */
+/** The signed-in user with role and enrolled courses (AUTH-4). */
 class MeResource extends UserResource
 {
     public function toArray(Request $request): array
@@ -14,6 +14,9 @@ class MeResource extends UserResource
             'student_number' => $this->student_number,
             'is_active' => $this->is_active,
             'notification_preferences' => $this->notification_preferences ?? (object) [],
+            'courses' => $this->courses()->orderBy('code')->get()->map(fn ($c) => [
+                'id' => $c->id, 'code' => $c->code, 'title' => $c->title, 'role' => $c->pivot->role,
+            ]),
         ]);
     }
 }

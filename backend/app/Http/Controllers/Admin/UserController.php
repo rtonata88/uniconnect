@@ -143,6 +143,11 @@ class UserController extends Controller
         if ($oldRole !== $user->role->value) {
             Audit::log('user.role_changed', $user, ['from' => $oldRole, 'to' => $user->role->value]);
         }
+        if (isset($data['password'])) {
+            // a password set by an admin signs the user out everywhere
+            $user->tokens()->delete();
+            Audit::log('user.password_reset', $user);
+        }
         if ($wasActive && ! $user->is_active) {
             $user->tokens()->delete();
             Audit::log('user.deactivated', $user);

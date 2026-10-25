@@ -20,7 +20,7 @@ http:
       entryPoints: [websecure]
       rule: "PathPrefix(`/{{ env "AWS_BUCKET" }}/`)"
       service: minio
-      middlewares: [security-headers]
+      middlewares: [strip-auth, security-headers]
       tls: {}
     web:
       entryPoints: [websecure]
@@ -55,6 +55,12 @@ http:
       retry:
         attempts: 3
         initialInterval: 50ms
+    # Presigned URLs carry their own signature; a same-origin redirect would otherwise forward
+    # the API bearer token, which MinIO rejects (and which must not leave the API anyway).
+    strip-auth:
+      headers:
+        customRequestHeaders:
+          Authorization: ""
     security-headers:
       headers:
         stsSeconds: 31536000

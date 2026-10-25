@@ -131,3 +131,42 @@ This prevents locking every administrator out. Enforced by `UserPolicy::changeAc
 ### D21. TanStack Table pinned to v8
 `@tanstack/react-table@latest` is now v9, which has a different API (`createCoreRowModel`, table
 features). shadcn's data-table pattern targets v8, so the project pins `^8`.
+
+### D22. Login brute-force protection beyond the PRD minimum
+Besides AUTH-1's 5 failures per minute per email + IP, logins are limited to 20 failures per hour
+per account (any IP) and 30 attempts per minute per IP (any email). `X-Forwarded-For` is trusted only
+from `TRUSTED_PROXIES` (default loopback), so clients cannot rotate their apparent IP. Raised by the
+automated security review of phase 2. Consequence: k6 scripts pre-issue tokens instead of logging in
+under load.
+
+## Phase 3 — courses and LMS core
+
+### D23. Who may do what in a course
+Admins can *view* every course and manage course records and enrolments. Only users enrolled as
+lecturer in that course can *teach* it: upload materials, post announcements, create assignments
+and grade. An admin who needs to teach is enrolled as lecturer, which requires the lecturer role.
+Students must be enrolled as student to submit.
+
+### D24. One submission row per student and assignment
+Resubmitting before the deadline updates the same row (`attempt` + 1). `client_uuid` holds the
+idempotency key of the latest submit, so replays from the outbox return the stored row with 200.
+A resubmission clears any earlier grade. The late penalty is stored on the assignment and applied
+when the final score is computed (raw score kept).
+
+### D25. Publishing
+Materials, announcements and assignments are published immediately or saved as drafts
+(`published_at` null). The publish events (`MaterialPublished`, `AnnouncementPosted`,
+`AssignmentPublished`) fire when an item becomes visible, which is when notifications go out (phase 6).
+Scheduled publication was left out as unnecessary for the acceptance criteria.
+
+### D26. Upload type detection uses libmagic
+The MIME type is detected from the file bytes (`finfo`), never from the client's Content-Type or the
+extension, and must match the allow-list entry for the extension. Office files detected as
+`application/zip` are stored with their declared Office type. Original names are sanitised.
+
+### D27. Downloads: 302 for browsers, JSON for the app
+`GET /api/attachments/{id}` returns 302 to a 5-minute presigned URL as the PRD specifies. Browser
+`<img>`/`<a>` elements cannot send the bearer token, so the app calls `?json=1` and uses the returned
+URL. Traefik strips the `Authorization` header on the bucket route, because MinIO rejects a request
+that carries both a bearer token and a signature. A same-origin XHR redirect would otherwise forward
+the token.

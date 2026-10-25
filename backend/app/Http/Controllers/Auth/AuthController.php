@@ -29,8 +29,9 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $key = $request->throttleKey();
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            $seconds = RateLimiter::availableIn($key);
+        $accountKey = $request->accountThrottleKey();
+        if (RateLimiter::tooManyAttempts($key, 5) || RateLimiter::tooManyAttempts($accountKey, 20)) {
+            $seconds = max(RateLimiter::availableIn($key), RateLimiter::tooManyAttempts($accountKey, 20) ? RateLimiter::availableIn($accountKey) : 0);
 
             return response()->json([
                 'message' => "Too many login attempts. Try again in {$seconds} seconds.",
@@ -41,6 +42,7 @@ class AuthController extends Controller
 
         if (! $user || ! Hash::check($request->string('password'), $user->password)) {
             RateLimiter::hit($key, 60);
+            RateLimiter::hit($accountKey, 3600);
             Audit::log('auth.login_failed', $user, ['email' => $request->input('email'), 'reason' => 'invalid_credentials'], $user?->id);
 
             throw ValidationException::withMessages(['email' => 'These credentials do not match our records.']);
@@ -54,6 +56,7 @@ class AuthController extends Controller
         }
 
         RateLimiter::clear($key);
+        RateLimiter::clear($accountKey);
         $device = $request->input('device_name') ?: substr((string) $request->userAgent(), 0, 100) ?: 'web';
         $token = $user->createToken($device, ['*'], now()->addMinutes((int) config('sanctum.expiration')));
         $user->forceFill(['last_seen_at' => now()])->save();

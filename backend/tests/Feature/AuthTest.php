@@ -104,3 +104,28 @@ it('AUTH-6 deactivated users cannot log in', function () {
         ->assertStatus(422)
         ->assertJsonPath('errors.email.0', 'This account has been deactivated.');
 });
+
+it('AUTH-1 limits failed attempts per account across IPs', function () {
+    User::factory()->create(['email' => 'anna@uniconnect.test']);
+    foreach (range(1, 20) as $i) {
+        $this->withServerVariables(['REMOTE_ADDR' => "10.1.0.{$i}"])
+            ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'wrong'])->assertStatus(422);
+    }
+    $this->withServerVariables(['REMOTE_ADDR' => '10.2.0.1'])
+        ->postJson('/api/auth/login', ['email' => 'anna@uniconnect.test', 'password' => 'Password123!'])
+        ->assertStatus(429);
+});
+
+it('AUTH-1 limits login attempts per IP across all emails', function () {
+    foreach (range(1, 30) as $i) {
+        $this->postJson('/api/auth/login', ['email' => "u{$i}@uniconnect.test", 'password' => 'x'])->assertStatus(422);
+    }
+    $this->postJson('/api/auth/login', ['email' => 'other@uniconnect.test', 'password' => 'x'])->assertStatus(429);
+});
+
+it('ignores spoofed X-Forwarded-For from untrusted clients', function () {
+    $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.5'])
+        ->withHeader('X-Forwarded-For', '1.2.3.4')
+        ->getJson('/api/health');
+    expect(request()->ip())->toBe('203.0.113.5');
+});

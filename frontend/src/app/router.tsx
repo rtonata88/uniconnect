@@ -1,7 +1,11 @@
 import { createBrowserRouter } from 'react-router'
 import { Shell } from '@/app/Shell'
 import { Placeholder } from '@/components/Placeholder'
+import { CoursesAdminPage } from '@/features/admin/CoursesAdminPage'
 import { UsersPage } from '@/features/admin/UsersPage'
+import { AssignmentPage } from '@/features/assignments/AssignmentPage'
+import { CoursePage } from '@/features/courses/CoursePage'
+import { CoursesPage } from '@/features/courses/CoursesPage'
 import { RequireAuth, RequireRole } from '@/features/auth/guards'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { ForgotPasswordPage, ResetPasswordPage } from '@/features/auth/PasswordPages'
@@ -19,7 +23,9 @@ export const router = createBrowserRouter([
         element: <Shell />,
         children: [
           { index: true, element: <DashboardPage /> },
-          { path: 'courses', element: <Placeholder title="Courses" /> },
+          { path: 'courses', element: <CoursesPage /> },
+          { path: 'courses/:courseId/:tab?', element: <CoursePage /> },
+          { path: 'assignments/:assignmentId', element: <AssignmentPage /> },
           { path: 'chats', element: <Placeholder title="Chats" /> },
           { path: 'notifications', element: <Placeholder title="Notifications" /> },
           { path: 'profile', element: <ProfilePage /> },
@@ -28,7 +34,7 @@ export const router = createBrowserRouter([
             element: <RequireRole roles={['admin']} />,
             children: [
               { path: 'users', element: <UsersPage /> },
-              { path: 'courses', element: <Placeholder title="Courses & enrolments" /> },
+              { path: 'courses', element: <CoursesAdminPage /> },
               { path: 'system', element: <Placeholder title="System status" /> },
               { path: 'audit-logs', element: <Placeholder title="Audit log" /> },
             ],
