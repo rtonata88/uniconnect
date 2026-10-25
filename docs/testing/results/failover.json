@@ -1,0 +1,10 @@
+{
+  "killed_instance": "127.0.0.1:8002",
+  "killed_at": "2026-10-25T09:41:13.591Z",
+  "requests": 7031,
+  "failed": 0,
+  "error_rate": 0,
+  "requests_after_kill": 4184,
+  "failed_after_kill": 0,
+  "recovery_seconds": 0
+}

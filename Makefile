@@ -7,7 +7,7 @@ API    ?= 3
 REVERB ?= 2
 RESULTS := docs/testing/results
 
-.PHONY: verify-realtime help setup deps env certs db bucket migrate build up down restart status logs seed \
+.PHONY: zap verify-realtime help setup deps env certs db bucket migrate build up down restart status logs seed \
         scale kill-api test test-backend test-frontend test-e2e loadtest report docs
 
 help:
@@ -89,6 +89,9 @@ test-e2e:
 
 loadtest:
 	./loadtests/run.sh
+
+zap: ## OWASP ZAP baseline (passive) scan of the running stack
+	./scripts/zap-baseline.sh
 
 report:
 	cd backend && $(PHP) artisan report:testing

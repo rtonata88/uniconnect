@@ -16,7 +16,7 @@ function renderAt(path: string, role?: 'admin' | 'student') {
 }
 
 describe('AppLayout', () => {
-  it('renders the mobile bottom tab bar with four tabs', () => {
+  it('MOB-1 renders the mobile bottom tab bar with four tabs', () => {
     renderAt('/chats')
     const nav = screen.getByRole('navigation', { name: 'Main' })
     expect(nav.querySelectorAll('a')).toHaveLength(4)

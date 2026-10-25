@@ -24,6 +24,10 @@ shutdown() {
   echo "[api] SIGTERM: deregistering $PORT"
   kill -TERM "$HEARTBEAT" 2>/dev/null
   wait "$HEARTBEAT" 2>/dev/null
+  # drain: keep serving until registry:sync (2 s) and Traefik (1 s throttle) have removed us,
+  # so a planned stop loses no requests
+  sleep "${API_DRAIN_SECONDS:-4}"
+  echo "[api] drained, stopping Octane on $PORT"
   kill -TERM "$SERVER" 2>/dev/null
   wait "$SERVER" 2>/dev/null
   exit 0

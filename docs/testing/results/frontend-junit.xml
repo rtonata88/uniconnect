@@ -1,83 +1,87 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="33" failures="0" errors="0" time="0.329776041">
-    <testsuite name="src/app/layouts/AppLayout.test.tsx" timestamp="2026-10-25T08:59:13.934Z" hostname="Richards-MacBook-Pro.local" tests="2" failures="0" errors="0" skipped="0" time="0.088090541">
-        <testcase classname="src/app/layouts/AppLayout.test.tsx" name="AppLayout &gt; renders the mobile bottom tab bar with four tabs" time="0.072452167">
+<testsuites name="vitest tests" tests="34" failures="0" errors="0" time="0.312620417">
+    <testsuite name="src/app/layouts/AppLayout.test.tsx" timestamp="2026-10-25T09:42:55.147Z" hostname="Richards-MacBook-Pro.local" tests="2" failures="0" errors="0" skipped="0" time="0.086764708">
+        <testcase classname="src/app/layouts/AppLayout.test.tsx" name="AppLayout &gt; MOB-1 renders the mobile bottom tab bar with four tabs" time="0.071299291">
         </testcase>
-        <testcase classname="src/app/layouts/AppLayout.test.tsx" name="AppLayout &gt; only shows administration links to admins" time="0.014443">
-        </testcase>
-    </testsuite>
-    <testsuite name="src/features/auth/store.test.ts" timestamp="2026-10-25T08:59:13.934Z" hostname="Richards-MacBook-Pro.local" tests="3" failures="0" errors="0" skipped="0" time="0.021935708">
-        <testcase classname="src/features/auth/store.test.ts" name="auth store (SEC-11) &gt; stores the token in IndexedDB meta on login and sends it on requests" time="0.010165917">
-        </testcase>
-        <testcase classname="src/features/auth/store.test.ts" name="auth store (SEC-11) &gt; restores the session on start and drops an expired token" time="0.005516042">
-        </testcase>
-        <testcase classname="src/features/auth/store.test.ts" name="auth store (SEC-11) &gt; clears the token and local data on logout" time="0.004781125">
+        <testcase classname="src/app/layouts/AppLayout.test.tsx" name="AppLayout &gt; only shows administration links to admins" time="0.014291917">
         </testcase>
     </testsuite>
-    <testsuite name="src/features/chat/components/Ticks.test.tsx" timestamp="2026-10-25T08:59:13.935Z" hostname="Richards-MacBook-Pro.local" tests="7" failures="0" errors="0" skipped="0" time="0.089357708">
-        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders pending as &quot;Sending&quot;" time="0.069154125">
+    <testsuite name="src/features/auth/store.test.ts" timestamp="2026-10-25T09:42:55.147Z" hostname="Richards-MacBook-Pro.local" tests="3" failures="0" errors="0" skipped="0" time="0.019554542">
+        <testcase classname="src/features/auth/store.test.ts" name="auth store (SEC-11) &gt; stores the token in IndexedDB meta on login and sends it on requests" time="0.010399084">
         </testcase>
-        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders sent as &quot;Sent&quot;" time="0.003664791">
+        <testcase classname="src/features/auth/store.test.ts" name="auth store (SEC-11) &gt; restores the session on start and drops an expired token" time="0.004331667">
         </testcase>
-        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders delivered as &quot;Delivered&quot;" time="0.004830375">
-        </testcase>
-        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders read as &quot;Read&quot;" time="0.003890375">
-        </testcase>
-        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders failed as &quot;Not sent&quot;" time="0.003252125">
-        </testcase>
-        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; shows blue ticks only when read" time="0.003090333">
-        </testcase>
-        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; derives the status: local outbox state wins over the server status" time="0.000158459">
+        <testcase classname="src/features/auth/store.test.ts" name="auth store (SEC-11) &gt; clears the token and local data on logout" time="0.003602875">
         </testcase>
     </testsuite>
-    <testsuite name="src/features/quizzes/useCountdown.test.tsx" timestamp="2026-10-25T08:59:13.935Z" hostname="Richards-MacBook-Pro.local" tests="4" failures="0" errors="0" skipped="0" time="0.016792667">
-        <testcase classname="src/features/quizzes/useCountdown.test.tsx" name="useCountdown (LMS-9 quiz timer) &gt; counts down and auto-submits exactly once when time runs out" time="0.012873417">
+    <testsuite name="src/features/chat/components/Ticks.test.tsx" timestamp="2026-10-25T09:42:55.147Z" hostname="Richards-MacBook-Pro.local" tests="7" failures="0" errors="0" skipped="0" time="0.076267208">
+        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders pending as &quot;Sending&quot;" time="0.058795791">
         </testcase>
-        <testcase classname="src/features/quizzes/useCountdown.test.tsx" name="useCountdown (LMS-9 quiz timer) &gt; uses server time, not the device clock" time="0.001100583">
+        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders sent as &quot;Sent&quot;" time="0.003354791">
         </testcase>
-        <testcase classname="src/features/quizzes/useCountdown.test.tsx" name="useCountdown (LMS-9 quiz timer) &gt; returns null without a deadline" time="0.0010365">
+        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders delivered as &quot;Delivered&quot;" time="0.004643667">
         </testcase>
-        <testcase classname="src/features/quizzes/useCountdown.test.tsx" name="useCountdown (LMS-9 quiz timer) &gt; formats the clock" time="0.000231416">
+        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders read as &quot;Read&quot;" time="0.002713209">
         </testcase>
-    </testsuite>
-    <testsuite name="src/lib/repo.test.ts" timestamp="2026-10-25T08:59:13.935Z" hostname="Richards-MacBook-Pro.local" tests="6" failures="0" errors="0" skipped="0" time="0.034486959">
-        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; online: fetches, stores in IndexedDB and returns the server data" time="0.011543">
+        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; renders failed as &quot;Not sent&quot;" time="0.002939125">
         </testcase>
-        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; offline: answers from IndexedDB without calling the API" time="0.008555834">
+        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; shows blue ticks only when read" time="0.002431709">
         </testcase>
-        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; falls back to the local copy when the request fails without a response, and flips to offline" time="0.003505333">
-        </testcase>
-        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; reports data that was never saved on this device" time="0.002427792">
-        </testcase>
-        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; shows a submission still waiting in the outbox as pending" time="0.004749416">
-        </testcase>
-        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; computes the weighted total like the server" time="0.002079125">
+        <testcase classname="src/features/chat/components/Ticks.test.tsx" name="Ticks (MSG-7) &gt; derives the status: local outbox state wins over the server status" time="0.000140083">
         </testcase>
     </testsuite>
-    <testsuite name="src/lib/sync/engine.test.ts" timestamp="2026-10-25T08:59:13.935Z" hostname="Richards-MacBook-Pro.local" tests="4" failures="0" errors="0" skipped="0" time="0.02978375">
-        <testcase classname="src/lib/sync/engine.test.ts" name="sync engine (PRD 9.3) &gt; loops while has_more, passing the cursor along, and stores the final cursor" time="0.012904167">
+    <testsuite name="src/features/quizzes/useCountdown.test.tsx" timestamp="2026-10-25T09:42:55.148Z" hostname="Richards-MacBook-Pro.local" tests="4" failures="0" errors="0" skipped="0" time="0.018597542">
+        <testcase classname="src/features/quizzes/useCountdown.test.tsx" name="useCountdown (LMS-9 quiz timer) &gt; counts down and auto-submits exactly once when time runs out" time="0.013991541">
         </testcase>
-        <testcase classname="src/lib/sync/engine.test.ts" name="sync engine (PRD 9.3) &gt; applies deletions and drops courses and chats the user left" time="0.007522333">
+        <testcase classname="src/features/quizzes/useCountdown.test.tsx" name="useCountdown (LMS-9 quiz timer) &gt; uses server time, not the device clock" time="0.00137925">
         </testcase>
-        <testcase classname="src/lib/sync/engine.test.ts" name="sync engine (PRD 9.3) &gt; stores synced messages and queues delivered receipts for messages from others" time="0.005510834">
+        <testcase classname="src/features/quizzes/useCountdown.test.tsx" name="useCountdown (LMS-9 quiz timer) &gt; returns null without a deadline" time="0.001127">
         </testcase>
-        <testcase classname="src/lib/sync/engine.test.ts" name="sync engine (PRD 9.3) &gt; does not run offline" time="0.002068833">
+        <testcase classname="src/features/quizzes/useCountdown.test.tsx" name="useCountdown (LMS-9 quiz timer) &gt; formats the clock" time="0.000339">
         </testcase>
     </testsuite>
-    <testsuite name="src/lib/sync/outbox.test.ts" timestamp="2026-10-25T08:59:13.936Z" hostname="Richards-MacBook-Pro.local" tests="7" failures="0" errors="0" skipped="0" time="0.049328708">
-        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; processes entries in FIFO order" time="0.016831458">
+    <testsuite name="src/lib/push/sw-register.test.ts" timestamp="2026-10-25T09:42:55.148Z" hostname="Richards-MacBook-Pro.local" tests="1" failures="0" errors="0" skipped="0" time="0.013781083">
+        <testcase classname="src/lib/push/sw-register.test.ts" name="MOB-7 notification click &gt; navigates the open app to the screen named by the service worker" time="0.011757916">
         </testcase>
-        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; stops on a network error and keeps later entries behind (order preserved)" time="0.007020334">
+    </testsuite>
+    <testsuite name="src/lib/repo.test.ts" timestamp="2026-10-25T09:42:55.148Z" hostname="Richards-MacBook-Pro.local" tests="6" failures="0" errors="0" skipped="0" time="0.029581125">
+        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; online: fetches, stores in IndexedDB and returns the server data" time="0.009693458">
         </testcase>
-        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; backs off exponentially 1 s, 2 s, 4 s … up to 60 s" time="0.001703542">
+        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; offline: answers from IndexedDB without calling the API" time="0.007508125">
         </testcase>
-        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; marks an entry failed after 5 attempts" time="0.010930084">
+        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; falls back to the local copy when the request fails without a response, and flips to offline" time="0.003107416">
         </testcase>
-        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; treats 4xx (except 408/429) as permanent and does not block later entries" time="0.004770917">
+        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; reports data that was never saved on this device" time="0.001966333">
         </testcase>
-        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; a call made while offline does not block processing once back online (regression)" time="0.004254084">
+        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; shows a submission still waiting in the outbox as pending" time="0.003703834">
         </testcase>
-        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; does nothing while offline" time="0.002312917">
+        <testcase classname="src/lib/repo.test.ts" name="repository read path (PRD 9.5) &gt; computes the weighted total like the server" time="0.001876417">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/sync/engine.test.ts" timestamp="2026-10-25T09:42:55.148Z" hostname="Richards-MacBook-Pro.local" tests="4" failures="0" errors="0" skipped="0" time="0.026081959">
+        <testcase classname="src/lib/sync/engine.test.ts" name="sync engine (PRD 9.3) &gt; loops while has_more, passing the cursor along, and stores the final cursor" time="0.011805458">
+        </testcase>
+        <testcase classname="src/lib/sync/engine.test.ts" name="sync engine (PRD 9.3) &gt; applies deletions and drops courses and chats the user left" time="0.006787459">
+        </testcase>
+        <testcase classname="src/lib/sync/engine.test.ts" name="sync engine (PRD 9.3) &gt; stores synced messages and queues delivered receipts for messages from others" time="0.004293708">
+        </testcase>
+        <testcase classname="src/lib/sync/engine.test.ts" name="sync engine (PRD 9.3) &gt; does not run offline" time="0.001764417">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/sync/outbox.test.ts" timestamp="2026-10-25T09:42:55.148Z" hostname="Richards-MacBook-Pro.local" tests="7" failures="0" errors="0" skipped="0" time="0.04199225">
+        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; processes entries in FIFO order" time="0.014102959">
+        </testcase>
+        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; stops on a network error and keeps later entries behind (order preserved)" time="0.005274958">
+        </testcase>
+        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; backs off exponentially 1 s, 2 s, 4 s … up to 60 s" time="0.001284791">
+        </testcase>
+        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; marks an entry failed after 5 attempts" time="0.009773167">
+        </testcase>
+        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; treats 4xx (except 408/429) as permanent and does not block later entries" time="0.0051735">
+        </testcase>
+        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; a call made while offline does not block processing once back online (regression)" time="0.002645208">
+        </testcase>
+        <testcase classname="src/lib/sync/outbox.test.ts" name="outbox (PRD 9.2) &gt; does nothing while offline" time="0.002100208">
         </testcase>
     </testsuite>
 </testsuites>

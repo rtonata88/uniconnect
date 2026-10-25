@@ -51,3 +51,16 @@ it('PRD 10.1 lecturer dashboard lists submissions to grade', function () {
     $res = $this->actingAs($lecturer)->getJson('/api/dashboard')->assertOk();
     expect($res->json('to_grade.0.ungraded'))->toBe(1)->and($res->json('recent_submissions'))->toHaveCount(1);
 });
+
+it('DIST-1 the REST API is documented with Scribe (OpenAPI)', function () {
+    $spec = base_path('../docs/api/openapi.yaml');
+    expect(is_file($spec))->toBeTrue();
+    $yaml = (string) file_get_contents($spec);
+    foreach (['/api/auth/login', '/api/courses', '/api/conversations/{conversation_id}/messages', '/api/sync', '/api/admin/system'] as $path) {
+        expect($yaml)->toContain($path);
+    }
+})->skip(fn () => ! is_file(base_path('../docs/api/openapi.yaml')), 'run make docs first');
+
+it('DIST-2 / DIST-5 every response names the instance that served it', function () {
+    $this->getJson('/api/health')->assertHeader('X-Served-By', '127.0.0.1:8001');
+});

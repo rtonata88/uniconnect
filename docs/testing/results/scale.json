@@ -1,0 +1,16 @@
+{
+  "two": {
+    "replicas": 2,
+    "rps": 1910.615095793861,
+    "p95_ms": 87.0452,
+    "error_rate": 0
+  },
+  "three": {
+    "replicas": 3,
+    "rps": 2058.5123106235656,
+    "p95_ms": 131.69645,
+    "error_rate": 0
+  },
+  "throughput_increase_percent": 7.740816826753546,
+  "valid": true
+}

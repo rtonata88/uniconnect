@@ -1,12 +1,12 @@
 
 
 Code Coverage Report:
-  2026-10-25 09:02:35
+  2026-10-25 09:43:08
 
  Summary:
-  Classes:   60.00% (75/125)
-  Methods:   81.44% (373/458)
-  Lines:     90.09% (2329/2585)
+  Classes:   59.05% (75/127)
+  Methods:   78.85% (373/473)
+  Lines:     81.80% (2333/2852)
 
 App\Console\Commands\CloseExpiredAttempts
   Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 10/ 10)
@@ -95,7 +95,7 @@ App\Http\Middleware\AddServedBy
 App\Http\Middleware\EnsureRole
   Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
 App\Http\Middleware\SecurityHeaders
-  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 12/ 12)
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 14/ 14)
 App\Http\Middleware\TrackActivity
   Methods:   0.00% ( 0/ 1)   Lines:  71.42% (  5/  7)
 App\Http\Requests\Admin\StoreUserRequest
@@ -219,13 +219,13 @@ App\Policies\SubmissionPolicy
 App\Policies\UserPolicy
   Methods: 100.00% ( 4/ 4)   Lines: 100.00% (  4/  4)
 App\Providers\AppServiceProvider
-  Methods:  66.66% ( 2/ 3)   Lines:  87.50% ( 14/ 16)
+  Methods:  66.66% ( 2/ 3)   Lines:  88.23% ( 15/ 17)
 App\Providers\HorizonServiceProvider
   Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  3/  3)
 App\Support\Audit
   Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 10/ 10)
 App\Support\Chat\ChatService
-  Methods:  55.55% ( 5/ 9)   Lines:  91.60% (131/143)
+  Methods:  55.55% ( 5/ 9)   Lines:  91.66% (132/144)
 App\Support\Enrolment
   Methods:   0.00% ( 0/ 2)   Lines:  90.47% ( 19/ 21)
 App\Support\Files\AttachmentService

@@ -85,3 +85,14 @@ it('error responses do not leak stack traces', function () {
     $res = $this->actingAs($user)->getJson('/api/courses/999999')->assertNotFound();
     expect($res->json())->toHaveKey('message')->not->toHaveKey('trace')->not->toHaveKey('exception');
 });
+
+it('answers 401 JSON to unauthenticated API calls even without an Accept header', function () {
+    $res = $this->call('DELETE', '/api/announcements/1');
+    expect($res->status())->toBe(401)->and($res->json('message'))->toBe('Unauthenticated.');
+});
+
+it('404s do not reveal model class names', function () {
+    $user = User::factory()->create();
+    $res = $this->actingAs($user)->getJson('/api/assignments/987654')->assertNotFound();
+    expect($res->json('message'))->toBe('Not found.');
+});

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="2137" lines-covered="301" line-rate="0.1408" branches-valid="2248" branches-covered="185" branch-rate="0.08220000000000001" timestamp="1792918753939" complexity="0" version="0.1">
+<coverage lines-valid="2146" lines-covered="307" line-rate="0.14300000000000002" branches-valid="2256" branches-covered="190" branch-rate="0.0842" timestamp="1792921375152" complexity="0" version="0.1">
   <sources>
     <source>/Users/richard/Projects/uniconnect/frontend</source>
   </sources>
@@ -1412,12 +1412,12 @@
             </method>
             <method name="(anonymous_37)" hits="0" signature="()V">
               <lines>
-                <line number="327" hits="0"/>
+                <line number="329" hits="0"/>
               </lines>
             </method>
             <method name="(anonymous_38)" hits="0" signature="()V">
               <lines>
-                <line number="339" hits="0"/>
+                <line number="341" hits="0"/>
               </lines>
             </method>
           </methods>
@@ -1498,8 +1498,8 @@
             <line number="306" hits="0" branch="false"/>
             <line number="307" hits="0" branch="false"/>
             <line number="309" hits="0" branch="false"/>
-            <line number="327" hits="0" branch="false"/>
-            <line number="339" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="329" hits="0" branch="false"/>
+            <line number="341" hits="0" branch="true" condition-coverage="0% (0/2)"/>
           </lines>
         </class>
         <class name="submissionWriter.ts" filename="src/features/assignments/submissionWriter.ts" line-rate="0" branch-rate="0">
@@ -7340,7 +7340,7 @@
         </class>
       </classes>
     </package>
-    <package name="lib.push" line-rate="0" branch-rate="0">
+    <package name="lib.push" line-rate="0.1714" branch-rate="0.125">
       <classes>
         <class name="push.ts" filename="src/lib/push/push.ts" line-rate="0" branch-rate="0">
           <methods>
@@ -7422,6 +7422,66 @@
             <line number="59" hits="0" branch="false"/>
             <line number="60" hits="0" branch="true" condition-coverage="0% (0/4)"/>
             <line number="61" hits="0" branch="false"/>
+          </lines>
+        </class>
+        <class name="sw-register.ts" filename="src/lib/push/sw-register.ts" line-rate="0.6666" branch-rate="0.625">
+          <methods>
+            <method name="(anonymous_0)" hits="1" signature="()V">
+              <lines>
+                <line number="5" hits="1"/>
+              </lines>
+            </method>
+            <method name="(anonymous_1)" hits="0" signature="()V">
+              <lines>
+                <line number="8" hits="0"/>
+              </lines>
+            </method>
+            <method name="startServiceWorker" hits="1" signature="()V">
+              <lines>
+                <line number="11" hits="1"/>
+              </lines>
+            </method>
+            <method name="(anonymous_3)" hits="0" signature="()V">
+              <lines>
+                <line number="15" hits="0"/>
+              </lines>
+            </method>
+            <method name="(anonymous_4)" hits="0" signature="()V">
+              <lines>
+                <line number="16" hits="0"/>
+              </lines>
+            </method>
+            <method name="(anonymous_5)" hits="0" signature="()V">
+              <lines>
+                <line number="17" hits="0"/>
+              </lines>
+            </method>
+            <method name="(anonymous_6)" hits="0" signature="()V">
+              <lines>
+                <line number="19" hits="0"/>
+              </lines>
+            </method>
+            <method name="(anonymous_7)" hits="0" signature="()V">
+              <lines>
+                <line number="22" hits="0"/>
+              </lines>
+            </method>
+            <method name="(anonymous_8)" hits="2" signature="()V">
+              <lines>
+                <line number="24" hits="2"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="5" hits="1" branch="false"/>
+            <line number="12" hits="1" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="13" hits="1" branch="false"/>
+            <line number="15" hits="0" branch="false"/>
+            <line number="16" hits="0" branch="false"/>
+            <line number="19" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="22" hits="1" branch="false"/>
+            <line number="24" hits="1" branch="false"/>
+            <line number="25" hits="2" branch="true" condition-coverage="100% (4/4)"/>
           </lines>
         </class>
       </classes>

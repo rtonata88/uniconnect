@@ -3,10 +3,14 @@
 use App\Events\AssignmentPublished;
 use App\Models\Announcement;
 use App\Models\Assignment;
+use App\Models\Conversation;
 use App\Models\Course;
+use App\Models\CourseMaterial;
 use App\Models\Quiz;
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 
 it('lecturers edit, publish and delete announcements; 409 on stale edits', function () {
     [$course, $lecturer, $student] = courseWithMembers();
@@ -71,7 +75,7 @@ it('serves the runtime client config without auth', function () {
 it('the demo seeder creates the PRD §15 data set', function () {
     fakeStorage();
     config(['broadcasting.default' => 'null']);
-    $this->seed(\Database\Seeders\DatabaseSeeder::class);
+    $this->seed(DatabaseSeeder::class);
     expect(User::where('email', 'admin@uniconnect.test')->value('role')->value)->toBe('admin')
         ->and(User::where('role', 'student')->count())->toBe(10)
         ->and(Course::pluck('code')->sort()->values()->all())->toBe(['DB903', 'DMS901', 'SE902'])
@@ -79,7 +83,7 @@ it('the demo seeder creates the PRD §15 data set', function () {
         ->and(Course::first()->assignments()->count())->toBe(2)
         ->and(Course::first()->quizzes()->count())->toBe(1)
         ->and(Course::first()->conversation->messages()->count())->toBeGreaterThan(0)
-        ->and(\App\Models\Conversation::where('type', 'group')->count())->toBe(1);
-    $pdf = \Illuminate\Support\Facades\Storage::disk('s3')->get(\App\Models\CourseMaterial::first()->attachment->path);
+        ->and(Conversation::where('type', 'group')->count())->toBe(1);
+    $pdf = Storage::disk('s3')->get(CourseMaterial::first()->attachment->path);
     expect($pdf)->toStartWith('%PDF-1.4');
 });

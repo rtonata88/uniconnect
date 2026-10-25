@@ -65,7 +65,8 @@ module.exports = {
       instances: Number(e.API_INSTANCES || 2),
       exec_mode: 'fork',
       kill_signal: 'SIGTERM',
-      kill_timeout: 8000,
+      kill_timeout: 12000, // run-api.sh drains for 4 s before stopping Octane
+      treekill: false, // let run-api.sh stop Octane itself after the drain (default would signal it at once)
     }),
     proc('reverb', {
       script: path.join(ROOT, 'scripts', 'run-reverb.sh'),

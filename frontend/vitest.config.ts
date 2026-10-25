@@ -10,6 +10,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
+    alias: { 'virtual:pwa-register': path.resolve(__dirname, './src/test/pwa-register-stub.ts') },
     css: false,
     coverage: {
       provider: 'v8',

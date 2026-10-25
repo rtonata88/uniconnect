@@ -129,7 +129,11 @@ class ChatService
         }
 
         try {
+            // Lock the conversation row first: the insert's FK check takes a shared lock on it and the
+            // bump below needs an exclusive one, so without a fixed lock order concurrent senders in
+            // one chat deadlock (found by the NFR-2 load test). Deadlocks are also retried.
             $message = DB::transaction(function () use ($conversation, $sender, $data, $attachment) {
+                Conversation::whereKey($conversation->id)->lockForUpdate()->first(['id']);
                 $message = $conversation->messages()->create([
                     'sender_id' => $sender->id,
                     'client_uuid' => $data['client_uuid'],
@@ -145,7 +149,7 @@ class ChatService
                 ]);
 
                 return $message;
-            });
+            }, attempts: 3);
         } catch (UniqueConstraintViolationException) {
             // a concurrent retry won the race
             return [Message::where('client_uuid', $data['client_uuid'])->firstOrFail(), false];
@@ -257,7 +261,7 @@ class ChatService
                     $p->clone()->where('last_read_message_id', '<', $maxRead)->update(['last_read_message_id' => $maxRead]);
                 }
             }
-        });
+        }, attempts: 3);
 
         $after = $this->statusesByConversation($own);
         $changed = $own->filter(fn ($m) => ($before[$m->id]['status'] ?? null) !== $after[$m->id]['status'] || ($before[$m->id]['read'] ?? 0) !== $after[$m->id]['read']);

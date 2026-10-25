@@ -384,3 +384,61 @@ they are present even when an instance is reached directly in a multi-machine se
 `npm audit` flagged `compression` < 1.8.2 (denial of service), pulled in by `serve`, the static server of
 the `web` process. Even the newest `serve` pins 1.8.1, so `package.json` overrides it to `^1.8.2`.
 Result: 0 vulnerabilities. `composer audit`: no advisories.
+
+## Phase 10 — testing and performance
+
+### D58. Tests can never touch a real database
+A test runner that exported all of `backend/.env` into the environment overrode PHPUnit's
+SQLite settings (real environment variables win over `phpunit.xml` `<env>` in Laravel's lookup), and
+`RefreshDatabase` wiped the development database. Two fixes: `scripts/test-backend.sh` reads only
+the two values it needs, and `tests/TestCase.php` refuses to run against anything other than SQLite or
+a `*_testing` database. The demo data was restored with `make seed`.
+
+### D59. Coverage driver on demand
+Coverage needs Xdebug or PCOV. Instead of changing the global php.ini, `XDEBUG_EXTENSION` in
+`backend/.env` (Herd ships `xdebug-84-arm64.so`) is loaded only for `make test-backend`. Without a
+driver, the tests still run and the report says "not measured".
+
+### D60. Load-test identities
+k6 uses tokens issued by `php artisan loadtest:tokens` for the 500 `lt_*` users. Logging in under load
+would measure the login throttling (by design 30/min per IP) instead of the system. The tokens carry an
+extra `loadtest` ability that exempts them from the per-user `api` and `messages` limiters. A first NFR-7
+run without this got 20–36 % HTTP 429s (≈ 1 900 req/s over 500 users ≈ 230 req/min each), which made the
+throughput figure meaningless, so it was discarded. The ability can only be minted on the server by the
+artisan command. The check looks for the ability explicitly, because Sanctum's `can()` is true for
+everything on `*` tokens (every normal login), and a test proves normal tokens are still limited.
+NFR-1/2 keep think times that would stay under the limits anyway.
+
+### D61. ZAP scans use a read-only API spec
+ZAP's OpenAPI job sends a request for *every* operation. The first scan therefore ran
+`DELETE /api/admin/courses/{id}` with the admin token and soft-deleted a seeded course, which was
+restored. `scripts/zap-baseline.sh` now strips every non-GET operation from the spec before the import and
+refuses to run if any remain. The scan is passive ("baseline").
+
+### D62. Findings fixed from the ZAP scan
+- Unauthenticated API calls without `Accept: application/json` tried to redirect to a non-existent
+  `login` route (500). Guests now always get `401 {"message":"Unauthenticated."}`.
+- 404s no longer name model classes ("No query results for model [App\Models\…]").
+- `X-Powered-By` / `Server` removed at the gateway and in the app.
+- CSP `connect-src` no longer uses the `wss:` scheme wildcard: `'self'` covers same-host WebSockets.
+- Accepted: `style-src 'unsafe-inline'` (ZAP medium). Sonner and vaul inject their CSS as `<style>`
+  elements at runtime; hash allow-listing would break with every library update. Inline styles cannot
+  execute script, and `script-src` stays `'self'` only. Final scan: 0 high, 1 medium (this one),
+  0 low.
+
+### D63. Deadlock when many users post in one chat
+The NFR-2 load test (50 senders, 10 chats) showed 11 of 2,023 sends failing with MySQL deadlocks. Inserting
+a message takes a shared lock on the conversation row (foreign-key check), then bumping
+`last_message_id` needs an exclusive lock, so two concurrent senders deadlocked. `ChatService::send`
+now locks the conversation row first (`SELECT … FOR UPDATE`, one lock order) and lets Laravel retry a
+deadlocked transaction up to 3 times; the receipts transaction is retried too. NFR-2 was re-measured
+after the fix (see TEST_REPORT.md).
+
+### D64. Graceful drain when an API instance is stopped
+The first NFR-5 runs lost 2–12 requests (HTTP 502) right at the moment of `pm2 stop`. Cause: PM2's default
+`treekill` signals every child process at once, so Octane quit while Traefik was still sending it traffic.
+`run-api.sh` now stops the heartbeat first (the instance leaves the registry), keeps serving for
+`API_DRAIN_SECONDS` (default 4 s, longer than `registry:sync` at 2 s plus Traefik's 1 s throttle) and only
+then stops Octane. The api app sets `treekill: false` and `kill_timeout: 12000` so PM2 lets the script
+do this. A planned stop now loses no requests (re-measured: 0 of 7,031 failed). A crash (`kill -9`) is
+still covered by Traefik's health check and the `retry` middleware, as before.

@@ -69,11 +69,15 @@ http:
         customFrameOptionsValue: SAMEORIGIN
         referrerPolicy: strict-origin-when-cross-origin
         permissionsPolicy: "camera=(self), microphone=(), geolocation=()"
+        # do not advertise server software and versions
+        customResponseHeaders:
+          X-Powered-By: ""
+          Server: ""
     web-csp:
       headers:
         contentSecurityPolicy: >-
           default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
-          img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' wss: ws:;
+          img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self';
           media-src 'self' blob:; worker-src 'self'; manifest-src 'self'; frame-src 'self' blob:;
           object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
 

@@ -23,7 +23,7 @@ class UpdateUserRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('user')->id;
+        $id = $this->route('user')?->id; // null when docs are generated without a request
 
         return [
             'name' => ['sometimes', 'string', 'min:2', 'max:120'],

@@ -42,9 +42,13 @@ class AppServiceProvider extends ServiceProvider
         $by = fn (Request $r) => $r->user()?->id ? 'u'.$r->user()->id : 'ip'.$r->ip();
         $json = fn (int $max) => fn (Request $r, array $headers) => response()->json(
             ['message' => 'Too many requests. Please slow down.'], 429, $headers);
+        // Tokens minted by `php artisan loadtest:tokens` (server-side only, never via the API) carry the
+        // `loadtest` ability: per-user limits would otherwise cap a throughput measurement (D60).
+        // explicit check: Sanctum's can() is true for every ability on '*' tokens (i.e. all logins)
+        $loadTest = fn (Request $r) => in_array('loadtest', (array) ($r->user()?->currentAccessToken()?->abilities ?? []), true);
 
-        RateLimiter::for('api', fn (Request $r) => Limit::perMinute(120)->by($by($r))->response($json(120)));
-        RateLimiter::for('messages', fn (Request $r) => Limit::perMinute(60)->by($by($r))->response($json(60)));
+        RateLimiter::for('api', fn (Request $r) => $loadTest($r) ? Limit::none() : Limit::perMinute(120)->by($by($r))->response($json(120)));
+        RateLimiter::for('messages', fn (Request $r) => $loadTest($r) ? Limit::none() : Limit::perMinute(60)->by($by($r))->response($json(60)));
         RateLimiter::for('uploads', fn (Request $r) => Limit::perMinute(20)->by($by($r))->response($json(20)));
         // all login attempts from one IP, across every email (credential stuffing)
         RateLimiter::for('login-ip', fn (Request $r) => Limit::perMinute(30)->by('ip'.$r->ip())->response($json(30)));
