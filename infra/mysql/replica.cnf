@@ -1,0 +1,24 @@
+# MySQL 8.4 read replica. Template: setup-replication.sh renders it into
+# storage/mysql/replica.cnf, replacing @ROOT@, @PORT@ and @BIND@.
+[mysqld]
+server-id                = 2
+port                     = @PORT@
+bind-address             = @BIND@
+mysqlx                   = OFF
+datadir                  = @ROOT@/storage/mysql/replica/data
+socket                   = @ROOT@/storage/mysql/replica/mysqld.sock
+pid-file                 = @ROOT@/storage/mysql/replica/mysqld.pid
+log-error                = @ROOT@/storage/logs/mysql-replica.log
+log-bin                  = binlog
+relay-log                = relay-bin
+gtid_mode                = ON
+enforce_gtid_consistency = ON
+read_only                = ON
+super_read_only          = ON
+skip_replica_start       = OFF
+character-set-server     = utf8mb4
+collation-server         = utf8mb4_unicode_ci
+max_connections          = 500
+innodb_buffer_pool_size  = 256M
+innodb_flush_log_at_trx_commit = 2
+skip-name-resolve

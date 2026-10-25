@@ -1,0 +1,22 @@
+# MySQL 8.4 primary (writes). Template: setup-replication.sh renders it into
+# storage/mysql/primary.cnf, replacing @ROOT@, @PORT@ and @BIND@.
+[mysqld]
+server-id                = 1
+port                     = @PORT@
+bind-address             = @BIND@
+mysqlx                   = OFF
+datadir                  = @ROOT@/storage/mysql/primary/data
+socket                   = @ROOT@/storage/mysql/primary/mysqld.sock
+pid-file                 = @ROOT@/storage/mysql/primary/mysqld.pid
+log-error                = @ROOT@/storage/logs/mysql-primary.log
+log-bin                  = binlog
+binlog_format            = ROW
+binlog_expire_logs_seconds = 604800
+gtid_mode                = ON
+enforce_gtid_consistency = ON
+character-set-server     = utf8mb4
+collation-server         = utf8mb4_unicode_ci
+max_connections          = 500
+innodb_buffer_pool_size  = 256M
+innodb_flush_log_at_trx_commit = 2
+skip-name-resolve

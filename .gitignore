@@ -1,0 +1,11 @@
+/storage/
+/infra/traefik/traefik.yml
+/infra/traefik/certs/*.pem
+/frontend/node_modules
+/frontend/dist
+/frontend/dev-dist
+/frontend/test-results
+/frontend/playwright-report
+/loadtests/.out
+.DS_Store
+*.log

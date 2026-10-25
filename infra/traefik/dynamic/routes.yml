@@ -1,0 +1,79 @@
+# Static routes (file provider). The `api` and `reverb` services are NOT defined here:
+# they live in Redis (providers.redis) and are written by `php artisan registry:sync`
+# from live instance heartbeats, so they are referenced as api@redis / reverb@redis.
+# Values in {{ env "..." }} come from backend/.env via PM2 (see ecosystem.config.cjs).
+http:
+  routers:
+    api:
+      entryPoints: [websecure]
+      rule: "PathPrefix(`/api`) || PathPrefix(`/horizon`) || PathPrefix(`/vendor/horizon`) || PathPrefix(`/docs`)"
+      service: api@redis
+      middlewares: [retry, security-headers]
+      tls: {}
+    reverb:
+      entryPoints: [websecure]
+      rule: "PathPrefix(`/app/`) || PathPrefix(`/apps/`)"
+      service: reverb@redis
+      middlewares: [retry]
+      tls: {}
+    files:
+      entryPoints: [websecure]
+      rule: "PathPrefix(`/{{ env "AWS_BUCKET" }}/`)"
+      service: minio
+      middlewares: [security-headers]
+      tls: {}
+    web:
+      entryPoints: [websecure]
+      rule: "PathPrefix(`/`)"
+      priority: 1
+      service: web
+      middlewares: [security-headers, web-csp]
+      tls: {}
+    # server-to-server: the API publishes broadcasts to any live Reverb instance
+    reverb-internal:
+      entryPoints: [internal]
+      rule: "PathPrefix(`/`)"
+      service: reverb@redis
+      middlewares: [retry]
+
+  services:
+    web:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:{{ env "WEB_PORT" }}"
+    minio:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: "http://127.0.0.1:{{ env "MINIO_PORT" }}"
+
+  middlewares:
+    # Failover (DIST-2/NFR-5): if a backend refuses the connection (instance just died and
+    # registry:sync has not removed it yet), Traefik retries on another server. Retries only
+    # happen when no response was received, so non-idempotent requests are not duplicated.
+    retry:
+      retry:
+        attempts: 3
+        initialInterval: 50ms
+    security-headers:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        contentTypeNosniff: true
+        customFrameOptionsValue: SAMEORIGIN
+        referrerPolicy: strict-origin-when-cross-origin
+        permissionsPolicy: "camera=(self), microphone=(), geolocation=()"
+    web-csp:
+      headers:
+        contentSecurityPolicy: >-
+          default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
+          img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' wss: ws:;
+          media-src 'self' blob:; worker-src 'self'; manifest-src 'self'; frame-src 'self' blob:;
+          object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: "{{ env "UC_ROOT" }}/infra/traefik/certs/localhost.pem"
+        keyFile: "{{ env "UC_ROOT" }}/infra/traefik/certs/localhost-key.pem"
