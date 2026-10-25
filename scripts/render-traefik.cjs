@@ -31,7 +31,8 @@ entryPoints:
   internal:
     address: "${e.GATEWAY_INTERNAL_BIND}:${e.GATEWAY_INTERNAL_PORT}"
   traefik:
-    address: ":${e.GATEWAY_DASHBOARD_PORT}"
+    # dashboard + API are unauthenticated: only on this machine by default
+    address: "${e.GATEWAY_DASHBOARD_BIND || '127.0.0.1'}:${e.GATEWAY_DASHBOARD_PORT}"
 
 api:
   dashboard: true

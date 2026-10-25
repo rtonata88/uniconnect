@@ -15,9 +15,10 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         parent::boot();
 
-        // Horizon::routeSmsNotificationsTo('15556667777');
-        // Horizon::routeMailNotificationsTo('example@example.com');
-        // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
+        // The dashboard shows job payloads. It has no login of its own (the app uses API tokens),
+        // so it is only served to the machine running the stack (through the gateway the client
+        // IP is the real one: TRUSTED_PROXIES). Set HORIZON_ALLOWED_IPS to open it to others.
+        Horizon::auth(fn ($request) => in_array($request->ip(), config('uniconnect.horizon_allowed_ips'), true));
     }
 
     /**
@@ -27,10 +28,6 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      */
     protected function gate(): void
     {
-        Gate::define('viewHorizon', function ($user = null) {
-            return in_array(optional($user)->email, [
-                //
-            ]);
-        });
+        Gate::define('viewHorizon', fn ($user = null) => false); // access is decided by Horizon::auth above
     }
 }

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 import { Shell } from '@/app/Shell'
 import { Placeholder } from '@/components/Placeholder'
+import { AuditLogPage } from '@/features/admin/AuditLogPage'
 import { CoursesAdminPage } from '@/features/admin/CoursesAdminPage'
 import { UsersPage } from '@/features/admin/UsersPage'
 import { AssignmentPage } from '@/features/assignments/AssignmentPage'
@@ -47,7 +48,7 @@ export const router = createBrowserRouter([
               { path: 'users', element: <UsersPage /> },
               { path: 'courses', element: <CoursesAdminPage /> },
               { path: 'system', element: <SystemStatusPage /> },
-              { path: 'audit-logs', element: <Placeholder title="Audit log" /> },
+              { path: 'audit-logs', element: <AuditLogPage /> },
             ],
           },
           { path: '*', element: <Placeholder title="Page not found" /> },

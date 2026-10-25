@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AddServedBy;
 use App\Http\Middleware\EnsureRole;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\TrackActivity;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withBroadcasting(__DIR__.'/../routes/channels.php', ['prefix' => 'api', 'middleware' => ['api', 'auth:sanctum', 'activity']])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(AddServedBy::class);
+        $middleware->append(SecurityHeaders::class);
         // Only the gateway may set X-Forwarded-* (client IP drives rate limits and the audit log).
         // Multi-machine: add the gateway host's LAN IP to TRUSTED_PROXIES.
         $middleware->trustProxies(at: array_filter(explode(',', (string) env('TRUSTED_PROXIES', '127.0.0.1,::1'))));

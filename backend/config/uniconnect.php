@@ -14,6 +14,9 @@ return [
         'version' => env('APP_VERSION', '1.0.0'),
     ],
 
+    // Horizon dashboard is only served to these client IPs (default: the host machine)
+    'horizon_allowed_ips' => array_filter(explode(',', (string) env('HORIZON_ALLOWED_IPS', '127.0.0.1,::1'))),
+
     // Traefik API (dashboard entrypoint) used by the System Status page
     'gateway_api' => 'http://127.0.0.1:'.env('GATEWAY_DASHBOARD_PORT', 8090),
 

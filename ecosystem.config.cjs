@@ -49,7 +49,7 @@ module.exports = {
     }),
     proc('minio', {
       script: minioBin,
-      args: `server ${path.join(ROOT, 'storage', 'minio')} --address :${e.MINIO_PORT} --console-address :${e.MINIO_CONSOLE_PORT}`,
+      args: `server ${path.join(ROOT, 'storage', 'minio')} --address :${e.MINIO_PORT} --console-address ${e.MINIO_CONSOLE_BIND || '127.0.0.1'}:${e.MINIO_CONSOLE_PORT}`,
       interpreter: 'none',
       env: { MINIO_ROOT_USER: e.AWS_ACCESS_KEY_ID, MINIO_ROOT_PASSWORD: e.AWS_SECRET_ACCESS_KEY },
     }),

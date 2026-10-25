@@ -357,3 +357,30 @@ IndexedDB so the dashboard still renders offline.
 `make verify-realtime` connects two users through the gateway until their sockets land on different
 Reverb instances (each instance logs `socket <id> subscribed to <channel>`), then sends five messages
 over REST and reports delivery latency. Measured on the build machine: 5/5 delivered, 12–37 ms.
+
+## Phase 9 — security hardening
+
+### D54. Token in IndexedDB (SEC-11) and XSS defence in depth
+The PRD stores the bearer token in IndexedDB so the service worker and the app share it. Any script
+running in the page could read it, so the defence is to prevent script injection: the web CSP allows
+no inline or third-party script (`script-src 'self'`, `object-src 'none'`), all user content is
+rendered as text by React (no `dangerouslySetInnerHTML` anywhere), uploads can never be HTML/SVG/JS,
+and files are served by MinIO with `nosniff` and an attachment or inline disposition from the presigned URL.
+
+### D55. Admin consoles stay on the host
+Horizon's dashboard (job payloads), Traefik's dashboard/API and the MinIO console have no
+authentication suitable for the LAN. Horizon is served only to `HORIZON_ALLOWED_IPS` (default:
+the host itself, using the real client IP from the trusted gateway). Traefik's dashboard
+(`GATEWAY_DASHBOARD_BIND`) and the MinIO console (`MINIO_CONSOLE_BIND`) bind to 127.0.0.1 by
+default. The MinIO S3 port stays reachable because API instances on other machines need it.
+
+### D56. Debug off, uniform errors, API headers
+`APP_DEBUG=false` by default, so error responses only contain `{message, errors?}`. The API adds its own
+security headers (`nosniff`, frame options, referrer policy, `default-src 'none'`, `no-store`) so
+they are present even when an instance is reached directly in a multi-machine setup. CORS allows only
+`APP_URL` plus `CORS_ALLOWED_ORIGINS`.
+
+### D57. `compression` override
+`npm audit` flagged `compression` < 1.8.2 (denial of service), pulled in by `serve`, the static server of
+the `web` process. Even the newest `serve` pins 1.8.1, so `package.json` overrides it to `^1.8.2`.
+Result: 0 vulnerabilities. `composer audit`: no advisories.
