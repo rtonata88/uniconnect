@@ -1,17 +1,41 @@
 import { createBrowserRouter } from 'react-router'
-import { AppLayout } from '@/app/layouts/AppLayout'
+import { Shell } from '@/app/Shell'
 import { Placeholder } from '@/components/Placeholder'
+import { UsersPage } from '@/features/admin/UsersPage'
+import { RequireAuth, RequireRole } from '@/features/auth/guards'
+import { LoginPage } from '@/features/auth/LoginPage'
+import { ForgotPasswordPage, ResetPasswordPage } from '@/features/auth/PasswordPages'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
+import { ProfilePage } from '@/features/profile/ProfilePage'
 
 export const router = createBrowserRouter([
+  { path: '/login', element: <LoginPage /> },
+  { path: '/forgot-password', element: <ForgotPasswordPage /> },
+  { path: '/reset-password', element: <ResetPasswordPage /> },
   {
-    element: <AppLayout />,
+    element: <RequireAuth />,
     children: [
-      { index: true, element: <DashboardPage /> },
-      { path: 'courses', element: <Placeholder title="Courses" /> },
-      { path: 'chats', element: <Placeholder title="Chats" /> },
-      { path: 'notifications', element: <Placeholder title="Notifications" /> },
-      { path: 'profile', element: <Placeholder title="Profile" /> },
+      {
+        element: <Shell />,
+        children: [
+          { index: true, element: <DashboardPage /> },
+          { path: 'courses', element: <Placeholder title="Courses" /> },
+          { path: 'chats', element: <Placeholder title="Chats" /> },
+          { path: 'notifications', element: <Placeholder title="Notifications" /> },
+          { path: 'profile', element: <ProfilePage /> },
+          {
+            path: 'admin',
+            element: <RequireRole roles={['admin']} />,
+            children: [
+              { path: 'users', element: <UsersPage /> },
+              { path: 'courses', element: <Placeholder title="Courses & enrolments" /> },
+              { path: 'system', element: <Placeholder title="System status" /> },
+              { path: 'audit-logs', element: <Placeholder title="Audit log" /> },
+            ],
+          },
+          { path: '*', element: <Placeholder title="Page not found" /> },
+        ],
+      },
     ],
   },
 ])

@@ -6,7 +6,7 @@ http:
   routers:
     api:
       entryPoints: [websecure]
-      rule: "PathPrefix(`/api`) || PathPrefix(`/horizon`) || PathPrefix(`/vendor/horizon`) || PathPrefix(`/docs`)"
+      rule: "PathPrefix(`/api`) || PathPrefix(`/horizon`) || PathPrefix(`/vendor/horizon`)"
       service: api@redis
       middlewares: [retry, security-headers]
       tls: {}

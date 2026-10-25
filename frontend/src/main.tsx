@@ -5,6 +5,9 @@ import './index.css'
 import '@/app/theme'
 import { Providers } from '@/app/providers'
 import { router } from '@/app/router'
+import { useAuth } from '@/features/auth/store'
+
+void useAuth.getState().init()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

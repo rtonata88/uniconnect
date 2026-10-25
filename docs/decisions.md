@@ -102,3 +102,32 @@ by a small Zustand theme store, because its inline anti-flash script would be bl
 
 ### D15. Stateless API
 `SESSION_DRIVER=array`: the API is token-only (Sanctum bearer tokens), so there is no session state to share between replicas.
+
+### D16. Scribe generates static docs only
+Scribe writes static HTML to `docs/api` (`type: static`). The app has no `/docs` route and the
+gateway does not expose one. Response calls are disabled and example models are only
+`factoryMake`. **Why:** a live docs route with response calls can leak real data from the
+database (raised by an automated security review in phase 1).
+
+## Phase 2 — auth and users
+
+### D17. Login throttling counts failed attempts only
+AUTH-1 limits *failed* attempts (5 per minute per email + IP) through `RateLimiter::hit`, cleared on
+success, so a user who signs in correctly is never throttled. Other unauthenticated endpoints
+(forgot/reset password) share a `guest` limiter (10 per minute per IP).
+
+### D18. Avatars use the same signed-URL path as files, valid 60 minutes
+`avatar_path` points into the private bucket. `UserResource` embeds a presigned URL valid for 60 minutes
+instead of the 5 minutes used for attachments: avatars appear in lists that stay on screen and in the
+offline cache, and they are low-sensitivity. Expired URLs fall back to initials.
+
+### D19. Email and student number are visible only to self, lecturers and admins
+`UserResource` hides `email` and `student_number` when a student looks at another user (chat
+lists, course people).
+
+### D20. Admins cannot demote or deactivate themselves
+This prevents locking every administrator out. Enforced by `UserPolicy::changeAccess`.
+
+### D21. TanStack Table pinned to v8
+`@tanstack/react-table@latest` is now v9, which has a different API (`createCoreRowModel`, table
+features). shadcn's data-table pattern targets v8, so the project pins `^8`.

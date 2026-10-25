@@ -17,6 +17,13 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role', 20)->default('student')->index();
+            $table->string('student_number', 30)->nullable()->unique();
+            $table->string('avatar_path')->nullable();
+            $table->timestamp('last_seen_at')->nullable();
+            $table->boolean('is_active')->default(true)->index();
+            // NOT-5: per-category push on/off (in-app is always on)
+            $table->json('notification_preferences')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

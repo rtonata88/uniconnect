@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\AddServedBy::class);
         // Traefik is the only entry point; trust its X-Forwarded-* headers.
         $middleware->trustProxies(at: '*');
+        $middleware->alias([
+            'role' => \App\Http\Middleware\EnsureRole::class,
+            'activity' => \App\Http\Middleware\TrackActivity::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
