@@ -27,7 +27,235 @@ mkcert -install                        # trust the local HTTPS certificate autho
 make setup && make up && make seed
 ```
 
-Open **https://localhost**. Details, port changes, phones and multi-machine: [docs/deployment.md](docs/deployment.md).
+Open **https://localhost**. The full walkthrough is below; port changes, phones and multi-machine are in
+[docs/deployment.md](docs/deployment.md).
+
+## Setup and running
+
+Supported on **macOS** (Apple Silicon or Intel), **Ubuntu 24.04** and **Windows 10/11 through WSL 2**
+(Ubuntu 24.04). Everything runs natively under PM2; there is no Docker.
+
+### 1. Install the prerequisites
+
+| Software | Version |
+|---|---|
+| PHP | 8.4 with `pdo_mysql`, `redis`, `pcntl`, `intl`, `zip`, `mbstring`, `bcmath`, `gd` |
+| Composer | 2.x |
+| Node.js + PM2 | 22+ (`npm i -g pm2`) |
+| MySQL | 8.4 LTS (`mysqld` binary; UniConnect runs its own primary and replica) |
+| Redis | 7+, running as an OS service on port 6379 |
+| MinIO + `mc` | current |
+| Traefik | v3 |
+| mkcert | 1.4+ |
+| k6, Java 17 + OWASP ZAP | optional, only for `make loadtest` / `make zap` |
+
+The install scripts set all of this up:
+
+**macOS** (needs [Homebrew](https://brew.sh)):
+
+```bash
+./scripts/install-deps-macos.sh
+export PATH="$(brew --prefix)/opt/mysql@8.4/bin:$PATH"   # mysql@8.4 is keg-only (or set MYSQL_BIN_DIR, step 3)
+brew services start redis
+```
+
+**Ubuntu** (uses `sudo`; also starts Redis, frees port 3306 and lets Traefik bind ports 80/443):
+
+```bash
+./scripts/install-deps-ubuntu.sh
+```
+
+**Windows**: the scripts need a Linux shell, so UniConnect runs inside WSL 2 and you use it from a
+Windows browser.
+
+1. In PowerShell **as Administrator**, install WSL with Ubuntu 24.04 and restart when asked:
+   ```powershell
+   wsl --install -d Ubuntu-24.04
+   ```
+2. Open the **Ubuntu** app and create your Linux user. Make sure systemd is on (the Ubuntu script uses
+   it to start Redis). Check `/etc/wsl.conf`; if it doesn't contain the following, add it:
+   ```ini
+   [boot]
+   systemd=true
+   ```
+   then run `wsl --shutdown` in PowerShell and reopen Ubuntu.
+3. **Inside Ubuntu**, install the prerequisites. Clone into your Linux home directory (`~/`), not under
+   `/mnt/c/...`: MySQL can't use datadirs on the Windows drive, and file access there is slow.
+   ```bash
+   sudo apt-get update && sudo apt-get install -y git make
+   cd ~ && git clone git@github.com:rtonata88/uniconnect.git && cd uniconnect
+   ./scripts/install-deps-ubuntu.sh
+   ```
+4. Ports 80 and 443 must be free **on Windows too**, because WSL forwards `localhost` to Windows. If IIS
+   or another web server is using them, stop it or change `GATEWAY_HTTP_PORT` / `GATEWAY_HTTPS_PORT`
+   (step 3).
+
+Run every remaining command in this guide **inside the Ubuntu terminal**. Skip step 2 (Clone), because
+you already cloned the repository.
+
+Then trust the local certificate authority once (it asks for your password) and check everything:
+
+```bash
+mkcert -install
+./scripts/check-prereqs.sh     # versions, PHP extensions and free ports
+```
+
+On **Windows**, `mkcert -install` only trusts the certificate inside WSL. To make your Windows browsers
+trust it as well, copy the CA to Windows and import it from PowerShell (no Administrator needed):
+
+```bash
+cp "$(mkcert -CAROOT)/rootCA.pem" /mnt/c/Users/<your-windows-user>/Downloads/uniconnect-rootCA.crt
+```
+```powershell
+certutil -addstore -user Root $HOME\Downloads\uniconnect-rootCA.crt
+```
+
+Restart the browser afterwards. Firefox uses its own certificate store: import the file under
+Settings → Privacy & Security → Certificates → View Certificates → Authorities.
+
+### 2. Clone the repository
+
+```bash
+git clone git@github.com:rtonata88/uniconnect.git && cd uniconnect
+```
+
+### 3. Configure (only if needed)
+
+`make setup` creates `backend/.env` from `backend/.env.example` and generates the app key, Reverb
+credentials and Web Push (VAPID) keys. The defaults work on a single machine. Edit `backend/.env` first
+only if:
+
+- a default port is taken (`check-prereqs.sh` warns): change `GATEWAY_HTTPS_PORT`, `DB_PORT`, etc.;
+- your PHP 8.4 binary is not `php`, e.g. Laravel Herd: `PHP_BIN=php84`;
+- `mysqld` is not on your `PATH`: `MYSQL_BIN_DIR=/opt/homebrew/opt/mysql@8.4/bin`;
+- you are on an Apple **M5** Mac: the Homebrew MinIO crashes, so build it with
+  `./scripts/build-minio-from-source.sh` (needs `brew install go`) and set `MINIO_BIN_DIR=$HOME/.local/bin`.
+
+Outside a local demo, also change the default database passwords before setup (see [Database](#database)).
+
+All variables are described in [docs/deployment.md § Configuration](docs/deployment.md#3-configuration-backendenv).
+
+### 4. Set up
+
+```bash
+make setup
+```
+
+This checks the prerequisites, runs `composer install` and `npm install`, writes `backend/.env` and its
+keys, creates the HTTPS certificate, initialises the MySQL primary and replica and starts replication,
+creates the MinIO bucket, runs the migrations and builds the frontend. You can run it again safely, and
+every step can be run on its own: `make deps env certs db bucket migrate build`.
+
+### 5. Start the application and load demo data
+
+```bash
+make up       # starts every process under PM2
+make seed     # fresh demo data (re-run any time to reset)
+```
+
+Open **https://localhost** and sign in with one of the [demo accounts](#demo-accounts).
+
+### 6. Check that it is running
+
+```bash
+make status                               # PM2 processes, health and the System Status summary
+curl -I https://localhost/api/health      # shows X-Served-By: <instance>
+```
+
+PM2 should list `mysql-primary`, `mysql-replica`, `minio`, `traefik`, `api` ×2, `reverb` ×2,
+`registry`, `worker`, `scheduler` and `web`, all `online`.
+
+### Day-to-day
+
+| Task | Command |
+|---|---|
+| Stop everything | `make down` |
+| Restart after changing `backend/.env` or backend code (Octane keeps code in memory) | `make restart` |
+| Rebuild the PWA after frontend changes (no restart needed) | `make build` |
+| Follow the logs | `make logs` (files in `storage/logs/`) |
+| Start UniConnect when the machine boots | `pm2 startup && pm2 save` |
+| Run the tests | `make test` |
+
+Something not working? See [docs/deployment.md § Troubleshooting](docs/deployment.md#11-troubleshooting).
+
+### Database
+
+UniConnect doesn't use a MySQL server you already have. It runs its **own** two MySQL 8.4 instances,
+started and supervised by PM2, with their data under `storage/mysql/`:
+
+| Instance | PM2 name | Port | Role |
+|---|---|---|---|
+| Primary | `mysql-primary` | `DB_PORT` (3306) | all writes |
+| Replica | `mysql-replica` | `DB_REPLICA_PORT` (3307) | reads; GTID replication from the primary |
+
+Laravel sends writes to the primary and reads to the replica. `make setup` creates both instances, so
+you normally don't need to do anything else. The rest of this section explains what happens and how
+to work with the database.
+
+**Credentials** come from `backend/.env`:
+
+| Variable | Default | Used for |
+|---|---|---|
+| `DB_DATABASE` | `uniconnect` | app database (plus `uniconnect_testing`) |
+| `DB_USERNAME` / `DB_PASSWORD` | `uniconnect` / `uniconnect-secret` | the app's MySQL user |
+| `DB_REPLICATION_PASSWORD` | `repl-secret` | the `repl` user the replica connects with |
+
+Change them in `backend/.env` **before** the database is first created. Running `make db` again
+updates the app user's password, but not the replication password. To change that one later, reset
+the database (below). The MySQL `root` user has no password and only accepts local Unix-socket
+connections.
+
+**Creating the database step by step** (this is what `make setup` does):
+
+```bash
+make db        # infra/mysql/setup-replication.sh:
+               #  1. renders storage/mysql/primary.cnf + replica.cnf from infra/mysql/
+               #  2. initialises both datadirs (first run only)
+               #  3. starts mysql-primary and mysql-replica under PM2
+               #  4. creates the databases, the app user and the repl user
+               #  5. points the replica at the primary (GTID auto-position) and starts replication
+               #  6. waits until the replica has caught up
+make migrate   # creates the tables (php artisan migrate)
+make seed      # drops all tables, re-migrates and loads the demo data
+```
+
+`make db` is safe to run again; it skips anything that already exists. If `mysqld` isn't on your PATH,
+set `MYSQL_BIN_DIR` (step 3).
+
+**Connecting** with a client (MySQL Workbench, TablePlus, DBeaver, or the CLI):
+
+```bash
+mysql -h 127.0.0.1 -P 3306 -u uniconnect -p uniconnect                 # primary, password = DB_PASSWORD
+mysql -h 127.0.0.1 -P 3307 -u uniconnect -p uniconnect                 # replica (read-only use)
+mysql --socket=storage/mysql/primary/mysqld.sock -uroot                # root, from the project directory
+```
+
+On Windows, GUI clients running on Windows can connect to `127.0.0.1:3306` directly, because WSL
+forwards the port.
+
+**Checking replication**: run `make status`, open the System Status page in the app as admin, or:
+
+```bash
+mysql --socket=storage/mysql/replica/mysqld.sock -uroot -e 'SHOW REPLICA STATUS\G' \
+  | grep -E 'Replica_IO_Running|Replica_SQL_Running:|Seconds_Behind_Source|Last_Error'
+```
+
+Both `Running` values should be `Yes`. If they aren't, `Last_Error` explains why; running `make db`
+again usually fixes it.
+
+**Resetting**:
+
+```bash
+make seed                  # keep the instances, wipe and reload the demo data
+
+make down                  # full reset: stop everything …
+rm -rf storage/mysql       # … delete both datadirs (all data is lost) …
+make db migrate seed       # … recreate the instances, the tables and the demo data
+make up
+```
+
+**Tests** don't touch this database: Pest uses an in-memory SQLite database (`backend/phpunit.xml`),
+and `tests/TestCase.php` refuses to run against anything but SQLite or a `*_testing` database.
 
 ### Demo accounts
 
