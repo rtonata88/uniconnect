@@ -15,13 +15,18 @@ cd $FORGE_SITE_PATH
 git pull origin $FORGE_SITE_BRANCH
 
 # Forge keeps the site's Environment in $FORGE_SITE_PATH/.env; the app reads backend/.env
-if [ -f .env ] && [ ! -e backend/.env ]; then
+touch .env
+if [ ! -L backend/.env ]; then
+    [ -f backend/.env ] && mv backend/.env backend/.env.before-forge
     ln -s ../.env backend/.env
 fi
 
 # Backend
 cd $FORGE_SITE_PATH/backend
 $FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+# Forge's default Environment + what UniConnect needs (database uniconnect/forge, Redis, Reverb, keys)
+bash $FORGE_SITE_PATH/infra/forge/prepare-env.sh $FORGE_SITE_PATH $FORGE_PHP
 
 # FrankenPHP binary + worker file for Octane are not in git; download them once
 if [ ! -f frankenphp ] || [ ! -f public/frankenphp-worker.php ]; then

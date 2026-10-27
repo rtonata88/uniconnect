@@ -16,8 +16,8 @@ The files used below are in [`infra/forge/`](../infra/forge):
 
 | File | Goes into |
 |---|---|
-| [`env.production`](../infra/forge/env.production) | Site → Environment |
 | [`deploy.sh`](../infra/forge/deploy.sh) | Site → Deployments → Deploy script |
+| [`prepare-env.sh`](../infra/forge/prepare-env.sh) | nothing to paste: the deploy script runs it to complete Forge's default Environment |
 | [`nginx-locations.conf`](../infra/forge/nginx-locations.conf) | Site → Nginx configuration |
 
 Below, `uni.example.com` stands for your domain. Replace it everywhere.
@@ -37,8 +37,10 @@ UniConnect needs **PHP 8.4**, **MySQL 8**, **Redis** and **Node.js 22+** on the 
 
 ## 2. Create the database
 
-Server → **Databases**: create a database (e.g. `uniconnect`) and a database user with a strong
-password who has access to it. Note the three values for the Environment step.
+Server → **Databases**: create a database named **`uniconnect`**. Use Forge's default database user,
+**`forge`**. Its password is in the e-mail Forge sent when it provisioned the server, or you can reset
+it under the server's database settings. Don't use `root`: on Forge it only accepts local system
+logins (`auth_socket`), so Laravel gets *Access denied for user 'root'@'localhost'*.
 
 ## 3. Create the site
 
@@ -50,7 +52,7 @@ Server → **New site**:
 | Project type | Laravel / PHP |
 | PHP version | 8.4 |
 | Root directory | leave the default (the repository root) |
-| Web directory | leave the default; you'll set the Nginx root by hand in step 7 |
+| Web directory | leave the default; you'll set the Nginx root by hand in step 6 |
 | Repository | `rtonata88/uniconnect`, branch `main` |
 | Install Composer dependencies | **off** (`composer.json` is in `backend/`; the deploy script installs it) |
 | Advanced settings → Zero-downtime deployments | **off** (it's **on by default**) |
@@ -66,44 +68,42 @@ script in step 5 **before** the first deploy.
 
 ## 4. Environment
 
-Site → **Environment**: replace the contents with [`infra/forge/env.production`](../infra/forge/env.production)
-and fill in the values in `<angle brackets>`:
+Keep Forge's default Environment. Site → **Environment**: you only need to set one value:
 
-- `APP_URL`: `https://uni.example.com`
-- `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: from step 2
-- `REVERB_APP_KEY`, `REVERB_APP_SECRET`: random strings (`openssl rand -hex 10` and `openssl rand -hex 20`)
-- `VAPID_SUBJECT`, the `MAIL_*` settings (password-reset e-mails) and your IP in `HORIZON_ALLOWED_IPS`
+```dotenv
+DB_PASSWORD=<the forge database user's password>
+```
 
-Leave `APP_KEY` and the VAPID keys empty; step 6 generates them.
+Everything else is filled in on each deploy by
+[`infra/forge/prepare-env.sh`](../infra/forge/prepare-env.sh):
 
-Forge saves this as `.env` in the repository root. The deploy script links `backend/.env` to it, so
-the app, the daemons and `artisan` all read the same file.
+| What | Values |
+|---|---|
+| Database (Forge defaults) | `DB_DATABASE=uniconnect` and `DB_USERNAME=forge` if they are empty or still Laravel's `laravel` / `root`; reads use the same server (`DB_REPLICA_*`) |
+| Settings UniConnect depends on (always set) | `QUEUE_CONNECTION=redis` (Horizon), `CACHE_STORE=redis`, `BROADCAST_CONNECTION=reverb`, `SESSION_DRIVER=array`, `FILESYSTEM_DISK=local`, `PHP_BIN`, the API/Reverb ports used by Nginx |
+| Secrets (generated once, never replaced) | `APP_KEY`, `REVERB_APP_KEY`, `REVERB_APP_SECRET`, the VAPID keys for Web Push |
+| Defaults if missing | `APP_URL=https://<site name>`, `APP_ENV=production`, `APP_DEBUG=false`, Redis on 127.0.0.1 |
+
+If `DB_PASSWORD` is empty, the deploy stops with a message saying so. Optional additions: the `MAIL_*`
+settings (password-reset e-mails) and your IP in `HORIZON_ALLOWED_IPS`. Don't change `APP_KEY`
+once it's set: message bodies are encrypted with it.
+
+Forge saves the Environment as `.env` in the repository root. The deploy script links `backend/.env`
+to it, so the app, the daemons and `artisan` all read the same file, and the Environment page shows
+the generated values.
 
 ## 5. Deploy script and first deploy
 
 Site → **Deployments** → deploy script: replace it with [`infra/forge/deploy.sh`](../infra/forge/deploy.sh).
 
-The script pulls the code and runs `composer install --no-dev`. On the first deploy it also downloads
-FrankenPHP for Octane. Every deploy then runs the migrations, caches the routes, builds the PWA into
+The script pulls the code, runs `composer install --no-dev` and completes the Environment (step 4).
+On the first deploy it also downloads FrankenPHP for Octane. Every deploy then runs the migrations, caches the routes, builds the PWA into
 `frontend/dist` and tells the running API, Reverb and Horizon to reload.
 
 Click **Deploy now**. The first deploy takes a few minutes (Composer, FrankenPHP, `npm ci`, build).
 The reload commands at the end have nothing to reload yet; that's expected.
 
-## 6. Generate the secrets (once)
-
-SSH in and run:
-
-```bash
-cd ~/uni.example.com/backend
-grep -q '^APP_KEY=base64' .env || php8.4 artisan key:generate --force
-php8.4 artisan webpush:vapid --force
-```
-
-This writes `APP_KEY`, `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY` into the `.env`, which the Forge
-Environment page then shows. Don't change `APP_KEY` later: message bodies are encrypted with it.
-
-## 7. HTTPS and Nginx
+## 6. HTTPS and Nginx
 
 1. Site → **SSL** → Let's Encrypt → issue a certificate for `uni.example.com`. Do this first: Forge
    adds the `ssl_*` lines to the Nginx config.
@@ -122,7 +122,7 @@ Nginx now serves the PWA from `frontend/dist` and forwards three kinds of reques
   `127.0.0.1:8001`;
 - `/app/*` and `/apps/*` (WebSockets) go to Reverb on `127.0.0.1:8101`.
 
-## 8. Daemons
+## 7. Daemons
 
 Server → **Daemons** (Background processes): add four. For each one, set:
 
@@ -144,7 +144,7 @@ Don't add a Forge **Scheduler** job for `schedule:run` as well; the Scheduler da
 that job. Octane and Reverb listen on all interfaces, but Forge's firewall only opens ports 22, 80 and
 443, so ports 8001 and 8101 stay private. Don't open them.
 
-## 9. Data
+## 8. Data
 
 **For a demo or presentation:** load the demo courses, chats and accounts. Every account's password is
 `Password123!`, so change them or remove the accounts before real users join:
@@ -162,7 +162,7 @@ App\Models\User::forceCreate(["name" => "Admin", "email" => "you@example.com", "
   "password" => "<a-strong-password>", "is_active" => true, "email_verified_at" => now()]);'
 ```
 
-## 10. Check it
+## 9. Check it
 
 ```bash
 curl -sI https://uni.example.com/api/health | grep -iE '^HTTP|x-served-by'   # 200, X-Served-By: <host>:8001
@@ -198,10 +198,11 @@ values.
 
 | Symptom | Check |
 |---|---|
+| `Access denied for user 'root'@'localhost'` during migrate | Forge's MySQL `root` only allows socket logins. Use the `forge` user: set `DB_PASSWORD` and redeploy (the script sets `DB_USERNAME=forge`). |
 | 502 Bad Gateway on `/api/...` | The API daemon isn't running: check its status and logs in Forge, then `backend/storage/logs/laravel-*.log`. On the first start, Octane needs `backend/frankenphp` from the deploy. |
 | Page loads but sign-in fails with a network error | `APP_URL` doesn't match the domain, or Nginx doesn't have the `/api` location. |
 | Chat messages only appear after a refresh | Reverb daemon status; the `/app/` location in Nginx; `REVERB_HOST=127.0.0.1` and `REVERB_PORT=8101` in the Environment. |
 | Files fail with 403 | The link is older than 5 minutes (they expire), or the server clock is wrong. |
 | Changes in the Environment have no effect | Restart the daemons; the deploy script doesn't cache config, so nothing else needs clearing. |
 | Horizon returns 403 | Your IP isn't in `HORIZON_ALLOWED_IPS`. |
-| Push notifications never arrive | The VAPID keys are missing (step 6), or the browser hasn't enabled push in Profile. |
+| Push notifications never arrive | The VAPID keys are missing (redeploy to generate them), or the browser hasn't enabled push in Profile. |
