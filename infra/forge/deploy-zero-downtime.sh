@@ -1,11 +1,11 @@
 # UniConnect deploy script for Laravel Forge sites with ZERO-DOWNTIME deployments (Forge's default).
 # Paste into Site → Deployments → Deploy script. For a standard (in-place) site use deploy.sh instead.
 #
-# Each deploy is a fresh checkout in releases/<n>; Forge points `current` at it when
-# $ACTIVATE_RELEASE() runs. Things that must outlive a release are kept in $FORGE_SITE_ROOT/shared:
+# Each deploy is a fresh checkout in releases/<n>; Forge points `current` at it at the end. Things that must outlive a release are kept in $FORGE_SITE_ROOT/shared:
 #   backend-storage/  uploaded files, logs, Octane state (symlinked to backend/storage)
 #   frankenphp        the Octane server binary (downloaded once, ~100 MB)
 # Forge already shares .env (release/.env -> $FORGE_SITE_ROOT/.env).
+# Needs the release-watch daemon (docs/forge.md, step 7) to move running daemons to new releases.
 
 $CREATE_RELEASE()
 
@@ -56,17 +56,9 @@ cd $FORGE_RELEASE_DIRECTORY/frontend
 npm ci --no-audit --no-fund
 npm run build
 
+# Keep the two Forge macros below as the last lines, and never write a macro name in a comment:
+# Forge expands macros wherever they appear. The release-watch daemon (infra/forge/release-watch.sh) moves
+# the running daemons onto the new release once `current` switches.
 $ACTIVATE_RELEASE()
 
-# The daemons run from `current`, but a running process stays in the release it started in.
-# Stop every UniConnect daemon process that isn't in the new release; Forge (Supervisor)
-# restarts it straight away from `current`, i.e. the new release. The API drains for a few
-# seconds first (scripts/run-api.sh), so in-flight requests finish.
-NEW=$(readlink -f $FORGE_SITE_ROOT/current)
-for pid in $(pgrep -u $(id -u) -f 'scripts/run-|artisan reverb:start' || true); do
-    dir=$(readlink -f /proc/$pid/cwd 2>/dev/null || true)
-    case "$dir" in
-        $FORGE_SITE_ROOT/releases/*) [ "${dir#$NEW}" = "$dir" ] && kill -TERM $pid 2>/dev/null || true ;;
-    esac
-done
-echo "Deployed $(basename $NEW)"
+$RESTART_QUEUES()

@@ -65,8 +65,8 @@ below. Otherwise use `deploy.sh` and leave `current/` out of the paths.
 With zero-downtime, every deploy is a fresh checkout in `releases/<n>`, and Forge switches the
 `current` link to it at the end. UniConnect's script keeps what must survive between releases in
 `/home/forge/uni.example.com/shared/`: `backend-storage/` (uploaded files, logs) and the FrankenPHP
-binary. Forge already shares `.env`. After switching, the script stops the daemons still running
-the old release, and Forge restarts them on the new one. The API is unavailable for a few seconds
+binary. Forge already shares `.env`. A fifth daemon, `release-watch`, notices when `current`
+switches, stops the daemons still running the old release, and Forge restarts them on the new one. The API is unavailable for a few seconds
 during each deploy, while Octane starts.
 
 After the site is created, Forge fills in its own default deploy script. Replace it with UniConnect's
@@ -134,7 +134,7 @@ Nginx now serves the PWA from `frontend/dist` and forwards three kinds of reques
 
 ## 7. Daemons
 
-Server → **Daemons** (Background processes): add four. For each one, set:
+Server → **Daemons** (Background processes): add four, or five on a zero-downtime site. For each one, set:
 
 - **Directory:** `/home/forge/uni.example.com/current` (standard site: `/home/forge/uni.example.com`)
 - **User:** `forge`
@@ -146,6 +146,7 @@ Server → **Daemons** (Background processes): add four. For each one, set:
 | Reverb | `bash scripts/run-reverb.sh` | 10 |
 | Horizon | `bash scripts/run-with-heartbeat.sh worker php8.4 artisan horizon` | 20 |
 | Scheduler | `bash scripts/run-with-heartbeat.sh scheduler php8.4 artisan schedule:work` | 10 |
+| Release watch (zero-downtime sites only) | `bash infra/forge/release-watch.sh /home/forge/uni.example.com` | 5 |
 
 These are the same scripts PM2 runs locally. Each one loads `backend/.env` and registers its process in
 the Redis service registry, so the System Status page lists the instances.
@@ -198,7 +199,7 @@ Push to `main` and click **Deploy now**, or enable **Quick deploy** to deploy on
 script gets the API, Reverb, Horizon and the scheduler onto the new code itself; you don't need to
 restart the daemons by hand.
 
-After you change the **Environment**, restart the four daemons (Daemons → Restart) so they read the new
+After you change the **Environment**, restart the daemons (Daemons → Restart) so they read the new
 values.
 
 ## Backups

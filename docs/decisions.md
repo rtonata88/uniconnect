@@ -462,7 +462,8 @@ the deploy script does not run `config:cache`, because each process's identity c
 variables. Guide: [forge.md](forge.md).
 Forge enables zero-downtime deployments by default and they can't be turned off afterwards, so
 `deploy-zero-downtime.sh` supports them. `backend/storage` and the FrankenPHP binary live in
-`shared/` and are linked into each release. Daemons run from `current`; after `$ACTIVATE_RELEASE()`
-the script sends SIGTERM to every UniConnect process whose working directory is an older release, and
-Supervisor restarts it in the new one. A running process can't follow the moved `current` link, so
+`shared/` and are linked into each release. Daemons run from `current`. A `release-watch` daemon notices when `current` switches and sends
+SIGTERM to every UniConnect process whose working directory is an older release, and Supervisor
+restarts it in the new one. That can't happen in the deploy script: Forge expands its macros as
+text (comments included), and commands placed after the activation macro failed to parse. A running process can't follow the moved `current` link, so
 `octane:reload` alone would keep serving the old release.
