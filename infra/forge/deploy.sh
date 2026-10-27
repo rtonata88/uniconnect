@@ -4,6 +4,13 @@
 # backend/storage/app/private and must survive deploys.
 set -e
 
+if [ -n "$FORGE_RELEASE_DIRECTORY" ]; then
+    echo "This site uses zero-downtime deployments, which Forge does not support with Octane and"
+    echo "which cannot be turned off. Recreate the site with Advanced settings → Zero-downtime"
+    echo "deployments OFF (docs/forge.md, step 3)."
+    exit 1
+fi
+
 cd $FORGE_SITE_PATH
 git pull origin $FORGE_SITE_BRANCH
 

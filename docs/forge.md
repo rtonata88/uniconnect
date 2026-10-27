@@ -53,7 +53,16 @@ Server → **New site**:
 | Web directory | leave the default; you'll set the Nginx root by hand in step 7 |
 | Repository | `rtonata88/uniconnect`, branch `main` |
 | Install Composer dependencies | **off** (`composer.json` is in `backend/`; the deploy script installs it) |
-| Zero-downtime deployments | **off**: uploaded files live in `backend/storage` and must survive deploys |
+| Advanced settings → Zero-downtime deployments | **off** (it's **on by default**) |
+
+> **Zero-downtime deployments must be turned off when you create the site.** Forge enables them by
+> default, and they can't be turned off later. Forge's docs say not to use them with Octane, and
+> uploaded files in `backend/storage` would not carry over between releases. If you see `releases/000000`
+> in a deploy log, the site was created with them on: delete the site and create it again with the
+> toggle off.
+
+After the site is created, Forge fills in its own default deploy script. Replace it with UniConnect's
+script in step 5 **before** the first deploy.
 
 ## 4. Environment
 
