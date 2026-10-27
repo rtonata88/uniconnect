@@ -120,6 +120,12 @@ class SystemStatus
         if ($conn->getDriverName() !== 'mysql') {
             return ['ok' => true, 'detail' => 'no replica (sqlite)'];
         }
+        $replica = config('database.connections.mysql_replica');
+        $primary = config('database.connections.mysql.write');
+        if ($replica['host'] === ($primary['host'][0] ?? null) && (string) $replica['port'] === (string) $primary['port']) {
+            // single-server install (e.g. Forge): DB_REPLICA_* not set, reads use the primary
+            return ['ok' => true, 'detail' => 'no replica configured (reads use the primary)'];
+        }
         $read = DB::connection('mysql_replica')->getPdo();
         $status = $read->query('SHOW REPLICA STATUS')->fetch(\PDO::FETCH_ASSOC) ?: [];
         $io = ($status['Replica_IO_Running'] ?? 'No') === 'Yes';
@@ -167,6 +173,9 @@ class SystemStatus
 
     private function minio(): array
     {
+        if (config('filesystems.default') !== 's3') {
+            return ['ok' => true, 'detail' => 'files on local disk ('.config('filesystems.default').')'];
+        }
         $endpoint = rtrim((string) config('filesystems.disks.s3.endpoint'), '/');
         if (! $endpoint) {
             return ['ok' => false, 'detail' => 'no endpoint configured'];

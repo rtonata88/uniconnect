@@ -61,6 +61,26 @@ it('SEC-4 denies files of courses the user is not in', function () {
     $this->actingAs(User::factory()->student()->create())->getJson("/api/attachments/{$material->attachment_id}")->assertForbidden();
 });
 
+it('SEC-4 the local-disk signed URL serves the file with its name and type', function () {
+    Storage::disk('s3')->put('attachments/a.pdf', '%PDF-1.4 test');
+    $url = app(FileUrlSigner::class)->temporaryUrl('attachments/a.pdf', 'Week 1 notes.pdf', 'application/pdf');
+    expect($url)->toContain('/api/files/attachments/a.pdf?')->toContain('expires=')->toContain('signature=');
+
+    $res = $this->get($url)->assertOk()->assertHeader('Content-Type', 'application/pdf');
+    expect($res->headers->get('Content-Disposition'))->toStartWith('inline')->toContain('Week 1 notes.pdf')
+        ->and($res->streamedContent())->toBe('%PDF-1.4 test');
+});
+
+it('SEC-4 the local-disk URL rejects tampering and expiry', function () {
+    Storage::disk('s3')->put('attachments/a.pdf', '%PDF-1.4 test');
+    Storage::disk('s3')->put('attachments/b.pdf', '%PDF-1.4 other');
+    $url = app(FileUrlSigner::class)->temporaryUrl('attachments/a.pdf', 'a.pdf', 'application/pdf');
+
+    $this->get(str_replace('attachments/a.pdf', 'attachments/b.pdf', $url))->assertForbidden();
+    $this->travel(6)->minutes();
+    $this->get($url)->assertForbidden();
+});
+
 it('SEC-4 the S3 signer produces an expiring URL on the request host', function () {
     config(['filesystems.disks.s3' => array_merge(config('filesystems.disks.s3'), ['key' => 'k', 'secret' => 's', 'region' => 'us-east-1', 'bucket' => 'uc-private'])]);
     Storage::forgetDisk('s3');

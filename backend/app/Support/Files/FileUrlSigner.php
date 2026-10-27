@@ -5,9 +5,12 @@ namespace App\Support\Files;
 use Aws\S3\S3Client;
 use Illuminate\Filesystem\AwsS3V3Adapter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 /**
  * Creates short-lived presigned URLs for objects in the private bucket (SEC-4).
+ * With a local disk (single server, e.g. Forge) the URL points at the signed
+ * `files.show` route instead.
  *
  * The URL is signed for the host the client used to reach the gateway (e.g.
  * https://localhost or https://192.168.1.20), and Traefik proxies /{bucket}/* to
@@ -21,19 +24,28 @@ class FileUrlSigner
         $minutes ??= (int) config('uniconnect.uploads.signed_url_minutes');
         $disk = Storage::disk();
 
+        $inline = $mime && (str_starts_with($mime, 'image/') || $mime === 'application/pdf');
+
+        if (! $disk instanceof AwsS3V3Adapter) {
+            // local disk (Forge) / faked disk (tests): a signed route on the API serves the file.
+            // Signed relative, so it verifies whatever host and scheme the proxy forwards.
+            $relative = URL::temporarySignedRoute('files.show', now()->addMinutes($minutes), array_filter([
+                'path' => $path,
+                'name' => $downloadName,
+                'type' => $mime,
+                'inline' => $inline ? 1 : null,
+            ]), absolute: false);
+
+            return $this->publicBase().$relative;
+        }
+
         $params = [];
         if ($downloadName !== null) {
-            $inline = $mime && (str_starts_with($mime, 'image/') || $mime === 'application/pdf');
             $params['ResponseContentDisposition'] = ($inline ? 'inline' : 'attachment')
                 .'; filename="'.addcslashes($downloadName, '"\\').'"; filename*=UTF-8\'\''.rawurlencode($downloadName);
         }
         if ($mime) {
             $params['ResponseContentType'] = $mime;
-        }
-
-        if (! $disk instanceof AwsS3V3Adapter) {
-            // local / faked disk (tests)
-            return $disk->temporaryUrl($path, now()->addMinutes($minutes), $params);
         }
 
         $config = config('filesystems.disks.s3');

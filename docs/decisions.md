@@ -448,3 +448,15 @@ still covered by Traefik's health check and the `retry` middleware, as before.
 load-test users get a random 40-character password, because nobody signs in as them: k6 uses the
 tokens from `loadtest:tokens`. Without this, running the seeder on a real deployment would have created
 accounts with a known password and tokens that skip rate limits.
+
+### D66. Single-server deployment on Laravel Forge
+For a production server managed by Forge, UniConnect uses what Forge manages instead of the local
+distributed stack: Nginx is the gateway (static PWA, `/api` → Octane, `/app` → Reverb), Forge's MySQL is
+the only database (`DB_REPLICA_*` point at the primary) and uploads stay on the server's disk
+(`FILESYSTEM_DISK=local`). Local-disk files are served by a signed route, `GET /api/files/{path}`
+(`signed:relative`, so it verifies behind any proxy host), with the same 5-minute expiry, file name and
+content type as the S3 presigned URLs. Laravel's built-in local `temporaryUrl` would lose the name and
+type. System Status reports "no replica configured" and "files on local disk" as healthy instead of
+failing. The daemons reuse `scripts/run-*.sh`, so the registry and System Status keep working, and
+the deploy script does not run `config:cache`, because each process's identity comes from environment
+variables. Guide: [forge.md](forge.md).

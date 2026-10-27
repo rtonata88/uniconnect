@@ -23,6 +23,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\QuizAttemptController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\SignedFileController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\SyncController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,8 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/health', HealthController::class)->name('health');
 Route::get('/config', ConfigController::class);
+// local-disk downloads (Forge); the signature replaces the token, like an S3 presigned URL
+Route::get('/files/{path}', SignedFileController::class)->where('path', '.*')->middleware('signed:relative')->name('files.show');
 Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login-ip')->name('auth.login');
 Route::middleware('throttle:guest')->group(function () {
     Route::post('/auth/forgot-password', [PasswordResetController::class, 'forgot'])->name('password.email');
