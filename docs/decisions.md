@@ -460,3 +460,9 @@ type. System Status reports "no replica configured" and "files on local disk" as
 failing. The daemons reuse `scripts/run-*.sh`, so the registry and System Status keep working, and
 the deploy script does not run `config:cache`, because each process's identity comes from environment
 variables. Guide: [forge.md](forge.md).
+Forge enables zero-downtime deployments by default and they can't be turned off afterwards, so
+`deploy-zero-downtime.sh` supports them. `backend/storage` and the FrankenPHP binary live in
+`shared/` and are linked into each release. Daemons run from `current`; after `$ACTIVATE_RELEASE()`
+the script sends SIGTERM to every UniConnect process whose working directory is an older release, and
+Supervisor restarts it in the new one. A running process can't follow the moved `current` link, so
+`octane:reload` alone would keep serving the old release.

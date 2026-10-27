@@ -16,7 +16,8 @@ The files used below are in [`infra/forge/`](../infra/forge):
 
 | File | Goes into |
 |---|---|
-| [`deploy.sh`](../infra/forge/deploy.sh) | Site → Deployments → Deploy script |
+| [`deploy-zero-downtime.sh`](../infra/forge/deploy-zero-downtime.sh) | Site → Deployments → Deploy script, for sites with zero-downtime deployments (Forge's default) |
+| [`deploy.sh`](../infra/forge/deploy.sh) | the same, for sites with standard (in-place) deployments |
 | [`prepare-env.sh`](../infra/forge/prepare-env.sh) | nothing to paste: the deploy script runs it to complete Forge's default Environment |
 | [`nginx-locations.conf`](../infra/forge/nginx-locations.conf) | Site → Nginx configuration |
 
@@ -55,13 +56,18 @@ Server → **New site**:
 | Web directory | leave the default; you'll set the Nginx root by hand in step 6 |
 | Repository | `rtonata88/uniconnect`, branch `main` |
 | Install Composer dependencies | **off** (`composer.json` is in `backend/`; the deploy script installs it) |
-| Advanced settings → Zero-downtime deployments | **off** (it's **on by default**) |
+| Advanced settings → Zero-downtime deployments | either; it's on by default and can't be changed later |
 
-> **Zero-downtime deployments must be turned off when you create the site.** Forge enables them by
-> default, and they can't be turned off later. Forge's docs say not to use them with Octane, and
-> uploaded files in `backend/storage` would not carry over between releases. If you see `releases/000000`
-> in a deploy log, the site was created with them on: delete the site and create it again with the
-> toggle off.
+Check which kind of site you have. If the deploy log shows paths like `releases/000001`, the site
+uses **zero-downtime deployments**, so use `deploy-zero-downtime.sh` and the `current/` paths
+below. Otherwise use `deploy.sh` and leave `current/` out of the paths.
+
+With zero-downtime, every deploy is a fresh checkout in `releases/<n>`, and Forge switches the
+`current` link to it at the end. UniConnect's script keeps what must survive between releases in
+`/home/forge/uni.example.com/shared/`: `backend-storage/` (uploaded files, logs) and the FrankenPHP
+binary. Forge already shares `.env`. After switching, the script stops the daemons still running
+the old release, and Forge restarts them on the new one. The API is unavailable for a few seconds
+during each deploy, while Octane starts.
 
 After the site is created, Forge fills in its own default deploy script. Replace it with UniConnect's
 script in step 5 **before** the first deploy.
@@ -88,27 +94,31 @@ If `DB_PASSWORD` is empty, the deploy stops with a message saying so. Optional a
 settings (password-reset e-mails) and your IP in `HORIZON_ALLOWED_IPS`. Don't change `APP_KEY`
 once it's set: message bodies are encrypted with it.
 
-Forge saves the Environment as `.env` in the repository root. The deploy script links `backend/.env`
-to it, so the app, the daemons and `artisan` all read the same file, and the Environment page shows
+Forge saves the Environment as `.env` in the site directory (shared into each release with
+zero-downtime). The deploy script links `backend/.env` to it, so the app, the daemons and `artisan` all read the same file, and the Environment page shows
 the generated values.
 
 ## 5. Deploy script and first deploy
 
-Site → **Deployments** → deploy script: replace it with [`infra/forge/deploy.sh`](../infra/forge/deploy.sh).
+Site → **Deployments** → deploy script: replace it with
+[`infra/forge/deploy-zero-downtime.sh`](../infra/forge/deploy-zero-downtime.sh) (zero-downtime site) or
+[`infra/forge/deploy.sh`](../infra/forge/deploy.sh) (standard site).
 
-The script pulls the code, runs `composer install --no-dev` and completes the Environment (step 4).
-On the first deploy it also downloads FrankenPHP for Octane. Every deploy then runs the migrations, caches the routes, builds the PWA into
-`frontend/dist` and tells the running API, Reverb and Horizon to reload.
+The script gets the code, runs `composer install --no-dev` and completes the Environment (step 4).
+On the first deploy it also downloads FrankenPHP for Octane. Every deploy then runs the migrations,
+caches the routes, builds the PWA into `frontend/dist` and gets the running API, Reverb, Horizon and
+scheduler onto the new code.
 
 Click **Deploy now**. The first deploy takes a few minutes (Composer, FrankenPHP, `npm ci`, build).
-The reload commands at the end have nothing to reload yet; that's expected.
+On the first deploy no daemons are running yet; you add them in step 7.
 
 ## 6. HTTPS and Nginx
 
 1. Site → **SSL** → Let's Encrypt → issue a certificate for `uni.example.com`. Do this first: Forge
    adds the `ssl_*` lines to the Nginx config.
 2. Site → **Nginx configuration**, inside the `server { listen 443 ... }` block:
-   - change `root` to `/home/forge/uni.example.com/frontend/dist;`
+   - change `root` to `/home/forge/uni.example.com/current/frontend/dist;` (standard site:
+     `/home/forge/uni.example.com/frontend/dist;`)
    - delete Forge's `location / { ... }`, `location ~ \.php$ { ... }` and
      `location ~ /\.(?!well-known).* { ... }` blocks;
    - paste the contents of [`infra/forge/nginx-locations.conf`](../infra/forge/nginx-locations.conf) in
@@ -126,7 +136,7 @@ Nginx now serves the PWA from `frontend/dist` and forwards three kinds of reques
 
 Server → **Daemons** (Background processes): add four. For each one, set:
 
-- **Directory:** `/home/forge/uni.example.com`
+- **Directory:** `/home/forge/uni.example.com/current` (standard site: `/home/forge/uni.example.com`)
 - **User:** `forge`
 - **Processes:** 1
 
@@ -146,18 +156,20 @@ that job. Octane and Reverb listen on all interfaces, but Forge's firewall only 
 
 ## 8. Data
 
+(On a standard site, leave `current/` out of the paths below.)
+
 **For a demo or presentation:** load the demo courses, chats and accounts. Every account's password is
 `Password123!`, so change them or remove the accounts before real users join:
 
 ```bash
-cd ~/uni.example.com/backend && php8.4 artisan db:seed --force
+cd ~/uni.example.com/current/backend && php8.4 artisan db:seed --force
 ```
 
 **For real use:** create just an administrator, then add lecturers, students and courses in the app
 (Admin → Users / Courses):
 
 ```bash
-cd ~/uni.example.com/backend && php8.4 artisan tinker --execute '
+cd ~/uni.example.com/current/backend && php8.4 artisan tinker --execute '
 App\Models\User::forceCreate(["name" => "Admin", "email" => "you@example.com", "role" => "admin",
   "password" => "<a-strong-password>", "is_active" => true, "email_verified_at" => now()]);'
 ```
@@ -183,7 +195,8 @@ Then in a browser:
 ## Updating
 
 Push to `main` and click **Deploy now**, or enable **Quick deploy** to deploy on every push. The
-script reloads Octane, Reverb and Horizon itself; you don't need to restart the daemons by hand.
+script gets the API, Reverb, Horizon and the scheduler onto the new code itself; you don't need to
+restart the daemons by hand.
 
 After you change the **Environment**, restart the four daemons (Daemons → Restart) so they read the new
 values.
@@ -191,7 +204,7 @@ values.
 ## Backups
 
 - **Database:** Server → Backups (Forge database backups) to S3 or another provider.
-- **Uploaded files:** `backend/storage/app/private`. Forge doesn't back this up; copy it off the server
+- **Uploaded files:** `shared/backend-storage/app/private` (standard site: `backend/storage/app/private`). Forge doesn't back this up; copy it off the server
   regularly, e.g. with `rsync` or `restic` from a cron job.
 
 ## Troubleshooting

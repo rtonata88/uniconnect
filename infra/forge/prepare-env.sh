@@ -4,11 +4,13 @@
 #   * Forge database defaults: database `uniconnect`, user `forge` (MySQL root only allows socket login)
 #   * settings the architecture depends on (Redis queues for Horizon, Reverb, local disk, ports), forced
 #   * secrets (APP_KEY, Reverb key/secret, VAPID keys), generated once and never overwritten
-# Usage: prepare-env.sh <site-path> <php-binary>
+# Usage: prepare-env.sh <app-dir> <php-binary> [site-name]
+#   app-dir: the checkout holding .env and backend/ (a release directory with zero-downtime)
 set -euo pipefail
 SITE="$1"
 PHP="$2"
-ENV="$SITE/.env"   # Forge's Environment; backend/.env is a symlink to it
+NAME="${3:-$(basename "$SITE")}"   # the domain, e.g. uniconnect.on-forge.com
+ENV="$SITE/.env"   # Forge's Environment (a symlink to the shared file with zero-downtime); backend/.env links to it
 
 [ -f "$ENV" ] || { touch "$ENV"; echo "created $ENV (Site → Environment shows it)"; }
 
@@ -28,7 +30,7 @@ default() { [ -n "$(get "$1")" ] || set_val "$1" "$2"; }   # only if missing or 
 default APP_NAME UniConnect
 default APP_ENV production
 default APP_DEBUG false
-default APP_URL "https://$(basename "$SITE")"
+default APP_URL "https://$NAME"
 
 # --- database: Forge defaults ----------------------------------------------------------------------
 set_val DB_CONNECTION mysql
@@ -66,7 +68,7 @@ default TRUSTED_PROXIES 127.0.0.1,::1
 default REVERB_APP_ID uniconnect
 default REVERB_APP_KEY "$(openssl rand -hex 10)"
 default REVERB_APP_SECRET "$(openssl rand -hex 20)"
-default VAPID_SUBJECT "mailto:admin@$(basename "$SITE")"
+default VAPID_SUBJECT "mailto:admin@$NAME"
 cd "$SITE/backend"
 # both commands only replace an existing line
 for k in APP_KEY VAPID_PUBLIC_KEY VAPID_PRIVATE_KEY; do grep -qE "^$k=" "$ENV" || echo "$k=" >> "$ENV"; done

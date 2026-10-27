@@ -1,13 +1,12 @@
-# UniConnect deploy script for Laravel Forge: paste into Site → Deployments → Deploy script.
+# UniConnect deploy script for Laravel Forge sites with STANDARD (in-place) deployments:
+# paste into Site → Deployments → Deploy script. Sites with zero-downtime deployments
+# (Forge's default) use deploy-zero-downtime.sh instead.
 # Assumes the repository is the site root ($FORGE_SITE_PATH) and PHP 8.4.
-# Use a standard (in-place) deployment, not zero-downtime: uploaded files live in
-# backend/storage/app/private and must survive deploys.
 set -e
 
 if [ -n "$FORGE_RELEASE_DIRECTORY" ]; then
-    echo "This site uses zero-downtime deployments, which Forge does not support with Octane and"
-    echo "which cannot be turned off. Recreate the site with Advanced settings → Zero-downtime"
-    echo "deployments OFF (docs/forge.md, step 3)."
+    echo "This site uses zero-downtime deployments: use infra/forge/deploy-zero-downtime.sh as the"
+    echo "deploy script instead (docs/forge.md, step 5)."
     exit 1
 fi
 
