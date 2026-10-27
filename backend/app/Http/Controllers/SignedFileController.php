@@ -25,11 +25,16 @@ class SignedFileController extends Controller
         $disk = Storage::disk();
         abort_unless($disk->exists($path), 404);
 
+        // The query is covered by the signature and comes from the upload allowlist (SEC-5); as a
+        // second line of defence only images and PDFs may render in the browser.
+        $type = (string) $request->query('type');
+        $inline = $request->boolean('inline') && (str_starts_with($type, 'image/') || $type === 'application/pdf') && $type !== 'image/svg+xml';
+
         $headers = ['X-Content-Type-Options' => 'nosniff', 'Cache-Control' => 'private, max-age=300'];
-        if ($type = $request->query('type')) {
+        if ($type !== '') {
             $headers['Content-Type'] = $type;
         }
 
-        return $disk->response($path, $request->query('name') ?? basename($path), $headers, $request->boolean('inline') ? 'inline' : 'attachment');
+        return $disk->response($path, $request->query('name') ?? basename($path), $headers, $inline ? 'inline' : 'attachment');
     }
 }
